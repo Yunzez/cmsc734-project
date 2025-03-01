@@ -1,6 +1,5 @@
 .idea
 .vscode
 env
-data/*/*
+aux_data
 .DS_Store
-*.zip
