@@ -12,6 +12,17 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
   </head>
   <body>
     <div id="container">
@@ -56,7 +67,7 @@
         </div>
         <div
           class="d-flex justify-content-start align-items-end flex-column mt-5"
-          style="position: absolute; bottom: 10px; left: 10px;"
+          style="position: absolute; bottom: 10px; left: 10px"
         >
           <a
             href="https://github.com/Yunzez/cmsc734-project"
@@ -92,9 +103,14 @@
             </svg>
           </a>
         </div>
+        <div class="controls">
+            <button id="groupByState">Group by State</button>
+            <button id="groupByCounty">Group by County</button>
+          </div>
       </div>
 
       <!--! map section  -->
+    
       <div id="map"></div>
       <div id="visualization"></div>
     </div>
@@ -105,7 +121,6 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <script src="./js/component/searchbar/search.js"></script>
-    <script src="./js/index.js"></script>
+    <script type="module" src="./js/index.js"></script>
   </body>
 </html>
