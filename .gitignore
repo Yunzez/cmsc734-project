@@ -3,6 +3,7 @@
 env
 aux_data
 .DS_Store
+.venv/
 data/hotel/min_hotel.csv
 data/park/raw_park_a00b.geojson
 data/history/raw_history_a013.geojson
