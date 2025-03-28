@@ -1,3 +1,5 @@
+import {createHotelVis} from './hotelVis.js';
+
 async function fetchCitiesData(state, county) {
   const data = await d3.csv("../../../data/map/cities.csv");
   if (county) {
@@ -29,6 +31,7 @@ function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
     `Rendering visualization for state: ${state}, county: ${county || "none"}`
   );
   const overall = document.getElementById("vis-overall");
+  createHotelVis(overall, state, county);
 }
 
 function renderVisualizationState(visDiv, clickedLayer, state) {
