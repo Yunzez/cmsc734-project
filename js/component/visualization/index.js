@@ -1,4 +1,4 @@
-import {createHotelVis} from './hotelVis.js';
+import { createHotelVis } from './hotelVis.js';
 
 async function fetchCitiesData(state, county) {
   const data = await d3.csv("../../../data/map/cities.csv");
@@ -22,6 +22,15 @@ export async function startRenderVisualization(visualizationTargets) {
   } else {
     renderVisualizationState(visDiv, clickedLayer, state);
   }
+  // ✅ 显示右侧州地图容器
+  document.getElementById("state-view-wrapper").style.display = "flex";
+
+  // ✅ 显示雷达图容器
+  document.getElementById("city-radar-chart").style.display = "block";
+
+  // ✅ 渲染数据
+  renderRadarChart([4.2, 3.8, 4.1, 3.9, 4.5]); // ⬅️ 你可以改成动态评分
+
 }
 
 function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
@@ -30,17 +39,28 @@ function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
   console.log(
     `Rendering visualization for state: ${state}, county: ${county || "none"}`
   );
-  const overall = document.getElementById("vis-overall");
-  createHotelVis(overall, state, county);
+  const mapDiv = document.getElementById("vis-overall");
+  createHotelVis(mapDiv, state, county);
 }
 
 function renderVisualizationState(visDiv, clickedLayer, state) {
   changeTitleName("Information for " + state);
 
-  const mapDiv = document.createElement("div");
-  mapDiv.id = "overall-map";
+  // const mapDiv = document.createElement("div");
+  // const mapDiv = document.getElementById("state-map-container");
+  // mapDiv.innerHTML = "";
+  // mapDiv.id = "overall-map";
+  // mapDiv.style.position = "relative";
+  // document.getElementById("vis-overall").appendChild(mapDiv);
+  const mapDiv = document.getElementById("state-map-container");
+  if (!mapDiv) {
+    console.error("state-map-container not found!");
+    return;
+  }
+  mapDiv.innerHTML = "";
   mapDiv.style.position = "relative";
-  document.getElementById("vis-overall").appendChild(mapDiv);
+  mapDiv.style.height = "600px";
+
   createOverallSection(visDiv, clickedLayer, state);
 }
 
@@ -49,10 +69,24 @@ function changeTitleName(name) {
 }
 
 function createOverallSection(visDiv, clickedFeature, state) {
-  const overall = document.getElementById("overall-map");
-  overall.innerHTML = "";
-  overall.style.width = "100%";
-  overall.style.height = "100%";
+  // const overall = document.getElementById("overall-map");
+  // overall.innerHTML = "";
+  // overall.style.width = "100%";
+  // overall.style.height = "100%";
+  // // const mapDiv = document.getElementById("state-map-container");
+
+  const mapDiv = document.getElementById("state-map-container");
+
+  if (!mapDiv) {
+    console.error("state-map-container not found in DOM.");
+    return;
+  }
+
+  mapDiv.innerHTML = "";
+  mapDiv.style.position = "relative";
+  mapDiv.style.height = "600px";
+
+
 
   const tooltip = d3
     .select("#visualization")
@@ -69,11 +103,17 @@ function createOverallSection(visDiv, clickedFeature, state) {
     .style("opacity", 0)
     .style("z-index", 1000);
   // Initialize Leaflet map
-  const map = L.map(overall, {
+  const map = L.map(mapDiv, {
     maxZoom: 14,
     minZoom: 6,
     zoom: 8, // Set default zoom level to 7
   });
+
+  // const map = L.map(mapDiv, {
+  //   maxZoom: 14,
+  //   minZoom: 6,
+  //   zoom: 8,
+  // });
 
   // Add base tile layer
   L.tileLayer(
@@ -147,10 +187,8 @@ function createOverallSection(visDiv, clickedFeature, state) {
           .style("top", `${e.pageY - 30}px`)
           .style("opacity", 1)
           .html(
-            `<strong>${
-              d.city
-            }</strong><br>Pop: ${d.population.toLocaleString()}<br>Density: ${
-              d.density
+            `<strong>${d.city
+            }</strong><br>Pop: ${d.population.toLocaleString()}<br>Density: ${d.density
             }`
           );
       })

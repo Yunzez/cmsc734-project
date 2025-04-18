@@ -34,11 +34,13 @@ html, body {
     padding: 20px;
     height: 100vh;
     width: 50vw;
+    
 }
 
 #map {
     background-color: #e0e0e0;
     width: 50vw;
+    /* min-height: 500px;    min-height: 500px;     */
 }
 #visualization {
     width: 50vw;
@@ -56,4 +58,10 @@ html, body {
     pointer-events: none;
   }
 
+  
+  #city-radar-chart {
+    position: relative;
+    z-index: 2; 
+  }
+  
   

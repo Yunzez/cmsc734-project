@@ -27,3 +27,36 @@
   pointer-events: auto;
 }
 
+#state-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+
+
+#state-map-container {
+  width: 100%;
+  min-height: 340px;
+  max-height: 340px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+
+#city-radar-chart {
+  margin-top: 10px;
+  padding: 4px 0 6px 0;
+  background: #f9f9f9;
+  border-radius: 8px;
+  max-height: 220px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.05);
+}
+
+#city-radar-chart canvas {
+  transform: scale(0.95);
+  transform-origin: center;
+}
