@@ -108,12 +108,37 @@ function createOverallSection(visDiv, clickedFeature, state) {
     minZoom: 6,
     zoom: 8, // Set default zoom level to 7
   });
+  window._leafletMap = map;
+  L.svg().addTo(map);  // ✅ Leaflet 添加 SVG 图层
 
-  // const map = L.map(mapDiv, {
-  //   maxZoom: 14,
-  //   minZoom: 6,
-  //   zoom: 8,
+
+  // // ✅ 正确选中 SVG
+  // const svg = d3.select(map.getPanes().overlayPane).select("svg");
+
+  // // ✅ 如果 g 不存在，才添加一次
+  // let g = svg.select("g.leaflet-zoom-hide");
+  // if (g.empty()) {
+  //   g = svg.append("g").attr("class", "leaflet-zoom-hide");
+  // }
+  // map.on("load", () => {
+  //   const svg = d3.select(map.getPanes().overlayPane).select("svg");
+  //   let g = svg.select("g.leaflet-zoom-hide");
+  //   if (g.empty()) {
+  //     g = svg.append("g").attr("class", "leaflet-zoom-hide");
+  //   }
   // });
+
+  // map.whenReady(() => {
+  //   map.fire("zoomend");
+  // });
+
+  const svg = d3.select(map.getPanes().overlayPane).select("svg");
+  let g = svg.select("g.leaflet-zoom-hide");
+  if (g.empty()) {
+    g = svg.append("g").attr("class", "leaflet-zoom-hide");
+  }
+
+
 
   // Add base tile layer
   L.tileLayer(
@@ -141,9 +166,9 @@ function createOverallSection(visDiv, clickedFeature, state) {
   // created map
 
   // Add built-in SVG layer to Leaflet map
-  L.svg().addTo(map);
-  const svg = d3.select("#overall-map").select("svg");
-  const g = svg.select("g").attr("class", "leaflet-zoom-hide");
+  // L.svg().addTo(map);
+  // const svg = d3.select("#overall-map").select("svg");
+  // const g = svg.select("g").attr("class", "leaflet-zoom-hide");
 
   fetchCitiesData(state).then((data) => {
     data.forEach((d) => {
@@ -206,5 +231,189 @@ function createOverallSection(visDiv, clickedFeature, state) {
     console.log(circles, "data:", data);
     updatePositions();
     map.on("zoomend", updatePositions);
+  });
+}
+
+// export function renderHotelOnMap(stateName) {
+//   const filename = `data/hotel/state_hotels/${stateName.replaceAll(" ", "_")}_hotel.csv`;
+
+//   d3.csv(filename).then(hotelData => {
+//     if (!hotelData.length) {
+//       console.warn(`No hotel data for state ${stateName}`);
+//       return;
+//     }
+
+//     // ✅ 显式处理字段
+//     hotelData.forEach(d => {
+//       d.lat = +d.Latitude;
+//       d.lon = +d.Longitude;
+//     });
+
+//     const map = window._leafletMap;
+//     if (!map) return;
+
+//     // const svg = d3.select("#state-map-container").select("svg");
+//     // const g = svg.select("g.leaflet-zoom-hide");
+
+
+//     setTimeout(() => {
+//       const svg = d3.select(map.getPanes().overlayPane).select("svg");
+//       const g = svg.select("g.leaflet-zoom-hide");
+
+//       if (g.empty()) {
+//         console.warn("❌ <g.leaflet-zoom-hide> not found. Cannot plot hotels.");
+//         return;
+//       }
+
+
+
+
+//       console.log("Got SVG:", svg.node());
+//       console.log("Got G:", g.node());
+
+//       if (!g.node()) {
+//         console.warn("G element not found in SVG, cannot append circles!");
+//       }
+
+//       const tooltip = d3
+//         .select("#visualization")
+//         .append("div")
+//         .attr("class", "city-tooltip")
+//         .style("position", "absolute")
+//         .style("pointer-events", "none")
+//         .style("padding", "6px 10px")
+//         .style("background", "#2f3542")
+//         .style("color", "#f1f2f6")
+//         .style("border-radius", "6px")
+//         .style("font-size", "14px")
+//         .style("font-weight", "500")
+//         .style("opacity", 0);
+
+//       const sizeScale = d3.scaleLinear().domain([0, 5]).range([4, 12]);
+
+//       g.selectAll("circle")
+//         .data(hotelData)
+//         .enter()
+//         .append("circle")
+//         .attr("r", d => sizeScale(+d.StarRating || 0))  // ✅ 使用 StarRating
+//         .attr("fill", "steelblue")
+//         .attr("opacity", 0.6)
+//         .attr("stroke", "#fff")
+//         .attr("stroke-width", 1)
+//         .attr("cx", d => map.latLngToLayerPoint([d.lat, d.lon]).x)
+//         .attr("cy", d => map.latLngToLayerPoint([d.lat, d.lon]).y)
+//         .on("mouseover", (e, d) => {
+//           d3.select(e.target).attr("opacity", 1);
+//           tooltip
+//             .style("left", e.pageX + "px")
+//             .style("top", e.pageY - 20 + "px")
+//             .style("opacity", 1)
+//             .html(`<strong>${d.HotelName}</strong><br>Stars: ${d.StarRating}`);
+//         })
+//         .on("mouseout", (e, d) => {
+//           d3.select(e.target).attr("opacity", 0.6);
+//           tooltip.style("opacity", 0);
+//         })
+//         .on("click", (e, d) => {
+//           const score = +d.StarRating || 0;
+//           renderRadarChart([score, score, score, score, score]); // ✅ 默认五边雷达图
+//         });
+
+//       map.on("zoomend", () => {
+//         g.selectAll("circle")
+//           .attr("cx", d => map.latLngToLayerPoint([d.lat, d.lon]).x)
+//           .attr("cy", d => map.latLngToLayerPoint([d.lat, d.lon]).y);
+//       });
+
+//       map.fire("zoomend"); // 初次定位圆圈
+//     }, 300);
+//   });
+// }
+
+
+export function renderHotelOnMap(stateName) {
+  const filename = `data/hotel/state_hotels/${stateName.replaceAll(" ", "_")}_hotel.csv`;
+
+  d3.csv(filename).then(hotelData => {
+    if (!hotelData.length) {
+      console.warn(`No hotel data for state ${stateName}`);
+      return;
+    }
+
+    hotelData.forEach(d => {
+      d.lat = +d.Latitude;
+      d.lon = +d.Longitude;
+      d.StarRating = +d.StarRating || 0;
+    });
+
+    const map = window._leafletMap;
+    if (!map) return;
+
+    const svg = d3.select(map.getPanes().overlayPane).select("svg");
+    let g = svg.select("g.leaflet-zoom-hide");
+    if (g.empty()) {
+      g = svg.append("g").attr("class", "leaflet-zoom-hide");
+    }
+
+    const tooltip = d3
+      .select("#visualization")
+      .append("div")
+      .attr("class", "city-tooltip")
+      .style("position", "absolute")
+      .style("pointer-events", "none")
+      .style("padding", "6px 10px")
+      .style("background", "#2f3542")
+      .style("color", "#f1f2f6")
+      .style("border-radius", "6px")
+      .style("font-size", "14px")
+      .style("font-weight", "500")
+      .style("opacity", 0);
+
+    const sizeScale = d3.scaleLinear().domain([0, 5]).range([4, 12]);
+
+    const hotelCircles = g.selectAll(".hotel-dot")
+      .data(hotelData)
+      .enter()
+      .append("circle")
+      .attr("class", "hotel-dot")
+      .attr("r", d => sizeScale(d.StarRating))
+      .attr("fill", "orange")
+      .attr("opacity", 0.7)
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 1)
+      .on("mouseover", (e, d) => {
+        d3.select(e.target).attr("opacity", 1);
+        tooltip
+          .style("left", e.pageX + "px")
+          .style("top", e.pageY - 20 + "px")
+          .style("opacity", 1)
+          .html(
+            `
+      <table>
+        <tr><td><strong>Name:</strong></td><td>${d.HotelName}</td></tr>
+        <tr><td><strong>Location:</strong></td><td>${d.lat.toFixed(4)}, ${d.lon.toFixed(4)}</td></tr>
+        <tr><td><strong>Stars:</strong></td><td>${d.StarRating}</td></tr>
+        ${d.Description ? `<tr><td><strong>Description:</strong></td><td>${d.Description}</td></tr>` : ""}
+      </table>
+    `
+          );
+      })
+      .on("mouseout", (e, d) => {
+        d3.select(e.target).attr("opacity", 0.7);
+        tooltip.style("opacity", 0);
+      })
+      .on("click", (e, d) => {
+        const score = d.StarRating;
+        renderRadarChart([score, score, score, score, score]);
+      });
+
+    function updateHotelPositions() {
+      hotelCircles
+        .attr("cx", d => map.latLngToLayerPoint([d.lat, d.lon]).x)
+        .attr("cy", d => map.latLngToLayerPoint([d.lat, d.lon]).y);
+    }
+
+    map.on("zoomend", updateHotelPositions);
+    updateHotelPositions();  // 初始绘制
   });
 }

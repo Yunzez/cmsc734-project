@@ -1,4 +1,6 @@
 import { createMap } from "./component/map/index.js";
+import { renderHotelOnMap } from './component/visualization/index.js';
+
 
 const map = document.getElementById("map");
 const intro = document.getElementById("intro");
@@ -57,3 +59,29 @@ function prepareVisDiv(visDiv) {
 //     }
 
 // }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const dropdownItems = document.querySelectorAll("#filterOptionsList .dropdown-item");
+  const dropdownButton = document.getElementById("filterDropdownButton");
+
+  dropdownItems.forEach(item => {
+    item.addEventListener("click", function (e) {
+      const selected = this.getAttribute("data-value");
+      if (selected && dropdownButton) {
+        dropdownButton.innerText = selected;
+      }
+
+      const visTitle = document.getElementById("visHeaderTitle");
+      if (!visTitle) return;
+      const state = visTitle.innerText.replace("Information for ", "").trim();
+
+      console.log("User selected:", selected, "in state:", state);
+
+      if (selected === "Hotel") {
+        console.log("Calling renderHotelOnMap for", state);
+      
+        renderHotelOnMap(state);
+      }
+    });
+  });
+});
