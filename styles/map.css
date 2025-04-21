@@ -40,7 +40,7 @@
   width: 100%;
   min-height: 340px;
   max-height: 340px;
-  overflow: hidden;
+  overflow: hidden; /**********************/
   position: relative;
   border-radius: 8px;
   box-shadow: 0 0 5px rgba(0,0,0,0.1);
