@@ -11,8 +11,6 @@ async function fetchCitiesData(state, county) {
   }
 }
 
-
-
 export async function startRenderVisualization(visualizationTargets) {
   console.log("startRenderVisualization", visualizationTargets);
   const clickedLayer = visualizationTargets[0];
@@ -39,15 +37,13 @@ function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
   console.log(
     `Rendering visualization for state: ${state}, county: ${county || "none"}`
   );
-//   const mapDiv = document.getElementById("vis-overall");
-//   createHotelVis(mapDiv, state, county);
 }
 
 function renderVisualizationState(visDiv, clickedLayer, state) {
   changeTitleName(state);
-
-  createOverallSection(visDiv, clickedLayer, state);
+  createOverallStateMap(visDiv, clickedLayer, state);
 }
+
 function changeTitleName(state, county = null) {
   const titleElement = document.getElementById("visHeaderTitle");
   const infoElement = document.createElement("div");
@@ -68,11 +64,8 @@ function changeTitleName(state, county = null) {
   titleElement.appendChild(infoElement);
 }
 
-function createOverallSection(visDiv, clickedFeature, state) {
-  // const overall = document.getElementById("overall-map");
-  // overall.innerHTML = "";
-  // overall.style.width = "100%";
-  // overall.style.height = "100%";
+function createOverallStateMap(visDiv, clickedFeature, state) {
+
 
   const tooltip = d3
     .select("#visualization")
@@ -114,33 +107,33 @@ function createOverallSection(visDiv, clickedFeature, state) {
       .interpolator(d3.interpolateYlGnBu);
     // Initial render
 
-    const circles = g
-      .selectAll("city-pop")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("r", (d) => sizeScale(d.population))
-      .attr("fill", (d) => colorScale(Math.log(d.density)))
-      .attr("opacity", 0.5)
-      .attr("class", "city-bubble")
-      .attr("title", (d) => d.city_ascii)
-      .on("mouseover", (e, d) => {
-        console.log("mouseover", d);
-        tooltip
-          .style("left", `calc(${e.pageX + 10}px + 50vw)`)
-          .style("top", `${e.pageY - 30}px`)
-          .style("opacity", 1)
-          .html(
-            `<strong>${
-              d.city
-            }</strong><br>Pop: ${d.population.toLocaleString()}<br>Density: ${
-              d.density
-            }`
-          );
-      })
-      .on("mouseout", () => {
-        tooltip.style("opacity", 0);
-      });
+    // const circles = g
+    //   .selectAll("city-pop")
+    //   .data(data)
+    //   .enter()
+    //   .append("circle")
+    //   .attr("r", (d) => sizeScale(d.population))
+    //   .attr("fill", (d) => colorScale(Math.log(d.density)))
+    //   .attr("opacity", 0.5)
+    //   .attr("class", "city-bubble")
+    //   .attr("title", (d) => d.city_ascii)
+    //   .on("mouseover", (e, d) => {
+    //     console.log("mouseover", d);
+    //     tooltip
+    //       .style("left", `calc(${e.pageX + 10}px + 50vw)`)
+    //       .style("top", `${e.pageY - 30}px`)
+    //       .style("opacity", 1)
+    //       .html(
+    //         `<strong>${
+    //           d.city
+    //         }</strong><br>Pop: ${d.population.toLocaleString()}<br>Density: ${
+    //           d.density
+    //         }`
+    //       );
+    //   })
+    //   .on("mouseout", () => {
+    //     tooltip.style("opacity", 0);
+    //   });
 
     function updatePositions() {
       console.log("updatePositions", g.selectAll("city-pop"));
@@ -149,9 +142,9 @@ function createOverallSection(visDiv, clickedFeature, state) {
         .attr("cy", (d) => map.latLngToLayerPoint([d.lat, d.lng]).y);
     }
 
-    console.log(circles, "data:", data);
-    updatePositions();
-    map.on("zoomend", updatePositions);
+    // console.log(circles, "data:", data);
+    // updatePositions();
+    // map.on("zoomend", updatePositions);
   });
 }
 

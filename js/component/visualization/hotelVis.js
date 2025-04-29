@@ -5,7 +5,7 @@ export function createHotelVis(
   county,
   filteredData = null
 ) {
-  parentContainer.innerHTML = "";
+//   parentContainer.innerHTML = "";
   const container = document.createElement("div");
   container.id = "hotel-vis-subdiv";
   parentContainer.appendChild(container);

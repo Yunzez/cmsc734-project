@@ -1,5 +1,6 @@
 import { createMap } from "./component/map/index.js";
 import { renderHotelOnMap } from "./component/visualization/hotelVis.js";
+import { createSafetyVis } from "./component/visualization/safetyVis.js";
 
 const parentContainer = document.getElementById("container");
 
@@ -78,13 +79,17 @@ function prepareDropdown(globalMap) {
       const county = stateInfo.includes(",")
       ? stateInfo.split(",")[0].trim() 
       : "";
-      console.log(visTitle);
       console.log("User selected:", selected, "in state:", state);
 
       if (selected === "Hotel") {
         console.log("Calling renderHotelOnMap for", state);
         // console.log("global map check: ", globalMap);
         renderHotelOnMap(state, county, globalMap);
+      }
+
+      if (selected === "Safety") {
+        const mapDiv = document.getElementById("vis-overall");
+        createSafetyVis(mapDiv, state, county, globalMap)
       }
     });
   });

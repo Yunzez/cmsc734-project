@@ -101,6 +101,12 @@ export function createMap(
 
   function zoomInMapToThislayer(matchedFeature) {
     const tempLayer = L.geoJSON(matchedFeature);
+    let attachCounties = false;
+    // console.log("matchedFeature", matchedFeature, matchedFeature.coty_name);
+    if (activeLayer === stateLayer) {
+      attachCounties = true;
+      console.log("state layer is active");
+    }
     // Remove old abstract layer if exists
     if (activeLayer) {
       map.removeLayer(activeLayer);
@@ -117,6 +123,60 @@ export function createMap(
     map.fitBounds(tempLayer.getBounds(), {
       padding: [20, 20],
     });
+
+    if (attachCounties) {
+      console.log("state name:", matchedFeature);
+      const selectedState = matchedFeature.properties.NAME.toLowerCase();
+
+      const matchingCountyFeatures = [];
+
+      countyLayer.eachLayer((l) => {
+        const props = l.feature?.properties;
+        const steName = props?.ste_name;
+
+        let stateName = "";
+        if (Array.isArray(steName)) {
+          stateName = steName[0];
+        } else {
+          stateName = steName;
+        }
+
+        if (stateName && stateName.toLowerCase() === selectedState) {
+          matchingCountyFeatures.push(l.feature);
+        }
+      });
+      console.log("filtered counties", matchingCountyFeatures);
+
+      // ✅ Now add these counties to the map
+      if (matchingCountyFeatures.length > 0) {
+        const countyLayerGroup = L.geoJSON(matchingCountyFeatures, {
+          style: {
+            color: "#4dabf7", // calm blue
+            weight: 2,
+            fillOpacity: 0.2,
+          },
+          onEachFeature: function (feature, layer) {
+            // Highlight style on hover
+            layer.on({
+              mouseover: function (e) {
+                e.target.setStyle({
+                  weight: 3,
+                  color: "#ffd43b", // bright yellow on hover
+                  fillOpacity: 0.4
+                });
+        
+                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                  e.target.bringToFront(); // bring hovered county to front
+                }
+              },
+              mouseout: function (e) {
+                countyLayerGroup.resetStyle(e.target); // Reset back to default style
+              }
+            });
+          }
+        }).addTo(map);
+      }
+    }
   }
   // Function to create a GeoJSON layer
   function loadGeoJSON(url, type) {
