@@ -43,7 +43,7 @@ export function createMap(
       console.warn("No matching feature found for", selectedItem);
     }
   }
-B
+
   console.log("loading dropdown", handleSearchSelection);
   createDropDown(
     "mainSearchInput",
