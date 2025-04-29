@@ -53,10 +53,10 @@ function changeTitleName(state, county = null) {
   const infoElement = document.createElement("div");
   // Clear old paragraph info first
   infoElement.innerHTML = "Information for ";
-
+     console.log("change title name with ", state, county);
   if (county) {
     const infoCountyElement = document.createElement("span");
-    infoCountyElement.innerText = county + ", ";
+    infoCountyElement.innerText = county + " County, ";
     infoCountyElement.id = "info-county";
     infoElement.appendChild(infoCountyElement);
   }
@@ -78,20 +78,6 @@ function createOverallSection(visDiv, clickedFeature, state, map) {
     return;
   }
 
-  const tooltip = d3
-    .select("#visualization")
-    .append("div")
-    .attr("class", "city-tooltip")
-    .style("position", "absolute")
-    .style("pointer-events", "none")
-    .style("padding", "6px 10px")
-    .style("background", "#2f3542")
-    .style("color", "#f1f2f6")
-    .style("border-radius", "6px")
-    .style("font-size", "14px")
-    .style("font-weight", "500")
-    .style("opacity", 0)
-    .style("z-index", 1000);
 
   const svg = d3.select(map.getPanes().overlayPane).select("svg");
   let g = svg.select("g.leaflet-zoom-hide");
