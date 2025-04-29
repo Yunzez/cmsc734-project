@@ -11,7 +11,7 @@ async function fetchCitiesData(state, county) {
   }
 }
 
-export async function startRenderVisualization(visualizationTargets) {
+export async function startRenderVisualization(visualizationTargets, map) {
   console.log("startRenderVisualization", visualizationTargets);
   const clickedLayer = visualizationTargets[0];
   const state = visualizationTargets[1];
@@ -21,7 +21,7 @@ export async function startRenderVisualization(visualizationTargets) {
   if (county && visualizationTargets.length > 1) {
     renderVisualizationCounty(visDiv, clickedLayer, state, county);
   } else {
-    renderVisualizationState(visDiv, clickedLayer, state);
+    renderVisualizationState(visDiv, clickedLayer, state, map);
   }
 
   document.getElementById("state-view-wrapper").style.display = "flex";
@@ -39,9 +39,12 @@ function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
   );
 }
 
-function renderVisualizationState(visDiv, clickedLayer, state) {
+function renderVisualizationState(visDiv, clickedLayer, state, map) {
   changeTitleName(state);
-  createOverallStateMap(visDiv, clickedLayer, state);
+
+  // createOverallSection(visDiv, clickedLayer, state);
+
+  createOverallSection(visDiv, clickedLayer, state, map);
 }
 
 function changeTitleName(state, county = null) {
@@ -64,8 +67,15 @@ function changeTitleName(state, county = null) {
   titleElement.appendChild(infoElement);
 }
 
-function createOverallStateMap(visDiv, clickedFeature, state) {
-
+function createOverallSection(visDiv, clickedFeature, state, map) {
+  // const overall = document.getElementById("overall-map");
+  // overall.innerHTML = "";
+  // overall.style.width = "100%";
+  // overall.style.height = "100%";
+  if (!map || typeof map.getPanes !== "function") {
+    console.error("❌ Leaflet map is not available (from argument).");
+    return;
+  }
 
   const tooltip = d3
     .select("#visualization")
@@ -81,6 +91,13 @@ function createOverallStateMap(visDiv, clickedFeature, state) {
     .style("font-weight", "500")
     .style("opacity", 0)
     .style("z-index", 1000);
+
+  const svg = d3.select(map.getPanes().overlayPane).select("svg");
+  let g = svg.select("g.leaflet-zoom-hide");
+  if (g.empty()) {
+    g = svg.append("g").attr("class", "leaflet-zoom-hide");
+  }
+
 
   fetchCitiesData(state).then((data) => {
     data.forEach((d) => {
@@ -107,33 +124,7 @@ function createOverallStateMap(visDiv, clickedFeature, state) {
       .interpolator(d3.interpolateYlGnBu);
     // Initial render
 
-    // const circles = g
-    //   .selectAll("city-pop")
-    //   .data(data)
-    //   .enter()
-    //   .append("circle")
-    //   .attr("r", (d) => sizeScale(d.population))
-    //   .attr("fill", (d) => colorScale(Math.log(d.density)))
-    //   .attr("opacity", 0.5)
-    //   .attr("class", "city-bubble")
-    //   .attr("title", (d) => d.city_ascii)
-    //   .on("mouseover", (e, d) => {
-    //     console.log("mouseover", d);
-    //     tooltip
-    //       .style("left", `calc(${e.pageX + 10}px + 50vw)`)
-    //       .style("top", `${e.pageY - 30}px`)
-    //       .style("opacity", 1)
-    //       .html(
-    //         `<strong>${
-    //           d.city
-    //         }</strong><br>Pop: ${d.population.toLocaleString()}<br>Density: ${
-    //           d.density
-    //         }`
-    //       );
-    //   })
-    //   .on("mouseout", () => {
-    //     tooltip.style("opacity", 0);
-    //   });
+
 
     function updatePositions() {
       console.log("updatePositions", g.selectAll("city-pop"));
@@ -148,3 +139,65 @@ function createOverallStateMap(visDiv, clickedFeature, state) {
   });
 }
 
+
+export function renderAirportOnMap(stateName, globalMap) {
+  const geojsonPath = `data/airport/raw_airport.geojson`;
+
+  fetch(geojsonPath)
+    .then(res => res.json())
+    .then(data => {
+      const filtered = data.features.filter(f =>
+        f.properties.state_name?.toLowerCase() === stateName.toLowerCase()
+      );
+      console.log(`✈️ ${filtered.length} airports found in ${stateName}`);
+
+
+      if (!filtered.length) {
+        console.warn(`No airport data found for ${stateName}`);
+        return;
+      }
+
+      // 清除旧图层（如果存在）
+      if (window._airportLayer) {
+        globalMap.removeLayer(window._airportLayer);
+      }
+
+      const airportLayer = L.layerGroup();
+
+      const airplaneIcon = L.divIcon({
+        html: "✈️",
+        className: "airport-icon",
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+      });
+
+      filtered.forEach(f => {
+        const [lng, lat] = f.geometry.coordinates;
+        const props = f.properties;
+
+        const marker = L.marker([lat, lng], { icon: airplaneIcon });
+
+        const tooltipContent = `
+  <strong>${props.fac_name || props.name}</strong><br/>
+  ICAO: ${props.icao_ident || "N/A"}<br/>
+  Type: ${props.fac_type || "N/A"}<br/>
+  State: ${props.state_name || "N/A"}<br/>
+  Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}
+`;
+
+        marker.bindTooltip(tooltipContent, {
+          direction: "top",
+          offset: [0, -10],
+          className: "airport-tooltip",
+        });
+
+        airportLayer.addLayer(marker);
+      });
+
+      airportLayer.addTo(globalMap);
+      window._airportLayer = airportLayer;
+    })
+    .catch(err => {
+      console.error("❌ Failed to load airport geojson:", err);
+    });
+}

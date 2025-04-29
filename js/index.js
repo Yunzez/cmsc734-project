@@ -1,5 +1,7 @@
 import { createMap } from "./component/map/index.js";
-import { renderHotelOnMap } from "./component/visualization/hotelVis.js";
+import {renderHotelOnMap} from "./component/visualization/hotelVis.js";
+import { renderAirportOnMap } from "./component/visualization/index.js";
+
 import { createSafetyVis } from "./component/visualization/safetyVis.js";
 
 const parentContainer = document.getElementById("container");
@@ -59,14 +61,14 @@ function prepareDropdown(globalMap) {
   const dropdownItems = document.querySelectorAll(
     "#filterOptionsList .checkbox-input"
   );
-//   const dropdownButton = document.getElementById("filterDropdownButton");
+  //   const dropdownButton = document.getElementById("filterDropdownButton");
   console.log("dropdownItems", dropdownItems);
   dropdownItems.forEach((item) => {
     item.addEventListener("click", function (e) {
       const selected = this.getAttribute("data-value");
-    //   if (selected && dropdownButton) {
-    //     dropdownButton.innerText = selected;
-    //   }
+      //   if (selected && dropdownButton) {
+      //     dropdownButton.innerText = selected;
+      //   }
 
       const visTitle = document.getElementById("visHeaderTitle");
       if (!visTitle) return;
@@ -77,8 +79,8 @@ function prepareDropdown(globalMap) {
         ? stateInfo.split(",")[1].trim()
         : stateInfo;
       const county = stateInfo.includes(",")
-      ? stateInfo.split(",")[0].trim() 
-      : "";
+        ? stateInfo.split(",")[0].trim()
+        : "";
       console.log("User selected:", selected, "in state:", state);
 
       if (selected === "Hotel") {
@@ -89,7 +91,11 @@ function prepareDropdown(globalMap) {
 
       if (selected === "Safety") {
         const mapDiv = document.getElementById("vis-overall");
-        createSafetyVis(mapDiv, state, county, globalMap)
+        createSafetyVis(mapDiv, state, county, globalMap);
+      }
+      if (selected === "Transportation") {
+        console.log("Calling renderAirportOnMap for", state);
+        renderAirportOnMap(state, globalMap);
       }
     });
   });
