@@ -1,6 +1,10 @@
 let opennedNode = null;
-export function createHotelVis(parentContainer, state, county) {
-
+export function createHotelVis(
+  parentContainer,
+  state,
+  county,
+  filteredData = null
+) {
   parentContainer.innerHTML = "";
   const container = document.createElement("div");
   container.id = "hotel-vis-subdiv";
@@ -11,7 +15,17 @@ export function createHotelVis(parentContainer, state, county) {
   const data_state = String(state).replace(/\s+/g, "_");
   const csvPath = `../../../data/hotel/state_hotels/${data_state}_hotel.csv`;
 
-  d3.csv(csvPath, d3.autoType).then((data) => {
+  const loadData = filteredData
+    ? Promise.resolve(filteredData)
+    : d3.csv(
+        `../../../data/hotel/state_hotels/${String(state).replace(
+          /\s+/g,
+          "_"
+        )}_hotel.csv`,
+        d3.autoType
+      );
+
+  loadData.then((data) => {
     data = data.filter((d) => d.StarRating >= 1 && d.StarRating <= 5);
 
     const grouped = d3.rollups(
@@ -173,78 +187,6 @@ function resetView(svg, starGroups) {
   svg.selectAll("g.back-button").style("display", "none");
 }
 
-// function showHotels(svg, starGroups, focusedRating) {
-//   svg.selectAll("g.back-button").style("display", "block");
-//   const width = +svg.attr("width");
-//   const height = +svg.attr("height");
-
-//   const pack = d3.pack().size([width, height]).padding(10);
-//   const root = d3.hierarchy({ children: starGroups }).sum((d) => d.count);
-//   pack(root);
-
-//   const focus = starGroups.find((d) => d.rating === focusedRating);
-
-//   svg.selectAll("g.star-node").each(function (d) {
-//     const g = d3.select(this);
-//     svg.select("#hotel-count-label" + d.data.rating).style("display", "none");
-//     if (d.data.rating === focusedRating) {
-//       // Expand and center the focused bubble
-//       g.raise()
-//         .transition()
-//         .duration(600)
-//         .attr("transform", `translate(${width / 2}, ${height / 2}) scale(2.5)`);
-
-//       // Create hotel bubbles inside the focused bubble
-//       const hotelPack = d3
-//         .pack()
-//         .size([d.r * 2, d.r * 2])
-//         .padding(2.5);
-
-//       const hotelRoot = d3
-//         .hierarchy({ children: focus.hotels.map((h) => ({ ...h, value: 1 })) })
-//         .sum((d) => d.value);
-
-//       hotelPack(hotelRoot);
-
-//       const hotelG = g
-//         .append("g")
-//         .attr("class", "hotel-pack")
-//         .attr("transform", `translate(${-d.r}, ${-d.r})`);
-
-//       hotelG
-//         .selectAll("circle")
-//         .data(hotelRoot.children)
-//         .enter()
-//         .append("circle")
-//         .attr("cx", (d) => d.x)
-//         .attr("cy", (d) => d.y)
-//         .attr("r", (d) => d.r)
-//         .attr("fill", "#339af0")
-//         .attr("opacity", 0.8)
-//         .on("click", (e, d) => {
-//           e.stopPropagation();
-//           alert(
-//             `🏨 ${d.data.HotelName}\n⭐ ${d.data.StarRating}\n📍 ${
-//               d.data.City
-//             }, ${d.data.Address}\n\nFacilities:\n${
-//               d.data.HotelFacilities || "N/A"
-//             }\n\nAttractions:\n${d.data.Attractions || "None"}`
-//           );
-//         });
-//     } else {
-//       // Shrink & fade other bubbles
-//       g.transition()
-//         .duration(700)
-//         .attr("transform", `translate(${d.x}, ${d.y}) scale(0.8)`);
-
-//       g.select("circle").transition().duration(700).attr("opacity", 0.3);
-
-//       g.on("click", null); // Disable click
-//     }
-//   });
-
-// }
-
 function showHotels(svg, starGroups, focusedRating) {
   svg.selectAll("g.back-button").style("display", "block");
   const width = +svg.attr("width");
@@ -327,5 +269,106 @@ function showHotels(svg, starGroups, focusedRating) {
       g.select("circle").transition().duration(700).attr("opacity", 0.3);
       g.on("click", null);
     }
+  });
+}
+
+function addAllHotels(hotelsData, map) {
+  // Remove old layer if exists
+
+  let hotelLayerGroup = L.markerClusterGroup();
+
+  if (!Array.isArray(hotelsData)) {
+    console.error("Hotels data is invalid");
+    return;
+  }
+
+  hotelsData.forEach((hotel) => {
+    if (
+      hotel.Latitude == null ||
+      hotel.Longitude == null ||
+      isNaN(Number(hotel.Latitude)) ||
+      isNaN(Number(hotel.Longitude))
+    )
+      return;
+    const marker = L.marker([hotel.Latitude, hotel.Longitude], {
+      title: hotel.HotelName,
+    });
+
+    const popupContent = `
+          <b>${hotel.HotelName}</b><br/>
+          ${hotel.StarRating ? `⭐ ${hotel.StarRating} stars` : ""}<br/>
+          ${hotel.Address || ""}<br/>
+          <a href="https://www.google.com/search?q=${
+            encodeURIComponent(hotel.HotelName + " " + hotel.State)
+          }" target="_blank" rel="noopener noreferrer">Website</a>
+        `;
+
+    marker.bindPopup(popupContent);
+    hotelLayerGroup.addLayer(marker);
+  });
+  if (map) {
+    console.log("Adding hotel layer to map");
+  }
+  hotelLayerGroup.addTo(map);
+}
+
+export function renderHotelOnMap(stateName, countyName, globalMap) {
+  const filename = `data/hotel/state_hotels/${stateName.replaceAll(
+    " ",
+    "_"
+  )}_hotel.csv`;
+
+  let countyLayer = null;
+  console.log("globalMap check", globalMap);
+  globalMap.eachLayer((layer) => {
+    if (
+      layer.feature &&
+      layer.feature.properties &&
+      layer.feature.properties._id === "map-highlight-layer"
+    ) {
+      countyLayer = layer.feature;
+    }
+  });
+
+  console.log("countyLayer", countyLayer);
+
+  d3.csv(filename).then((hotelData) => {
+    if (!hotelData.length) {
+      console.warn(`No hotel data for state ${stateName}`);
+      return;
+    }
+
+    hotelData.forEach((d) => {
+      d.lat = +d.Latitude;
+      d.lon = +d.Longitude;
+      d.StarRating = +d.StarRating || 0;
+    });
+
+    // filter hotels inside the selected county
+    const filteredHotels = hotelData.filter((hotel) => {
+      if (
+        hotel.lat == null ||
+        hotel.lon == null ||
+        isNaN(hotel.lat) ||
+        isNaN(hotel.lon)
+      )
+        return false;
+
+      const point = turf.point([hotel.lon, hotel.lat]);
+      return turf.booleanPointInPolygon(point, countyLayer);
+    });
+
+    addAllHotels(filteredHotels, globalMap);
+    const mapDiv = document.getElementById("vis-overall");
+    createHotelVis(mapDiv, stateName, countyName, filteredHotels);
+    // const map = window._leafletMap;
+    // if (!map) return;
+
+    // const svg = d3.select(map.getPanes().overlayPane).select("svg");
+    // let g = svg.select("g.leaflet-zoom-hide");
+    // if (g.empty()) {
+    //   g = svg.append("g").attr("class", "leaflet-zoom-hide");
+    // }
+
   });
 }

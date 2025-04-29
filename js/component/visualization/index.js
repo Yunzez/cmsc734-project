@@ -11,7 +11,13 @@ async function fetchCitiesData(state, county) {
   }
 }
 
+<<<<<<< HEAD
 export async function startRenderVisualization(visualizationTargets, map) {
+=======
+
+
+export async function startRenderVisualization(visualizationTargets) {
+>>>>>>> ea9a745a5de59119f4db81d0ec22c201d069f4d7
   console.log("startRenderVisualization", visualizationTargets);
   const clickedLayer = visualizationTargets[0];
   const state = visualizationTargets[1];
@@ -37,8 +43,8 @@ function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
   console.log(
     `Rendering visualization for state: ${state}, county: ${county || "none"}`
   );
-  const mapDiv = document.getElementById("vis-overall");
-  createHotelVis(mapDiv, state, county);
+//   const mapDiv = document.getElementById("vis-overall");
+//   createHotelVis(mapDiv, state, county);
 }
 
 function renderVisualizationState(visDiv, clickedLayer, state, map) {
@@ -74,6 +80,7 @@ function createOverallSection(visDiv, clickedFeature, state, map) {
   // overall.style.width = "100%";
   // overall.style.height = "100%";
 
+<<<<<<< HEAD
   if (!map || typeof map.getPanes !== "function") {
     console.error("❌ Leaflet map is not available (from argument).");
     return;
@@ -81,6 +88,8 @@ function createOverallSection(visDiv, clickedFeature, state, map) {
 
 
 
+=======
+>>>>>>> ea9a745a5de59119f4db81d0ec22c201d069f4d7
   const tooltip = d3
     .select("#visualization")
     .append("div")
@@ -167,6 +176,7 @@ function createOverallSection(visDiv, clickedFeature, state, map) {
   });
 }
 
+<<<<<<< HEAD
 function addAllHotels(hotelsData, map) {
   // Remove old layer if exists
 
@@ -365,3 +375,5 @@ export function renderAirportOnMap(stateName, globalMap) {
       console.error("❌ Failed to load airport geojson:", err);
     });
 }
+=======
+>>>>>>> ea9a745a5de59119f4db81d0ec22c201d069f4d7

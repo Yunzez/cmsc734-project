@@ -43,8 +43,11 @@ export function createMap(
       console.warn("No matching feature found for", selectedItem);
     }
   }
+<<<<<<< HEAD
 
   console.log("loading dropdown", handleSearchSelection);
+=======
+>>>>>>> ea9a745a5de59119f4db81d0ec22c201d069f4d7
   createDropDown(
     "mainSearchInput",
     "mainSearchDropdown",
@@ -52,7 +55,7 @@ export function createMap(
   );
 
   const map = L.map(containerId, {
-    maxZoom: 14,
+    maxZoom: 16,
     minZoom: 4,
     maxBounds: [
       [24.396308, -125.0], // Southwest coordinates
@@ -115,6 +118,7 @@ export function createMap(
         fillOpacity: 0.2,
       },
     }).addTo(map);
+    matchedFeature.properties._id = "map-highlight-layer";
     map.fitBounds(tempLayer.getBounds(), {
       padding: [20, 20],
     });

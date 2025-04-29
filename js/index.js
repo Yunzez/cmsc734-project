@@ -1,7 +1,11 @@
 import { createMap } from "./component/map/index.js";
+<<<<<<< HEAD
 import { renderHotelOnMap } from "./component/visualization/index.js";
 import { renderAirportOnMap } from "./component/visualization/index.js";
 
+=======
+import { renderHotelOnMap } from "./component/visualization/hotelVis.js";
+>>>>>>> ea9a745a5de59119f4db81d0ec22c201d069f4d7
 
 const parentContainer = document.getElementById("container");
 
@@ -58,16 +62,16 @@ function prepareVisDiv(visDiv) {
 // }
 function prepareDropdown(globalMap) {
   const dropdownItems = document.querySelectorAll(
-    "#filterOptionsList .dropdown-item"
+    "#filterOptionsList .checkbox-input"
   );
-  const dropdownButton = document.getElementById("filterDropdownButton");
-
+//   const dropdownButton = document.getElementById("filterDropdownButton");
+  console.log("dropdownItems", dropdownItems);
   dropdownItems.forEach((item) => {
     item.addEventListener("click", function (e) {
       const selected = this.getAttribute("data-value");
-      if (selected && dropdownButton) {
-        dropdownButton.innerText = selected;
-      }
+    //   if (selected && dropdownButton) {
+    //     dropdownButton.innerText = selected;
+    //   }
 
       const visTitle = document.getElementById("visHeaderTitle");
       if (!visTitle) return;
@@ -77,13 +81,16 @@ function prepareDropdown(globalMap) {
       const state = stateInfo.includes(",")
         ? stateInfo.split(",")[1].trim()
         : stateInfo;
+      const county = stateInfo.includes(",")
+      ? stateInfo.split(",")[0].trim() 
+      : "";
       console.log(visTitle);
       console.log("User selected:", selected, "in state:", state);
 
       if (selected === "Hotel") {
         console.log("Calling renderHotelOnMap for", state);
-        console.log(globalMap)
-        renderHotelOnMap(state, globalMap);
+        // console.log("global map check: ", globalMap);
+        renderHotelOnMap(state, county, globalMap);
       }
 
       if (selected === "Transportation") {
