@@ -1,4 +1,4 @@
-import { startRenderVisualization } from "../visualization/index.js";
+import { startRenderVisualization,renderAirportOnMap } from "../visualization/index.js";
 import { createDropDown } from "../dropdown/index.js";
 export function createMap(
   containerId,
@@ -43,7 +43,7 @@ export function createMap(
       console.warn("No matching feature found for", selectedItem);
     }
   }
-B
+
   console.log("loading dropdown", handleSearchSelection);
   createDropDown(
     "mainSearchInput",
@@ -98,7 +98,7 @@ B
     console.log("setting visualization target", target);
     visualizationTarget = target;
     zoomInMapToThislayer(target[0]);
-    startRenderVisualization(visualizationTarget);
+    startRenderVisualization(visualizationTarget, map);
   }
 
   function zoomInMapToThislayer(matchedFeature) {

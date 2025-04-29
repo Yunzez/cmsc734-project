@@ -1,5 +1,6 @@
 import { createMap } from "./component/map/index.js";
 import { renderHotelOnMap } from "./component/visualization/index.js";
+import { renderAirportOnMap } from "./component/visualization/index.js";
 
 
 const parentContainer = document.getElementById("container");
@@ -84,6 +85,13 @@ function prepareDropdown(globalMap) {
         console.log(globalMap)
         renderHotelOnMap(state, globalMap);
       }
+
+      if (selected === "Transportation") {
+        console.log("Calling renderAirportOnMap for", state);
+        renderAirportOnMap(state, globalMap);
+      }
+
+
     });
   });
 }

@@ -64,4 +64,20 @@ html, body {
     z-index: 2; 
   }
   
+  .airport-icon {
+    font-size: 18px;
+    color: #0074D9;
+    text-shadow: 0 0 2px #fff;
+    pointer-events: auto;
+  }
+  
+  .leaflet-tooltip.airport-tooltip {
+    background-color: #1e272e;
+    color: white;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  }
   
