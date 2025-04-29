@@ -49,6 +49,7 @@ function renderVisualizationState(visDiv, clickedLayer, state, map) {
 
 function changeTitleName(state, county = null) {
   const titleElement = document.getElementById("visHeaderTitle");
+  titleElement.innerHTML = ""; // Clear old title first
   const infoElement = document.createElement("div");
   // Clear old paragraph info first
   infoElement.innerHTML = "Information for ";

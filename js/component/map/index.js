@@ -1,4 +1,7 @@
-import { startRenderVisualization,renderAirportOnMap } from "../visualization/index.js";
+import {
+  startRenderVisualization,
+  renderAirportOnMap,
+} from "../visualization/index.js";
 import { createDropDown } from "../dropdown/index.js";
 export function createMap(
   containerId,
@@ -101,9 +104,14 @@ export function createMap(
   }
 
   function zoomInMapToThislayer(matchedFeature) {
+    let dynamicCountyLayerGroup = null;
     const tempLayer = L.geoJSON(matchedFeature);
     let attachCounties = false;
-    console.log("matchedFeature", matchedFeature, matchedFeature.properties.coty_name);
+    console.log(
+      "matchedFeature",
+      matchedFeature,
+      matchedFeature.properties.coty_name
+    );
     if (matchedFeature.properties.coty_name === undefined) {
       attachCounties = true;
       console.log("state layer is active");
@@ -150,7 +158,7 @@ export function createMap(
 
       // ✅ Now add these counties to the map
       if (matchingCountyFeatures.length > 0) {
-        const countyLayerGroup = L.geoJSON(matchingCountyFeatures, {
+        dynamicCountyLayerGroup = L.geoJSON(matchingCountyFeatures, {
           style: {
             color: "#4dabf7", // calm blue
             weight: 2,
@@ -163,18 +171,31 @@ export function createMap(
                 e.target.setStyle({
                   weight: 3,
                   color: "#ffd43b", // bright yellow on hover
-                  fillOpacity: 0.4
+                  fillOpacity: 0.4,
                 });
-        
+
                 if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
                   e.target.bringToFront(); // bring hovered county to front
                 }
               },
               mouseout: function (e) {
-                countyLayerGroup.resetStyle(e.target); // Reset back to default style
-              }
+                dynamicCountyLayerGroup.resetStyle(e.target); // Reset back to default style
+              },
+              click: function (e) {
+                console.log("Clicked on county:", feature.properties.coty_name);
+
+                map.removeLayer(dynamicCountyLayerGroup);
+                dynamicCountyLayerGroup = null;
+               
+
+                parentContainerToggle([
+                  feature,
+                  feature.properties.ste_name,
+                  feature.properties.coty_name,
+                ]);
+              },
             });
-          }
+          },
         }).addTo(map);
       }
     }
