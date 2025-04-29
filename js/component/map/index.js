@@ -43,11 +43,7 @@ export function createMap(
       console.warn("No matching feature found for", selectedItem);
     }
   }
-<<<<<<< HEAD
 
-  console.log("loading dropdown", handleSearchSelection);
-=======
->>>>>>> ea9a745a5de59119f4db81d0ec22c201d069f4d7
   createDropDown(
     "mainSearchInput",
     "mainSearchDropdown",
@@ -107,8 +103,8 @@ export function createMap(
   function zoomInMapToThislayer(matchedFeature) {
     const tempLayer = L.geoJSON(matchedFeature);
     let attachCounties = false;
-    // console.log("matchedFeature", matchedFeature, matchedFeature.coty_name);
-    if (activeLayer === stateLayer) {
+    console.log("matchedFeature", matchedFeature, matchedFeature.properties.coty_name);
+    if (matchedFeature.properties.coty_name === undefined) {
       attachCounties = true;
       console.log("state layer is active");
     }
