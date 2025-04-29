@@ -1,6 +1,5 @@
 import { createMap } from "./component/map/index.js";
-import { renderHotelOnMap } from "./component/visualization/index.js";
-
+import { renderHotelOnMap } from "./component/visualization/hotelVis.js";
 
 const parentContainer = document.getElementById("container");
 
@@ -76,13 +75,16 @@ function prepareDropdown(globalMap) {
       const state = stateInfo.includes(",")
         ? stateInfo.split(",")[1].trim()
         : stateInfo;
+      const county = stateInfo.includes(",")
+      ? stateInfo.split(",")[0].trim() 
+      : "";
       console.log(visTitle);
       console.log("User selected:", selected, "in state:", state);
 
       if (selected === "Hotel") {
         console.log("Calling renderHotelOnMap for", state);
-        console.log(globalMap)
-        renderHotelOnMap(state, globalMap);
+        // console.log("global map check: ", globalMap);
+        renderHotelOnMap(state, county, globalMap);
       }
     });
   });

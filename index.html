@@ -154,33 +154,14 @@
             >
               Filter Options
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="filterDropdownButton"
-              id="filterOptionsList"
-            >
-              <li>
-                <a class="dropdown-item" href="#" data-value="Hotel">Hotel</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#" data-value="Transportation"
-                  >Transportation</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#" data-value="Attractions"
-                  >Attractions</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#" data-value="Society"
-                  >Society</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item" href="#" data-value="Safety">Safety</a>
-              </li>
-            </ul>
+            <div id="filterOptionsList" class="btn-group" role="group" aria-label="Filter Options">
+                <button type="button" class="btn btn-outline-primary" data-value="Hotel">Hotel</button>
+                <button type="button" class="btn btn-outline-primary" data-value="Transportation">Transportation</button>
+                <button type="button" class="btn btn-outline-primary" data-value="Attractions">Attractions</button>
+                <button type="button" class="btn btn-outline-primary" data-value="Society">Society</button>
+                <button type="button" class="btn btn-outline-primary" data-value="Safety">Safety</button>
+              </div>
+              
           </div>
         </div>
         <div class="info-section">
@@ -205,7 +186,7 @@
             </p>
           </div>
         </div>
-        <div class="city-search-bar mt-3">
+        <!-- <div class="city-search-bar mt-3">
           <h5>Search for a City</h5>
           <div class="d-flex justify-content-center w-100">
             <div class="searchGroup">
@@ -223,7 +204,7 @@
               />
             </div>
           </div>
-        </div>
+        </div> -->
         <div id="vis-overall">
           <div id="city-radar-chart">
             <div class="d-flex justify-content-center">
@@ -258,6 +239,8 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
     <script>
       function renderRadarChart(data) {
         const ctx = document.getElementById("radarChart").getContext("2d");

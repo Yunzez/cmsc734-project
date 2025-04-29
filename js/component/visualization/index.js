@@ -11,6 +11,8 @@ async function fetchCitiesData(state, county) {
   }
 }
 
+
+
 export async function startRenderVisualization(visualizationTargets) {
   console.log("startRenderVisualization", visualizationTargets);
   const clickedLayer = visualizationTargets[0];
@@ -37,8 +39,8 @@ function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
   console.log(
     `Rendering visualization for state: ${state}, county: ${county || "none"}`
   );
-  const mapDiv = document.getElementById("vis-overall");
-  createHotelVis(mapDiv, state, county);
+//   const mapDiv = document.getElementById("vis-overall");
+//   createHotelVis(mapDiv, state, county);
 }
 
 function renderVisualizationState(visDiv, clickedLayer, state) {
@@ -71,8 +73,6 @@ function createOverallSection(visDiv, clickedFeature, state) {
   // overall.innerHTML = "";
   // overall.style.width = "100%";
   // overall.style.height = "100%";
-
-
 
   const tooltip = d3
     .select("#visualization")
@@ -155,138 +155,3 @@ function createOverallSection(visDiv, clickedFeature, state) {
   });
 }
 
-function addAllHotels(hotelsData, map) {
-  // Remove old layer if exists
-
-  let hotelLayerGroup = L.markerClusterGroup();
-
-  if (!Array.isArray(hotelsData)) {
-    console.error("Hotels data is invalid");
-    return;
-  }
-
-hotelsData.forEach((hotel) => {
-    if (
-        hotel.Latitude == null || 
-        hotel.Longitude == null || 
-        isNaN(Number(hotel.Latitude)) || 
-        isNaN(Number(hotel.Longitude))
-    ) return;
-    const marker = L.marker([hotel.Latitude, hotel.Longitude], {
-      title: hotel.HotelName,
-    });
-
-    const popupContent = `
-        <b>${hotel.HotelName}</b><br/>
-        ${hotel.StarRating ? `⭐ ${hotel.StarRating} stars` : ""}<br/>
-        ${hotel.Address || ""}<br/>
-        <a href="${hotel.HotelWebsiteUrl}" target="_blank">Website</a>
-      `;
-
-    marker.bindPopup(popupContent);
-    hotelLayerGroup.addLayer(marker);
-  });
-  if (map) {
-    console.log("Adding hotel layer to map");
-  }
-  hotelLayerGroup.addTo(map);
-}
-
-export function renderHotelOnMap(stateName, globalMap) {
-  const filename = `data/hotel/state_hotels/${stateName.replaceAll(
-    " ",
-    "_"
-  )}_hotel.csv`;
-
-  d3.csv(filename).then((hotelData) => {
-    if (!hotelData.length) {
-      console.warn(`No hotel data for state ${stateName}`);
-      return;
-    }
-
-    hotelData.forEach((d) => {
-      d.lat = +d.Latitude;
-      d.lon = +d.Longitude;
-      d.StarRating = +d.StarRating || 0;
-    });
-
-    addAllHotels(hotelData, globalMap);
-
-    const map = window._leafletMap;
-    if (!map) return;
-
-    const svg = d3.select(map.getPanes().overlayPane).select("svg");
-    let g = svg.select("g.leaflet-zoom-hide");
-    if (g.empty()) {
-      g = svg.append("g").attr("class", "leaflet-zoom-hide");
-    }
-
-    const tooltip = d3
-      .select("#visualization")
-      .append("div")
-      .attr("class", "city-tooltip")
-      .style("position", "absolute")
-      .style("pointer-events", "none")
-      .style("padding", "6px 10px")
-      .style("background", "#2f3542")
-      .style("color", "#f1f2f6")
-      .style("border-radius", "6px")
-      .style("font-size", "14px")
-      .style("font-weight", "500")
-      .style("opacity", 0);
-
-    const sizeScale = d3.scaleLinear().domain([0, 5]).range([4, 12]);
-
-    const hotelCircles = g
-      .selectAll(".hotel-dot")
-      .data(hotelData)
-      .enter()
-      .append("circle")
-      .attr("class", "hotel-dot")
-      .attr("r", (d) => sizeScale(d.StarRating))
-      .attr("fill", "orange")
-      .attr("opacity", 0.7)
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1)
-      .on("mouseover", (e, d) => {
-        d3.select(e.target).attr("opacity", 1);
-        tooltip
-          .style("left", e.pageX + "px")
-          .style("top", e.pageY - 20 + "px")
-          .style("opacity", 1)
-          .html(
-            `
-      <table>
-        <tr><td><strong>Name:</strong></td><td>${d.HotelName}</td></tr>
-        <tr><td><strong>Location:</strong></td><td>${d.lat.toFixed(
-          4
-        )}, ${d.lon.toFixed(4)}</td></tr>
-        <tr><td><strong>Stars:</strong></td><td>${d.StarRating}</td></tr>
-        ${
-          d.Description
-            ? `<tr><td><strong>Description:</strong></td><td>${d.Description}</td></tr>`
-            : ""
-        }
-      </table>
-    `
-          );
-      })
-      .on("mouseout", (e, d) => {
-        d3.select(e.target).attr("opacity", 0.7);
-        tooltip.style("opacity", 0);
-      })
-      .on("click", (e, d) => {
-        const score = d.StarRating;
-        renderRadarChart([score, score, score, score, score]);
-      });
-
-    function updateHotelPositions() {
-      hotelCircles
-        .attr("cx", (d) => map.latLngToLayerPoint([d.lat, d.lon]).x)
-        .attr("cy", (d) => map.latLngToLayerPoint([d.lat, d.lon]).y);
-    }
-
-    map.on("zoomend", updateHotelPositions);
-    updateHotelPositions(); // 初始绘制
-  });
-}
