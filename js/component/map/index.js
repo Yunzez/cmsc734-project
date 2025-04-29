@@ -1,12 +1,58 @@
-import {startRenderVisualization} from "../visualization/index.js";
+import { startRenderVisualization } from "../visualization/index.js";
+import { createDropDown } from "../dropdown/index.js";
 export function createMap(
   containerId,
   options = {},
   parentContainer,
   visualizationTarget
 ) {
+  function handleSearchSelection(selectedItem) {
+    const { city, county, state } = selectedItem;
+
+    console.log(
+      "Searching for state/county feature for selection:",
+      state,
+      county
+    );
+
+    let matchedFeature = null;
+
+    // Priority: county layer first if available
+    if (countyLayer) {
+      countyLayer.eachLayer((l) => {
+        const props = l.feature?.properties;
+        if (!props) return;
+
+        const matchState =
+          props.ste_name?.join("") || props.ste_name || props.state_name;
+        const matchCounty =
+          props.coty_name?.join("") || props.coty_name || props.county_name;
+
+        if (
+          matchState?.toLowerCase() === state.toLowerCase() &&
+          matchCounty?.toLowerCase().includes(county.toLowerCase())
+        ) {
+          matchedFeature = l.feature;
+        }
+      });
+    }
+
+    if (matchedFeature) {
+      parentContainerToggle([matchedFeature, state, county]);
+    } else {
+      console.warn("No matching feature found for", selectedItem);
+    }
+  }
+B
+  console.log("loading dropdown", handleSearchSelection);
+  createDropDown(
+    "mainSearchInput",
+    "mainSearchDropdown",
+    handleSearchSelection
+  );
+
   const map = L.map(containerId, {
-    maxZoom: 11,
+    maxZoom: 14,
     minZoom: 4,
     maxBounds: [
       [24.396308, -125.0], // Southwest coordinates
@@ -42,6 +88,7 @@ export function createMap(
   let countyLayer = null;
   let stateLayer = null;
   let activeLayer = null; // Track the currently displayed layer
+
   function parentContainerToggle(target) {
     if (!target) return;
     if (!parentContainer.classList.contains("showVis")) {
@@ -50,7 +97,27 @@ export function createMap(
 
     console.log("setting visualization target", target);
     visualizationTarget = target;
+    zoomInMapToThislayer(target[0]);
     startRenderVisualization(visualizationTarget);
+  }
+
+  function zoomInMapToThislayer(matchedFeature) {
+    const tempLayer = L.geoJSON(matchedFeature);
+    // Remove old abstract layer if exists
+    if (activeLayer) {
+      map.removeLayer(activeLayer);
+      activeLayer = null;
+    }
+    activeLayer = L.geoJSON(matchedFeature, {
+      style: {
+        color: "#38a1db", // blue-green border
+        weight: 4,
+        fillOpacity: 0.2,
+      },
+    }).addTo(map);
+    map.fitBounds(tempLayer.getBounds(), {
+      padding: [20, 20],
+    });
   }
   // Function to create a GeoJSON layer
   function loadGeoJSON(url, type) {

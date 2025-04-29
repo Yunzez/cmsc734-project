@@ -1,4 +1,4 @@
-import { createHotelVis } from './hotelVis.js';
+import { createHotelVis } from "./hotelVis.js";
 
 async function fetchCitiesData(state, county) {
   const data = await d3.csv("../../../data/map/cities.csv");
@@ -12,6 +12,7 @@ async function fetchCitiesData(state, county) {
 }
 
 export async function startRenderVisualization(visualizationTargets) {
+  console.log("startRenderVisualization", visualizationTargets);
   const clickedLayer = visualizationTargets[0];
   const state = visualizationTargets[1];
   const county = visualizationTargets[2];
@@ -22,20 +23,17 @@ export async function startRenderVisualization(visualizationTargets) {
   } else {
     renderVisualizationState(visDiv, clickedLayer, state);
   }
-  
+
   document.getElementById("state-view-wrapper").style.display = "flex";
 
-  
   document.getElementById("city-radar-chart").style.display = "block";
 
-  
   renderRadarChart([4.2, 3.8, 4.1, 3.9, 4.5]); // 可以改成动态评分
-
 }
 
 function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
   // Implementation of the renderVisualization logic
-  changeTitleName("Information for " + county + ", " + state);
+  changeTitleName(state, county);
   console.log(
     `Rendering visualization for state: ${state}, county: ${county || "none"}`
   );
@@ -44,28 +42,28 @@ function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
 }
 
 function renderVisualizationState(visDiv, clickedLayer, state) {
-  changeTitleName("Information for " + state);
-
-  // const mapDiv = document.createElement("div");
-  // const mapDiv = document.getElementById("state-map-container");
-  // mapDiv.innerHTML = "";
-  // mapDiv.id = "overall-map";
-  // mapDiv.style.position = "relative";
-  // document.getElementById("vis-overall").appendChild(mapDiv);
-  const mapDiv = document.getElementById("state-map-container");
-  if (!mapDiv) {
-    console.error("state-map-container not found!");
-    return;
-  }
-  mapDiv.innerHTML = "";
-  mapDiv.style.position = "relative";
-  mapDiv.style.height = "600px";
+  changeTitleName(state);
 
   createOverallSection(visDiv, clickedLayer, state);
 }
+function changeTitleName(state, county = null) {
+  const titleElement = document.getElementById("visHeaderTitle");
+  const infoElement = document.createElement("div");
+  // Clear old paragraph info first
+  infoElement.innerHTML = "Information for ";
 
-function changeTitleName(name) {
-  document.getElementById("visHeaderTitle").innerText = name;
+  if (county) {
+    const infoCountyElement = document.createElement("span");
+    infoCountyElement.innerText = county + ", ";
+    infoCountyElement.id = "info-county";
+    infoElement.appendChild(infoCountyElement);
+  }
+
+  const infoStateElement = document.createElement("span");
+  infoStateElement.innerText = state;
+  infoStateElement.id = "info-state";
+  infoElement.appendChild(infoStateElement);
+  titleElement.appendChild(infoElement);
 }
 
 function createOverallSection(visDiv, clickedFeature, state) {
@@ -73,18 +71,6 @@ function createOverallSection(visDiv, clickedFeature, state) {
   // overall.innerHTML = "";
   // overall.style.width = "100%";
   // overall.style.height = "100%";
-  // // const mapDiv = document.getElementById("state-map-container");
-
-  const mapDiv = document.getElementById("state-map-container");
-
-  if (!mapDiv) {
-    console.error("state-map-container not found in DOM.");
-    return;
-  }
-
-  mapDiv.innerHTML = "";
-  mapDiv.style.position = "relative";
-  mapDiv.style.height = "600px";
 
 
 
@@ -102,52 +88,6 @@ function createOverallSection(visDiv, clickedFeature, state) {
     .style("font-weight", "500")
     .style("opacity", 0)
     .style("z-index", 1000);
-  // Initialize Leaflet map
-  const map = L.map(mapDiv, {
-    maxZoom: 14,
-    minZoom: 6,
-    zoom: 8, // Set default zoom level to 7
-  });
-  window._leafletMap = map;
-  L.svg().addTo(map);  
-
-  const svg = d3.select(map.getPanes().overlayPane).select("svg");
-  let g = svg.select("g.leaflet-zoom-hide");
-  if (g.empty()) {
-    g = svg.append("g").attr("class", "leaflet-zoom-hide");
-  }
-
-
-
-  // Add base tile layer
-  L.tileLayer(
-    "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}.png"
-  ).addTo(map);
-
-  // Create Leaflet GeoJSON layer from clicked feature
-  const geoJsonLayer = L.geoJSON(
-    {
-      type: "FeatureCollection",
-      features: [clickedFeature],
-    },
-    {
-      style: {
-        color: "#FFA500", // Subtle orange color for the border
-        weight: 1.5, // Slightly thinner border
-        fillColor: "#FFDAB9", // Peach puff color for a softer fill
-        fillOpacity: 0.5, // More transparent fill for subtlety
-      },
-    }
-  ).addTo(map);
-
-  map.fitBounds(geoJsonLayer.getBounds());
-
-  // created map
-
-  // Add built-in SVG layer to Leaflet map
-  // L.svg().addTo(map);
-  // const svg = d3.select("#overall-map").select("svg");
-  // const g = svg.select("g").attr("class", "leaflet-zoom-hide");
 
   fetchCitiesData(state).then((data) => {
     data.forEach((d) => {
@@ -191,8 +131,10 @@ function createOverallSection(visDiv, clickedFeature, state) {
           .style("top", `${e.pageY - 30}px`)
           .style("opacity", 1)
           .html(
-            `<strong>${d.city
-            }</strong><br>Pop: ${d.population.toLocaleString()}<br>Density: ${d.density
+            `<strong>${
+              d.city
+            }</strong><br>Pop: ${d.population.toLocaleString()}<br>Density: ${
+              d.density
             }`
           );
       })
@@ -213,22 +155,62 @@ function createOverallSection(visDiv, clickedFeature, state) {
   });
 }
 
+function addAllHotels(hotelsData, map) {
+  // Remove old layer if exists
 
+  let hotelLayerGroup = L.markerClusterGroup();
 
-export function renderHotelOnMap(stateName) {
-  const filename = `data/hotel/state_hotels/${stateName.replaceAll(" ", "_")}_hotel.csv`;
+  if (!Array.isArray(hotelsData)) {
+    console.error("Hotels data is invalid");
+    return;
+  }
 
-  d3.csv(filename).then(hotelData => {
+hotelsData.forEach((hotel) => {
+    if (
+        hotel.Latitude == null || 
+        hotel.Longitude == null || 
+        isNaN(Number(hotel.Latitude)) || 
+        isNaN(Number(hotel.Longitude))
+    ) return;
+    const marker = L.marker([hotel.Latitude, hotel.Longitude], {
+      title: hotel.HotelName,
+    });
+
+    const popupContent = `
+        <b>${hotel.HotelName}</b><br/>
+        ${hotel.StarRating ? `⭐ ${hotel.StarRating} stars` : ""}<br/>
+        ${hotel.Address || ""}<br/>
+        <a href="${hotel.HotelWebsiteUrl}" target="_blank">Website</a>
+      `;
+
+    marker.bindPopup(popupContent);
+    hotelLayerGroup.addLayer(marker);
+  });
+  if (map) {
+    console.log("Adding hotel layer to map");
+  }
+  hotelLayerGroup.addTo(map);
+}
+
+export function renderHotelOnMap(stateName, globalMap) {
+  const filename = `data/hotel/state_hotels/${stateName.replaceAll(
+    " ",
+    "_"
+  )}_hotel.csv`;
+
+  d3.csv(filename).then((hotelData) => {
     if (!hotelData.length) {
       console.warn(`No hotel data for state ${stateName}`);
       return;
     }
 
-    hotelData.forEach(d => {
+    hotelData.forEach((d) => {
       d.lat = +d.Latitude;
       d.lon = +d.Longitude;
       d.StarRating = +d.StarRating || 0;
     });
+
+    addAllHotels(hotelData, globalMap);
 
     const map = window._leafletMap;
     if (!map) return;
@@ -255,12 +237,13 @@ export function renderHotelOnMap(stateName) {
 
     const sizeScale = d3.scaleLinear().domain([0, 5]).range([4, 12]);
 
-    const hotelCircles = g.selectAll(".hotel-dot")
+    const hotelCircles = g
+      .selectAll(".hotel-dot")
       .data(hotelData)
       .enter()
       .append("circle")
       .attr("class", "hotel-dot")
-      .attr("r", d => sizeScale(d.StarRating))
+      .attr("r", (d) => sizeScale(d.StarRating))
       .attr("fill", "orange")
       .attr("opacity", 0.7)
       .attr("stroke", "#fff")
@@ -275,9 +258,15 @@ export function renderHotelOnMap(stateName) {
             `
       <table>
         <tr><td><strong>Name:</strong></td><td>${d.HotelName}</td></tr>
-        <tr><td><strong>Location:</strong></td><td>${d.lat.toFixed(4)}, ${d.lon.toFixed(4)}</td></tr>
+        <tr><td><strong>Location:</strong></td><td>${d.lat.toFixed(
+          4
+        )}, ${d.lon.toFixed(4)}</td></tr>
         <tr><td><strong>Stars:</strong></td><td>${d.StarRating}</td></tr>
-        ${d.Description ? `<tr><td><strong>Description:</strong></td><td>${d.Description}</td></tr>` : ""}
+        ${
+          d.Description
+            ? `<tr><td><strong>Description:</strong></td><td>${d.Description}</td></tr>`
+            : ""
+        }
       </table>
     `
           );
@@ -293,11 +282,11 @@ export function renderHotelOnMap(stateName) {
 
     function updateHotelPositions() {
       hotelCircles
-        .attr("cx", d => map.latLngToLayerPoint([d.lat, d.lon]).x)
-        .attr("cy", d => map.latLngToLayerPoint([d.lat, d.lon]).y);
+        .attr("cx", (d) => map.latLngToLayerPoint([d.lat, d.lon]).x)
+        .attr("cy", (d) => map.latLngToLayerPoint([d.lat, d.lon]).y);
     }
 
     map.on("zoomend", updateHotelPositions);
-    updateHotelPositions();  // 初始绘制
+    updateHotelPositions(); // 初始绘制
   });
 }

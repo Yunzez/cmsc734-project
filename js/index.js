@@ -1,10 +1,7 @@
 import { createMap } from "./component/map/index.js";
-import { renderHotelOnMap } from './component/visualization/index.js';
+import { renderHotelOnMap } from "./component/visualization/index.js";
 
 
-const map = document.getElementById("map");
-const intro = document.getElementById("intro");
-const visual = document.getElementById("visualisation");
 const parentContainer = document.getElementById("container");
 
 // we add a search component here
@@ -12,12 +9,13 @@ const introSearch = document.getElementById("intro-search");
 
 // this stores states and county
 let visualizationTarget = [];
+var globalMap = null;
 window.onload = function () {
   console.log("window loaded");
   console.log(parentContainer);
   const visDiv = document.getElementById("visualization");
   prepareVisDiv(visDiv);
-  createMap(
+  globalMap = createMap(
     "map",
     { center: [40.7128, -94.006], zoom: 4 },
     parentContainer,
@@ -27,13 +25,11 @@ window.onload = function () {
   visBack.onclick = function () {
     parentContainer.classList.remove("showVis");
   };
+
+  prepareDropdown(globalMap);
 };
 
 function prepareVisDiv(visDiv) {
-  const overallDiv = document.createElement("div");
-  overallDiv.id = "vis-overall";
-  visDiv.appendChild(overallDiv);
-
   const airportDiv = document.createElement("div");
   airportDiv.id = "vis-airport";
   visDiv.appendChild(airportDiv);
@@ -59,12 +55,13 @@ function prepareVisDiv(visDiv) {
 //     }
 
 // }
-
-document.addEventListener("DOMContentLoaded", function () {
-  const dropdownItems = document.querySelectorAll("#filterOptionsList .dropdown-item");
+function prepareDropdown(globalMap) {
+  const dropdownItems = document.querySelectorAll(
+    "#filterOptionsList .dropdown-item"
+  );
   const dropdownButton = document.getElementById("filterDropdownButton");
 
-  dropdownItems.forEach(item => {
+  dropdownItems.forEach((item) => {
     item.addEventListener("click", function (e) {
       const selected = this.getAttribute("data-value");
       if (selected && dropdownButton) {
@@ -73,15 +70,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const visTitle = document.getElementById("visHeaderTitle");
       if (!visTitle) return;
-      const state = visTitle.innerText.replace("Information for ", "").trim();
-
+      const stateInfo = visTitle.innerText
+        .replace("Information for ", "")
+        .trim();
+      const state = stateInfo.includes(",")
+        ? stateInfo.split(",")[1].trim()
+        : stateInfo;
+      console.log(visTitle);
       console.log("User selected:", selected, "in state:", state);
 
       if (selected === "Hotel") {
         console.log("Calling renderHotelOnMap for", state);
-      
-        renderHotelOnMap(state);
+        console.log(globalMap)
+        renderHotelOnMap(state, globalMap);
       }
     });
   });
-});
+}
