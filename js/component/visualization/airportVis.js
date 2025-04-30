@@ -33,11 +33,20 @@ export function renderAirportOnMap(stateName, globalMap) {
         filtered.forEach(f => {
           const [lng, lat] = f.geometry.coordinates;
           const props = f.properties;
+
+          if (
+            (props.fac_type || "").toUpperCase() !== "AIRPORT" ||
+            !props.icao_ident || 
+            props.icao_ident.trim().toUpperCase() === "N/A"
+          ) {
+            return;
+          }       
   
           const marker = L.marker([lat, lng], { icon: airplaneIcon });
   
           const tooltipContent = `
             <strong>${props.fac_name || props.name}</strong><br/>
+            ICAO: ${props.icao_ident || "N/A"}<br/>
             Type: ${props.fac_type || "N/A"}<br/>
             State: ${props.state_name || "N/A"}<br/>
             Location: ${lat.toFixed(4)}, ${lng.toFixed(4)}
