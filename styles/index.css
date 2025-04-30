@@ -1,87 +1,93 @@
 :root {
-    --intro-width: 50vw;
+  --intro-width: 50vw;
 }
 
-.body{
-    font-family: Arial, sans-serif;
+.body {
+  font-family: Arial, sans-serif;
 }
 
-html, body {
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    width: 100vw;
+html,
+body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
 }
 
 #container {
-    display: flex;
-    width: 150vw; /* Adjusted to accommodate the off-screen visualization */
-    height: 100vh;
-    overflow: hidden;
-    transform: translateX(0); /* Initially no translation */
-    transition: transform 0.6s; /* Smooth transition */
+  display: flex;
+  width: 150vw; /* Adjusted to accommodate the off-screen visualization */
+  height: 100vh;
+  overflow: hidden;
+  transform: translateX(0); /* Initially no translation */
+  transition: transform 0.6s; /* Smooth transition */
 }
 
 #container.showVis {
-    transform: translateX(calc(-1 * var(--intro-width))); /* Move the container to the left by 50vw */
-    transition: transform 0.6s ease-in-out; /* Smooth and bouncy transition */
+  transform: translateX(
+    calc(-1 * var(--intro-width))
+  ); /* Move the container to the left by 50vw */
+  transition: transform 0.6s ease-in-out; /* Smooth and bouncy transition */
 }
 
 #intro {
-    flex: 1;
-    background-color: #f0f0f0;
-    padding: 20px;
-    height: 100vh;
-    width: 50vw;
-    
+  flex: 1;
+  background-color: #f0f0f0;
+  padding: 20px;
+  height: 100vh;
+  width: 50vw;
 }
 
 #map {
-    background-color: #e0e0e0;
-    width: 50vw;
-    /* min-height: 500px;    min-height: 500px;     */
+  background-color: #e0e0e0;
+  width: 50vw;
+  /* min-height: 500px;    min-height: 500px;     */
 }
 #visualization {
-    width: 50vw;
-    background-color: #f0f0f0;
-    padding: 1vh;
+  width: 50vw;
+  background-color: #f0f0f0;
+  padding: 1vh;
 }
 
 #vis-overall {
-    width: 100%;
-    max-height: 85vh;
-    height: auto;
-    overflow-y: scroll;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, 
-                rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  width: 100%;
+  max-height: 89vh;
+  height: auto;
+  overflow-y: scroll;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
+#hotel-vis {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
 
-  svg {
-    pointer-events: none;
-  }
+svg {
+  pointer-events: none;
+}
 
-  
-  #city-radar-chart {
-    position: relative;
-    z-index: 2; 
-  }
-  
-  .airport-icon {
-    font-size: 18px;
-    color: #0074D9;
-    text-shadow: 0 0 2px #fff;
-    pointer-events: auto;
-  }
-  
-  .leaflet-tooltip.airport-tooltip {
-    background-color: #1e272e;
-    color: white;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 13px;
-    font-weight: 500;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
-  }
-  
+#city-radar-chart {
+  position: relative;
+  z-index: 2;
+}
+
+.airport-icon {
+  font-size: 18px;
+  color: #0074d9;
+  text-shadow: 0 0 2px #fff;
+  pointer-events: auto;
+}
+
+.leaflet-tooltip.airport-tooltip {
+  background-color: #1e272e;
+  color: white;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}

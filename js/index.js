@@ -83,7 +83,7 @@ function prepareDropdown(globalMap) {
         if (this.classList.contains("active")) {
           this.classList.remove("active");
           removeHotelOnMap(globalMap);
-          document.getElementById("hotel-vis").innerHTML = "";
+          document.getElementById("hotel-vis").remove();
 
         } else {
           this.classList.add("active");

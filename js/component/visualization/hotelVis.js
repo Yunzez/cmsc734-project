@@ -1,8 +1,10 @@
 let opennedNode = null;
 let selectedRating = null;
+let selectedHotels = null;
 let localStateName = null; // this is for to reset view from bubbles
 let localCountyName = null; // this is for to reset view from bubbles
 let initialized = false;
+
 const FACILITY_CATEGORIES = {
   "Free WiFi": /wifi/i,
   Breakfast: /breakfast/i,
@@ -30,10 +32,17 @@ export function createHotelVis(
   const tabs = document.createElement("div");
   tabs.className = "tabs";
   filterContainer.appendChild(tabs);
-  const features = ["All", "Free WiFi", "Breakfast", "Accessible", "Parking"];
+  const features = [
+    "All Hotel",
+    "Free WiFi",
+    "Breakfast",
+    "Accessible",
+    "Parking",
+    "All Feature",
+  ];
   features.forEach((feature) => {
     const checkbox = document.createElement("input");
-    if (feature === "All") {
+    if (feature === "All Hotel") {
       checkbox.checked = true;
     }
     checkbox.type = "radio";
@@ -83,7 +92,7 @@ export function createHotelVis(
   loadData.then((data) => {
     const rawData = data.filter((d) => d.StarRating >= 1 && d.StarRating <= 5);
     const width = parentContainer.offsetWidth;
-    const height = 600;
+    const height = 700;
 
     const svg = d3
       .select(container)
@@ -91,7 +100,8 @@ export function createHotelVis(
       .attr("viewBox", [0, 0, width, height])
       .attr("class", "hotel-vis-svg")
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .attr("style", "padding-bottom: 10px;");
 
     const pack = d3.pack().size([width, height]).padding(10);
     function renderBubbles(filteredData) {
@@ -170,15 +180,30 @@ export function createHotelVis(
         .style("pointer-events", "all")
         .on("click", (e, d) => {
           e.preventDefault();
-          opennedNode = d3.select(e.currentTarget);
+          selectedHotels = starGroups;
           showHotels(svg, starGroups, d.data.rating, globalMap);
+          opennedNode = d3.select(e.currentTarget);
+          opennedNode.on("click", null);
+          opennedNode.style("pointer-events", "none");
         });
 
       nodes.exit().remove();
     }
 
     function filterByFeature(feature) {
-      if (feature === "All") return renderBubbles(rawData);
+      if (feature === "All Hotel") {
+        renderBubbles(rawData);
+      }
+      if (feature === "All Feature") {
+        const filtered = rawData.filter((d) => {
+          const text = d.HotelFacilities || "";
+          return Object.values(FACILITY_CATEGORIES).every((regex) =>
+            regex.test(text)
+          );
+        });
+
+        return renderBubbles(filtered);
+      }
 
       const regex = FACILITY_CATEGORIES[feature];
       const filtered = rawData.filter((d) =>
@@ -186,6 +211,7 @@ export function createHotelVis(
       );
       renderBubbles(filtered);
     }
+
     // attach functionality to labels
     const labels = Array.from(tabs.querySelectorAll("label.tab"));
 
@@ -237,13 +263,15 @@ function createBackBtn(svg, width, height, starGroups, globalMap) {
     opennedNode.on("click", (e, d) => {
       e.preventDefault();
       opennedNode.on("click", null);
-      showHotels(svg, starGroups, d.data.rating, globalMap);
+      showHotels(svg, selectedHotels, d.data.rating, globalMap);
     });
     resetView(svg, starGroups, globalMap);
   });
 }
 
 function resetView(svg, starGroups, globalMap) {
+  console.log("reset opennednode", opennedNode);
+  opennedNode.style("pointer-events", "all");
   svg.selectAll(".hotel-count-label").style("display", "block");
   const trivialElements = document.getElementsByClassName("trival");
   if (trivialElements.length > 0) {
@@ -266,25 +294,31 @@ function resetView(svg, starGroups, globalMap) {
       .attr("transform", `translate(${d.x}, ${d.y}) scale(1)`);
 
     g.select("circle").transition().duration(600).attr("opacity", 0.8);
-    g.on("click", (e, d) =>
-      showHotels(svg, starGroups, d.data.rating, globalMap)
-    );
+    g.on("click", (e, d) => {
+      g.on("click", null);
+      e.preventDefault();
+      showHotels(svg, selectedHotels, d.data.rating, globalMap);
+    });
   });
 
   svg.selectAll("g.hotel-pack").remove();
-  // svg.selectAll("g.back-button").remove();
   svg.selectAll("g.back-button").style("display", "none");
 }
 
 function showHotels(svg, starGroups, focusedRating, globalMap) {
-  console.log("Clicked on", focusedRating);
-  opennedNode.on("click", null); // remove the click event so it doesn't replay
+  // console.log("openned node", opennedNode)
+  // if (opennedNode != null) {
+  //   return;
+  // }
+
+  console.log("Show hotel, Clicked on", focusedRating, starGroups);
 
   selectedRating = focusedRating;
+  selectedHotels = starGroups;
   svg.selectAll("g.back-button").style("display", "block");
   const width = +svg.attr("width");
   const height = +svg.attr("height");
-
+  console.log("current stargroups", starGroups);
   const focus = starGroups.find((d) => d.rating === focusedRating);
   if (!focus) return;
 
@@ -309,17 +343,31 @@ function showHotels(svg, starGroups, focusedRating, globalMap) {
         x: 0,
         y: 0,
       }));
+      const targetVisualRadius = 300;
+      const scaleFactor = targetVisualRadius / R;
 
-      if (focus.hotels.length > maxShown) {
-        g.append("text")
-          .attr("class", "trival")
-          .attr("x", 0)
-          .attr("y", R + 12)
-          .attr("text-anchor", "middle")
-          .style("font-size", "12px")
-          .style("fill", "#999")
-          .text(`+ ${focus.hotels.length - maxShown} more hotels not shown`);
-      }
+      g.raise()
+        .transition()
+        .duration(600)
+        .attr(
+          "transform",
+          `translate(${width / 2}, ${height / 2}) scale(${scaleFactor})`
+        );
+
+      g.append("text")
+        .attr("class", "trival")
+        .attr("x", 0)
+        .attr("y", targetVisualRadius + 12) // use targetVisualRadius instead of R
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
+        .style("fill", "#999")
+        .text(
+          `${focus.hotels.length} total hotels ${
+            focus.hotels.length > maxShown
+              ? `(${focus.hotels.length - maxShown} more hotels not shown)`
+              : ""
+          }`
+        );
 
       if (!document.getElementById("hotel-tooltip")) {
         const tooltip = document.createElement("div");
@@ -346,27 +394,35 @@ function showHotels(svg, starGroups, focusedRating, globalMap) {
         .data(hotels)
         .enter()
         .append("circle")
-        .attr("r", (d) => d.r)
+        .attr("r", 3.5)
         .attr("fill", "#339af0")
-        .attr("opacity", 0.8)
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 0.8)
         .attr("pointer-events", "all")
         .style("cursor", "pointer")
         .on("mouseover", function (e, d) {
-          console.log("Hovered over", d);
+          this.parentNode.appendChild(this); // bring circle to front
+
           d3.select(this)
             .transition()
             .duration(150)
-            .attr("r", d.r * 1.4);
+            .attr("r", d.r * 2)
+            .attr("stroke", "#ffcc00")
+            .attr("stroke-width", 1.5);
 
-          const tooltip = d3.select("#hotel-tooltip");
-          tooltip
+          d3.select("#hotel-tooltip")
             .style("opacity", 1)
             .style("left", `${e.pageX + 10}px`)
             .style("top", `${e.pageY}px`)
             .html(`<strong>${d.HotelName}</strong><br/>⭐ ${d.StarRating}`);
         })
         .on("mouseout", function (e, d) {
-          d3.select(this).transition().duration(150).attr("r", d.r);
+          d3.select(this)
+            .transition()
+            .duration(150)
+            .attr("r", 3.5)
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 0.8);
           d3.select("#hotel-tooltip").style("opacity", 0);
         });
 
@@ -375,9 +431,9 @@ function showHotels(svg, starGroups, focusedRating, globalMap) {
         .alpha(1) // initial energy
         .alphaDecay(0.08) // faster decay (default is 0.0228)
         .force("center", d3.forceCenter(0, 0))
-        .force("collide", d3.forceCollide(fixedRadius + 1))
-        .force("x", d3.forceX(0).strength(0.05))
-        .force("y", d3.forceY(0).strength(0.05))
+        .force("collide", d3.forceCollide(fixedRadius + 2.5))
+        .force("x", d3.forceX(0).strength(0.1))
+        .force("y", d3.forceY(0).strength(0.1))
         .on("tick", () => {
           for (const d of hotels) {
             const dist = Math.sqrt(d.x * d.x + d.y * d.y);
@@ -440,9 +496,6 @@ function addAllHotels(hotelsData, map) {
     marker.bindPopup(popupContent);
     hotelLayerGroup.addLayer(marker);
   });
-  if (map) {
-    console.log("Adding hotel layer to map");
-  }
   hotelLayerGroup.addTo(map);
 }
 
@@ -460,7 +513,6 @@ export function renderHotelOnMap(stateName, countyName, globalMap) {
   )}_hotel.csv`;
 
   let countyLayer = null;
-  console.log("globalMap check", globalMap);
   globalMap.eachLayer((layer) => {
     if (
       layer.feature &&
