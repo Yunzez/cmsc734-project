@@ -1,7 +1,8 @@
 import {
-  startRenderVisualization,
-  renderAirportOnMap,
+  startRenderVisualization
 } from "../visualization/index.js";
+import { renderAirportOnMap } from "../visualization/airportVis.js";
+
 import { createDropDown } from "../dropdown/index.js";
 export function createMap(
   containerId,

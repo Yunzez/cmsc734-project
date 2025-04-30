@@ -1,6 +1,7 @@
 import { createMap } from "./component/map/index.js";
 import { removeHotelOnMap, renderHotelOnMap } from "./component/visualization/hotelVis.js";
-import { renderAirportOnMap } from "./component/visualization/index.js";
+// import { renderAirportOnMap } from "./component/visualization/index.js";
+import { renderAirportOnMap } from "./component/visualization/airportVis.js";
 
 import { createSafetyVis } from "./component/visualization/safetyVis.js";
 
