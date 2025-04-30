@@ -6,11 +6,15 @@ export function renderAirportOnMap(stateName, globalMap) {
     fetch(geojsonPath)
       .then(res => res.json())
       .then(data => {
+        let test = data.features.filter(f => f.properties.state_name?.includes("COLUMBIA")&&f.properties.fac_type == "AIRPORT")
+        console.log(test)
+        if (stateName == "District of Columbia") stateName = "DIST. OF COLUMBIA".toUpperCase()
+          console.log("update statename", stateName)
         const filtered = data.features.filter(f =>
           f.properties.state_name?.toLowerCase() === stateName.toLowerCase()
         );
         console.log(`✈️ ${filtered.length} airports found in ${stateName}`);
-  
+       
         if (!filtered.length) {
           console.warn(`No airport data found for ${stateName}`);
           return;
@@ -41,7 +45,7 @@ export function renderAirportOnMap(stateName, globalMap) {
           ) {
             return;
           }       
-  
+
           const marker = L.marker([lat, lng], { icon: airplaneIcon });
   
           const tooltipContent = `
