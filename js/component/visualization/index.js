@@ -28,9 +28,9 @@ export async function startRenderVisualization(visualizationTargets, map) {
     renderVisualizationState(visDiv, clickedLayer, state, map);
   }
 
-  document.getElementById("city-radar-chart").style.display = "block";
+//   document.getElementById("city-radar-chart").style.display = "block";
 
-  renderRadarChart([4.2, 3.8, 4.1, 3.9, 4.5]); // 可以改成动态评分
+//   renderRadarChart([4.2, 3.8, 4.1, 3.9, 4.5]); // 可以改成动态评分
 }
 
 function renderVisualizationCounty(visDiv, clickedLayer, state, county) {

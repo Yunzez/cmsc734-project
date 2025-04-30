@@ -21,51 +21,5 @@
   <div class="chart-container">
     <canvas id="radarChart"></canvas>
   </div>
-
-  <script>
-    const data = {
-      labels: [
-        'Attractions',
-        'Society',
-        'Transportation',
-        'Hotel',
-        'Safety'
-      ],
-      datasets: [{
-        label: 'City A',
-        data: [4.2, 3.5, 4.0, 3.8, 4.4],
-        fill: true,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgb(54, 162, 235)',
-        pointBackgroundColor: 'rgb(54, 162, 235)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgb(54, 162, 235)'
-      }]
-    };
-
-    const config = {
-      type: 'radar',
-      data: data,
-      options: {
-        elements: {
-          line: {
-            borderWidth: 3
-          }
-        },
-        scales: {
-          r: {
-            suggestedMin: 0,
-            suggestedMax: 5
-          }
-        }
-      }
-    };
-
-    new Chart(
-      document.getElementById('radarChart'),
-      config
-    );
-  </script>
 </body>
 </html>

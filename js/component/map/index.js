@@ -167,8 +167,6 @@ export function createMap(
           },
           onEachFeature: function (feature, layer) {
             let label = (layer.feature.properties.coty_name_long || []).join(", ");
-
-            console.log("counties label: ", label)
             layer.bindTooltip(label, {
               sticky: true,
               direction: "top",
