@@ -191,6 +191,9 @@ export function createHotelVis(
 
     labels.forEach((label, i) => {
       label.addEventListener("click", () => {
+        if (opennedNode != null) {
+          resetView(svg, opennedNode, globalMap);
+        }
         glider.style.transform = `translateX(${i * 100}%)`;
         const selected = label.getAttribute("data-feature");
         filterByFeature(selected);
@@ -210,7 +213,8 @@ function createBackBtn(svg, width, height, starGroups, globalMap) {
     .attr("class", "back-button")
     .attr("transform", `translate(${width - 100}, ${height - 30})`)
     .style("cursor", "pointer")
-    .style("pointer-events", "visible");
+    .style("pointer-events", "visible")
+    .style("margin", "10px");
 
   backButton
     .append("rect")
@@ -274,6 +278,8 @@ function resetView(svg, starGroups, globalMap) {
 
 function showHotels(svg, starGroups, focusedRating, globalMap) {
   console.log("Clicked on", focusedRating);
+  opennedNode.on("click", null); // remove the click event so it doesn't replay
+
   selectedRating = focusedRating;
   svg.selectAll("g.back-button").style("display", "block");
   const width = +svg.attr("width");
@@ -306,7 +312,7 @@ function showHotels(svg, starGroups, focusedRating, globalMap) {
 
       if (focus.hotels.length > maxShown) {
         g.append("text")
-        .attr("class", "trival")
+          .attr("class", "trival")
           .attr("x", 0)
           .attr("y", R + 12)
           .attr("text-anchor", "middle")
@@ -343,6 +349,8 @@ function showHotels(svg, starGroups, focusedRating, globalMap) {
         .attr("r", (d) => d.r)
         .attr("fill", "#339af0")
         .attr("opacity", 0.8)
+        .attr("pointer-events", "all")
+        .style("cursor", "pointer")
         .on("mouseover", function (e, d) {
           console.log("Hovered over", d);
           d3.select(this)
