@@ -59,7 +59,7 @@ function prepareDropdown(globalMap) {
   //   const dropdownButton = document.getElementById("filterDropdownButton");
   console.log("dropdownItems", dropdownItems);
   dropdownItems.forEach((item) => {
-    item.addEventListener("click", function (e) {
+    item.addEventListener("change", function (e) {
       const selected = this.getAttribute("data-value");
       //   if (selected && dropdownButton) {
       //     dropdownButton.innerText = selected;
@@ -98,9 +98,18 @@ function prepareDropdown(globalMap) {
         createSafetyVis(mapDiv, state, county, globalMap);
       }
       if (selected === "Transportation") {
-        console.log("Calling renderAirportOnMap for", state);
-        renderAirportOnMap(state, globalMap);
+        if (this.checked) {
+          console.log("✅ Showing airports for", state);
+          renderAirportOnMap(state, globalMap);
+        } else {
+          console.log("❌ Hiding airports");
+          if (window._airportLayer) {
+            globalMap.removeLayer(window._airportLayer);
+            window._airportLayer = null;
+          }
+        }
       }
+      
     });
   });
 }
