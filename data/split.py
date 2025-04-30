@@ -9,7 +9,7 @@ def split(data, path):
 
 if __name__ == '__main__':
     for _ in {
-        '../aux_data/min_hotel.csv': 'hotel',
+        # '../aux_data/min_hotel.csv': 'hotel',
         '../aux_data/park/raw_park_a00b.geojson': 'park',
         '../aux_data/history/raw_history_a013.geojson': 'history'
     }.items():

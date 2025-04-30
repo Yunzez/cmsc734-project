@@ -7,7 +7,7 @@ def merge(data):
 
 if __name__ == '__main__':
     for _ in [
-        [f'hotel/min_hotel.csv.frag{_}' for _ in range(4)],
+        # [f'hotel/min_hotel.csv.frag{_}' for _ in range(4)],
         [f'park/raw_park_a00b.geojson.frag{_}' for _ in range(2)],
         [f'history/raw_history_a013.geojson.frag{_}' for _ in range(2)]
     ]:
