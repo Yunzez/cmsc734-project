@@ -3,6 +3,7 @@ import { removeHotelOnMap, renderHotelOnMap } from "./component/visualization/ho
 // import { renderAirportOnMap } from "./component/visualization/index.js";
 import { renderAirportOnMap } from "./component/visualization/airportVis.js";
 import { renderSafetyHeatmap, removeSafetyHeatmap } from "./component/visualization/safetyHeatmap.js";
+import { renderSocietyHeatmap, removeSocietyHeatmap } from "./component/visualization/societyHeatmap.js";
 import { createSafetyVis } from "./component/visualization/safetyVis.js";
 
 const parentContainer = document.getElementById("container");
@@ -90,8 +91,20 @@ function prepareDropdown(globalMap) {
         }
         console.log("Calling renderHotelOnMap for", state);
         // console.log("global map check: ", globalMap);
-       
+
       }
+
+      if (selected === "Society") {
+        if (this.classList.contains("active")) {
+          this.classList.remove("active");
+          removeSocietyHeatmap(globalMap);
+        } else {
+          this.classList.add("active");
+          renderSocietyHeatmap(globalMap, state);
+        }
+      }
+      
+
 
       if (selected === "Safety") {
         const mapDiv = document.getElementById("vis-overall");
@@ -116,7 +129,7 @@ function prepareDropdown(globalMap) {
           }
         }
       }
-      
+
     });
   });
 }
