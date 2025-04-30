@@ -19,12 +19,12 @@ export async function startRenderVisualization(visualizationTargets, map) {
   const visDiv = document.getElementById("visualization");
 
   if (county && visualizationTargets.length > 1) {
+    console.log("rendering county")
     renderVisualizationCounty(visDiv, clickedLayer, state, county);
   } else {
+    console.log("rendering state")
     renderVisualizationState(visDiv, clickedLayer, state, map);
   }
-
-  document.getElementById("state-view-wrapper").style.display = "flex";
 
   document.getElementById("city-radar-chart").style.display = "block";
 
@@ -41,10 +41,8 @@ function renderVisualizationCounty(visDiv, clickedLayer, state, county) {
 
 function renderVisualizationState(visDiv, clickedLayer, state, map) {
   changeTitleName(state);
-
-  // createOverallSection(visDiv, clickedLayer, state);
-
   createOverallSection(visDiv, clickedLayer, state, map);
+  console.log("after createOverallSection")
 }
 
 function changeTitleName(state, county = null) {
@@ -74,10 +72,9 @@ function createOverallSection(visDiv, clickedFeature, state, map) {
   // overall.style.width = "100%";
   // overall.style.height = "100%";
   if (!map || typeof map.getPanes !== "function") {
-    console.error("❌ Leaflet map is not available (from argument).");
+    console.log("❌ Leaflet map is not available (from argument).");
     return;
   }
-
 
   const svg = d3.select(map.getPanes().overlayPane).select("svg");
   let g = svg.select("g.leaflet-zoom-hide");
@@ -85,7 +82,7 @@ function createOverallSection(visDiv, clickedFeature, state, map) {
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
   }
 
-
+  console.log("check 1")
   fetchCitiesData(state).then((data) => {
     data.forEach((d) => {
       if (d.population === "N/A" || d.density === "N/A" || d.population == 0) {

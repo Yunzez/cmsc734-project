@@ -7,7 +7,7 @@ export function createHotelVis(
 ) {
 //   parentContainer.innerHTML = "";
   const container = document.createElement("div");
-  container.id = "hotel-vis-subdiv";
+  container.id = "hotel-vis";
   parentContainer.appendChild(container);
 
   //   const container = parentContainer;
@@ -272,11 +272,9 @@ function showHotels(svg, starGroups, focusedRating) {
   });
 }
 
+let hotelLayerGroup = null;
 function addAllHotels(hotelsData, map) {
-  // Remove old layer if exists
-
-  let hotelLayerGroup = L.markerClusterGroup();
-
+  hotelLayerGroup = L.markerClusterGroup();
   if (!Array.isArray(hotelsData)) {
     console.error("Hotels data is invalid");
     return;
@@ -310,6 +308,11 @@ function addAllHotels(hotelsData, map) {
     console.log("Adding hotel layer to map");
   }
   hotelLayerGroup.addTo(map);
+}
+
+export function removeHotelOnMap(globalMap) {
+  globalMap.removeLayer(hotelLayerGroup);
+  hotelLayerGroup = null;
 }
 
 export function renderHotelOnMap(stateName, countyName, globalMap) {

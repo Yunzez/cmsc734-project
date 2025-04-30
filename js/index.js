@@ -1,5 +1,5 @@
 import { createMap } from "./component/map/index.js";
-import {renderHotelOnMap} from "./component/visualization/hotelVis.js";
+import { removeHotelOnMap, renderHotelOnMap } from "./component/visualization/hotelVis.js";
 import { renderAirportOnMap } from "./component/visualization/index.js";
 
 import { createSafetyVis } from "./component/visualization/safetyVis.js";
@@ -32,6 +32,7 @@ window.onload = function () {
 };
 
 function prepareVisDiv(visDiv) {
+
   const airportDiv = document.createElement("div");
   airportDiv.id = "vis-airport";
   visDiv.appendChild(airportDiv);
@@ -40,13 +41,6 @@ function prepareVisDiv(visDiv) {
   crimeDiv.id = "vis-crime";
   visDiv.appendChild(crimeDiv);
 
-  const historyDiv = document.createElement("div");
-  historyDiv.id = "vis-history";
-  visDiv.appendChild(historyDiv);
-
-  const hotelDiv = document.createElement("div");
-  hotelDiv.id = "vis-hotel";
-  visDiv.appendChild(hotelDiv);
 }
 // map.onclick = function() {
 //     console.log("map clicked");
@@ -84,9 +78,18 @@ function prepareDropdown(globalMap) {
       console.log("User selected:", selected, "in state:", state);
 
       if (selected === "Hotel") {
+        if (this.classList.contains("active")) {
+          this.classList.remove("active");
+          removeHotelOnMap(globalMap);
+          document.getElementById("hotel-vis").innerHTML = "";
+
+        } else {
+          this.classList.add("active");
+          renderHotelOnMap(state, county, globalMap);
+        }
         console.log("Calling renderHotelOnMap for", state);
         // console.log("global map check: ", globalMap);
-        renderHotelOnMap(state, county, globalMap);
+       
       }
 
       if (selected === "Safety") {

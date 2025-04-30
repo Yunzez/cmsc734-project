@@ -165,6 +165,16 @@ export function createMap(
             fillOpacity: 0.2,
           },
           onEachFeature: function (feature, layer) {
+            let label = (layer.feature.properties.coty_name_long || []).join(", ");
+
+            console.log("counties label: ", label)
+            layer.bindTooltip(label, {
+              sticky: true,
+              direction: "top",
+              offset: [0, -10],
+              opacity: 0.95,
+              className: "custom-tooltip-map ",
+            });
             // Highlight style on hover
             layer.on({
               mouseover: function (e) {
@@ -173,12 +183,13 @@ export function createMap(
                   color: "#ffd43b", // bright yellow on hover
                   fillOpacity: 0.4,
                 });
-
+                e.target.openPopup();
                 if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
                   e.target.bringToFront(); // bring hovered county to front
                 }
               },
               mouseout: function (e) {
+                e.target.closePopup();
                 dynamicCountyLayerGroup.resetStyle(e.target); // Reset back to default style
               },
               click: function (e) {
@@ -186,7 +197,6 @@ export function createMap(
 
                 map.removeLayer(dynamicCountyLayerGroup);
                 dynamicCountyLayerGroup = null;
-               
 
                 parentContainerToggle([
                   feature,

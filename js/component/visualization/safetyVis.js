@@ -1,7 +1,9 @@
+import {getStateNameFromAbbr} from "../../utils.js";
 export function createSafetyVis(mapDiv, state, county, globalMap) {
   console.log(mapDiv);
   let safetyVis = document.createElement("div");
   safetyVis.id = "safety-vis";
+  safetyVis.style = "width: 100%; height: 400px; margin: 0 auto; padding: 20px; background-color: #f8f9fa; border-radius: 8px; ";
   mapDiv.appendChild(safetyVis);
 
   const csvPath = "../../../data/crime/crime_data_county.csv";
@@ -18,11 +20,20 @@ export function createSafetyVis(mapDiv, state, county, globalMap) {
 
       // Remove "County", trim spaces
       const cleanedCounty = fullCountyPart.replace("County", "").trim();
-      const cleanedState = statePart.trim();
-        // console.log("Cleaned county:", cleanedCounty);
-      return (
-        cleanedCounty.toLowerCase() === county.toLowerCase()
-      );
+      console.log(statePart)
+      console.log( getStateNameFromAbbr(statePart.trim()))
+      const cleanedState = getStateNameFromAbbr(statePart.trim());
+        if (county.length === 0) {
+            console.log("Compare state name", cleanedState, state);
+            return (
+                cleanedState.toLowerCase() === state.toLowerCase()
+              );
+        } else {
+            return (
+                cleanedCounty.toLowerCase() === county.toLowerCase()
+              );
+        }
+     
 
     });
     console.log("Match found:", match);
