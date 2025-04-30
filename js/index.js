@@ -2,7 +2,7 @@ import { createMap } from "./component/map/index.js";
 import { removeHotelOnMap, renderHotelOnMap } from "./component/visualization/hotelVis.js";
 // import { renderAirportOnMap } from "./component/visualization/index.js";
 import { renderAirportOnMap } from "./component/visualization/airportVis.js";
-
+import { renderSafetyHeatmap, removeSafetyHeatmap } from "./component/visualization/safetyHeatmap.js";
 import { createSafetyVis } from "./component/visualization/safetyVis.js";
 
 const parentContainer = document.getElementById("container");
@@ -96,6 +96,13 @@ function prepareDropdown(globalMap) {
       if (selected === "Safety") {
         const mapDiv = document.getElementById("vis-overall");
         createSafetyVis(mapDiv, state, county, globalMap);
+        if (this.classList.contains("active")) {
+          this.classList.remove("active");
+          removeSafetyHeatmap(globalMap);
+        } else {
+          this.classList.add("active");
+          renderSafetyHeatmap(globalMap, state);
+        }
       }
       if (selected === "Transportation") {
         if (this.checked) {
