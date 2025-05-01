@@ -3,7 +3,11 @@ import { removeHotelOnMap, renderHotelOnMap } from "./component/visualization/ho
 // import { renderAirportOnMap } from "./component/visualization/index.js";
 import { renderAirportOnMap } from "./component/visualization/airportVis.js";
 import { renderSafetyHeatmap, removeSafetyHeatmap } from "./component/visualization/safetyHeatmap.js";
-import { renderParkOnMap, removeParkFromMap } from "./component/visualization/parkVis.js";
+// import { renderParkOnMap, removeParkFromMap } from "./component/visualization/parkVis.js";
+// import { renderHistoryOnMap, removeHistoryFromMap } from "./component/visualization/historyVis.js";
+import { renderHistoryOnMap, removeHistoryFromMap } from "./component/visualization/historyVis.js";
+import { fetchParkNames, removeParkFromMap, renderParkOnMap } from "./component/visualization/parkVis.js";
+
 
 import { renderSocietyHeatmap, removeSocietyHeatmap } from "./component/visualization/societyHeatmap.js";
 import { createSafetyVis } from "./component/visualization/safetyVis.js";
@@ -115,12 +119,19 @@ function prepareDropdown(globalMap) {
         if (this.classList.contains("active")) {
           this.classList.remove("active");
           removeParkFromMap(globalMap);
+          removeHistoryFromMap(globalMap);
           document.getElementById("vis-attractions").innerHTML = "";
         } else {
           this.classList.add("active");
           renderParkOnMap(state, globalMap);
+      
+          // 提取国家公园名称用于匹配历史景点
+          fetchParkNames(state).then(parkNames => {
+            renderHistoryOnMap(state, globalMap, parkNames);
+          });
         }
       }
+      
 
 
 

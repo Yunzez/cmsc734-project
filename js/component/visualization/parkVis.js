@@ -132,3 +132,15 @@ export function removeParkFromMap(globalMap) {
         console.log("🧹 Removed park layer from map");
     }
 }
+
+export async function fetchParkNames(stateName) {
+    const stateAbbr = getStateAbbrFromName(stateName);
+    const geojson = await fetchAndMergeParkGeojson();
+    const names = geojson.features
+        .filter(f => f.properties.STATE === stateAbbr)
+        .map(f => f.properties.PARKNAME || f.properties.UNIT_NAME || "")
+        .filter(n => n.length > 0);
+    return names;
+}
+
+export { fetchAndMergeParkGeojson, getStateAbbrFromName };

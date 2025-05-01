@@ -100,3 +100,10 @@ svg {
   transform: translate(-50%, -50%);
   pointer-events: auto; /* 确保 hover 事件可用 */
 }
+
+.history-icon {
+  font-size: 18px;
+  text-align: center;
+  line-height: 1;
+  pointer-events: auto;
+}
