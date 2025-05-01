@@ -91,3 +91,12 @@ svg {
   font-weight: 500;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
+
+/* styles/index.css */
+.park-icon {
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  pointer-events: auto; /* 确保 hover 事件可用 */
+}

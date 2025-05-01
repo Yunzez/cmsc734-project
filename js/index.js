@@ -3,6 +3,8 @@ import { removeHotelOnMap, renderHotelOnMap } from "./component/visualization/ho
 // import { renderAirportOnMap } from "./component/visualization/index.js";
 import { renderAirportOnMap } from "./component/visualization/airportVis.js";
 import { renderSafetyHeatmap, removeSafetyHeatmap } from "./component/visualization/safetyHeatmap.js";
+import { renderParkOnMap, removeParkFromMap } from "./component/visualization/parkVis.js";
+
 import { renderSocietyHeatmap, removeSocietyHeatmap } from "./component/visualization/societyHeatmap.js";
 import { createSafetyVis } from "./component/visualization/safetyVis.js";
 
@@ -42,6 +44,11 @@ function prepareVisDiv(visDiv) {
   const crimeDiv = document.createElement("div");
   crimeDiv.id = "vis-crime";
   visDiv.appendChild(crimeDiv);
+
+  const attractionsDiv = document.createElement("div");
+  attractionsDiv.id = "vis-attractions";
+  visDiv.appendChild(attractionsDiv);
+
 
 }
 // map.onclick = function() {
@@ -103,7 +110,18 @@ function prepareDropdown(globalMap) {
           renderSocietyHeatmap(globalMap, state);
         }
       }
-      
+
+      if (selected === "Attractions") {
+        if (this.classList.contains("active")) {
+          this.classList.remove("active");
+          removeParkFromMap(globalMap);
+          document.getElementById("vis-attractions").innerHTML = "";
+        } else {
+          this.classList.add("active");
+          renderParkOnMap(state, globalMap);
+        }
+      }
+
 
 
       if (selected === "Safety") {

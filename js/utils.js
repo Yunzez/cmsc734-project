@@ -50,12 +50,16 @@ export const stateNameToAbbr = {
     "Wisconsin": "WI",
     "Wyoming": "WY",
     "District of Columbia": "DC"
-  };
-  
+};
+
 export const abbrToStateName = Object.fromEntries(
     Object.entries(stateNameToAbbr).map(([name, abbr]) => [abbr, name])
 );
 
 export function getStateNameFromAbbr(abbr) {
     return abbrToStateName[abbr] || null;
+}
+
+export function getStateAbbrFromName(name) {
+    return stateNameToAbbr[name] || null;
 }
