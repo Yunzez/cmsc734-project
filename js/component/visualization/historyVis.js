@@ -20,12 +20,11 @@ async function loadAndMergeHistoryGeojson() {
 
     const fragment0 = await fetch("data/history/raw_history_a013.geojson.frag0").then(res => res.text());
     const fragment1 = await fetch("data/history/raw_history_a013.geojson.frag1").then(res => res.text());
-    const combined = fragment0.trim();
-    const fixed = combined.endsWith('}') ? combined.slice(0, -1) + fragment1.trim().slice(1) : combined + fragment1.trim();
+    const fullFragment = fragment0.trim().slice(0, -1) + "," + fragment1.trim().slice(1);
 
     let parsedFragment;
     try {
-        parsedFragment = JSON.parse(fixed);
+        parsedFragment = JSON.parse(fullFragment);
         console.log("✅ Parsed .frag0 + .frag1", parsedFragment.features.length);
     } catch (e) {
         console.error("❌ JSON parse error in combined .frag013:", e);
@@ -63,23 +62,27 @@ function mercatorToLatLng([x, y]) {
     return [lat, lon];
 }
 
-function convertMultiPolygonFeature(feature) {
-    const converted = feature.geometry.coordinates.map(polygon =>
-        polygon.map(ring =>
-            ring.map(([x, y]) => {
-                const [lat, lon] = mercatorToLatLng([x, y]);
-                return [lon, lat];
-            })
-        )
+function convertPolygonLikeFeature(feature) {
+    const coords = feature.geometry.type === "Polygon"
+      ? [feature.geometry.coordinates]
+      : feature.geometry.coordinates;
+
+    const converted = coords.map(polygon =>
+      polygon.map(ring =>
+        ring.map(([x, y]) => {
+          const [lat, lon] = mercatorToLatLng([x, y]);
+          return [lon, lat];
+        })
+      )
     );
 
     return {
-        type: "Feature",
-        properties: feature.properties,
-        geometry: {
-            type: "MultiPolygon",
-            coordinates: converted,
-        },
+      type: "Feature",
+      properties: feature.properties,
+      geometry: {
+        type: "MultiPolygon",
+        coordinates: converted,
+      },
     };
 }
 
@@ -97,26 +100,29 @@ function convertPointFeature(feature) {
 }
 
 function getFeatureStateAbbr(f) {
-    const keys = Object.keys(f.properties || {});
-    const stateKey = keys.find(k => k.toLowerCase() === "state");
-    if (!stateKey) return null;
+    const props = f.properties || {};
+    const stateValue = props.STATE || props.State || props.state || null;
+    if (!stateValue) return null;
 
-    const rawValue = f.properties[stateKey]?.trim();
-    if (!rawValue) return null;
+    const raw = stateValue.trim().toUpperCase();
+    if (/^[A-Z]{2}$/.test(raw)) return raw;
 
-    const upper = rawValue.toUpperCase();
+    const nameToAbbr = {
+        "ALABAMA": "AL", "ALASKA": "AK", "AMERICAN SAMOA": "AS", "ARIZONA": "AZ", "ARKANSAS": "AR",
+        "CALIFORNIA": "CA", "COLORADO": "CO", "CONNECTICUT": "CT", "DELAWARE": "DE", "DISTRICT OF COLUMBIA": "DC",
+        "FLORIDA": "FL", "GEORGIA": "GA", "GUAM": "GU", "HAWAII": "HI", "IDAHO": "ID",
+        "ILLINOIS": "IL", "INDIANA": "IN", "IOWA": "IA", "KANSAS": "KS", "KENTUCKY": "KY",
+        "LOUISIANA": "LA", "MAINE": "ME", "MARYLAND": "MD", "MASSACHUSETTS": "MA", "MICHIGAN": "MI",
+        "MINNESOTA": "MN", "MISSISSIPPI": "MS", "MISSOURI": "MO", "MONTANA": "MT", "NEBRASKA": "NE",
+        "NEVADA": "NV", "NEW HAMPSHIRE": "NH", "NEW JERSEY": "NJ", "NEW MEXICO": "NM", "NEW YORK": "NY",
+        "NORTH CAROLINA": "NC", "NORTH DAKOTA": "ND", "NORTHERN MARIANA ISLANDS": "MP", "OHIO": "OH",
+        "OKLAHOMA": "OK", "OREGON": "OR", "PENNSYLVANIA": "PA", "PUERTO RICO": "PR", "RHODE ISLAND": "RI",
+        "SOUTH CAROLINA": "SC", "SOUTH DAKOTA": "SD", "TENNESSEE": "TN", "TEXAS": "TX", "UTAH": "UT",
+        "VERMONT": "VT", "VIRGIN ISLANDS": "VI", "VIRGINIA": "VA", "WASHINGTON": "WA",
+        "WEST VIRGINIA": "WV", "WISCONSIN": "WI", "WYOMING": "WY"
+    };
 
-    if (/^[A-Z]{2}$/.test(upper)) {
-        const validStates = new Set([
-            "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS",
-            "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY",
-            "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV",
-            "WI", "WY", "DC"
-        ]);
-        return validStates.has(upper) ? upper : null;
-    }
-
-    return getStateAbbrFromName(rawValue);
+    return nameToAbbr[raw] || null;
 }
 
 export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
@@ -131,11 +137,7 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
 
     const filtered = geojson.features.filter(f => {
         const featureState = getFeatureStateAbbr(f);
-        const matched = featureState?.toUpperCase() === stateAbbr;
-        if (!matched && featureState) {
-            console.log("❌ Mismatch:", featureState, "vs", stateAbbr);
-        }
-        return matched;
+        return featureState === stateAbbr;
     });
     console.log(`🏛️ Found ${filtered.length} historical features in ${stateAbbr}`);
 
@@ -146,12 +148,20 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
     }
 
     const converted = filtered.map(f => {
-        if (!f.geometry) return null;
-        if (f.geometry.type === "MultiPolygon") return convertMultiPolygonFeature(f);
-        if (f.geometry.type === "Point") return convertPointFeature(f);
-        console.warn("⚠️ Skipped unsupported geometry", f.geometry.type);
+        if (!f.geometry) {
+          console.warn("⚠️ Feature with null geometry skipped", f);
+          return null;
+        }
+      
+        const type = f.geometry.type;
+        if (type === "Point") return convertPointFeature(f);
+        if (type === "MultiPolygon" || type === "Polygon") return convertPolygonLikeFeature(f);
+      
+        console.warn("⚠️ Unsupported geometry type skipped:", type);
         return null;
-    }).filter(Boolean);
+      }).filter(Boolean);
+      
+
     console.log("🧭 Converted features:", converted.length);
 
     historyLayer = L.geoJSON({ type: "FeatureCollection", features: converted }, {
