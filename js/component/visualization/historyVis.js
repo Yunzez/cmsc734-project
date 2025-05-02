@@ -3,6 +3,26 @@ import { getStateAbbrFromName } from "../../utils.js";
 
 let historyLayer = null;
 
+const GOOGLE_API_KEY = "API"; // Replace with your key
+
+async function fetchLatLngFromGoogle(city, county, state) {
+    const query = `${city}, ${county} County, ${state}, USA`;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${GOOGLE_API_KEY}`;
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.status === "OK" && data.results.length > 0) {
+            const loc = data.results[0].geometry.location;
+            return [loc.lat, loc.lng];
+        } else {
+            console.warn("⚠️ Google Maps Geocoding failed:", data.status);
+        }
+    } catch (err) {
+        console.warn("🌐 Google Maps request error:", err);
+    }
+    return null;
+}
+
 async function loadAndMergeHistoryGeojson() {
     const paths = [
         "data/history/raw_history_a012.geojson",
@@ -64,25 +84,25 @@ function mercatorToLatLng([x, y]) {
 
 function convertPolygonLikeFeature(feature) {
     const coords = feature.geometry.type === "Polygon"
-      ? [feature.geometry.coordinates]
-      : feature.geometry.coordinates;
+        ? [feature.geometry.coordinates]
+        : feature.geometry.coordinates;
 
     const converted = coords.map(polygon =>
-      polygon.map(ring =>
-        ring.map(([x, y]) => {
-          const [lat, lon] = mercatorToLatLng([x, y]);
-          return [lon, lat];
-        })
-      )
+        polygon.map(ring =>
+            ring.map(([x, y]) => {
+                const [lat, lon] = mercatorToLatLng([x, y]);
+                return [lon, lat];
+            })
+        )
     );
 
     return {
-      type: "Feature",
-      properties: feature.properties,
-      geometry: {
-        type: "MultiPolygon",
-        coordinates: converted,
-      },
+        type: "Feature",
+        properties: feature.properties,
+        geometry: {
+            type: "MultiPolygon",
+            coordinates: converted,
+        },
     };
 }
 
@@ -147,24 +167,39 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
         globalMap.removeLayer(window._historyLayer);
     }
 
-    const converted = filtered.map(f => {
+    const converted = await Promise.all(filtered.map(async f => {
         if (!f.geometry) {
-          console.warn("⚠️ Feature with null geometry skipped", f);
-          return null;
+            const city = f.properties.City || f.properties.CITY;
+            const county = f.properties.County || f.properties.COUNTY;
+            const state = f.properties.State || f.properties.STATE;
+
+            if (city && county && state) {
+                const latlng = await fetchLatLngFromGoogle(city, county, state);
+                if (latlng) {
+                    return {
+                        type: "Feature",
+                        properties: f.properties,
+                        geometry: {
+                            type: "Point",
+                            coordinates: [latlng[1], latlng[0]]
+                        }
+                    };
+                }
+            }
+            console.warn("⚠️ Feature with null geometry skipped", f);
+            return null;
         }
-      
+
         const type = f.geometry.type;
         if (type === "Point") return convertPointFeature(f);
         if (type === "MultiPolygon" || type === "Polygon") return convertPolygonLikeFeature(f);
-      
         console.warn("⚠️ Unsupported geometry type skipped:", type);
         return null;
-      }).filter(Boolean);
-      
+    }));
 
-    console.log("🧭 Converted features:", converted.length);
+    console.log("🧭 Converted features:", converted.filter(Boolean).length);
 
-    historyLayer = L.geoJSON({ type: "FeatureCollection", features: converted }, {
+    historyLayer = L.geoJSON({ type: "FeatureCollection", features: converted.filter(Boolean) }, {
         style: (feature) => {
             if (feature.geometry.type === "Point") return null;
             const name = feature.properties.RES_NAME || feature.properties.UNIT_NAME || "";
@@ -201,7 +236,7 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
     historyLayer.addTo(globalMap);
     historyLayer.bringToFront();
     window._historyLayer = historyLayer;
-    console.log("✅ History layer added with", converted.length, "features.");
+    console.log("✅ History layer added with", converted.filter(Boolean).length, "features.");
 }
 
 export function removeHistoryFromMap(globalMap) {
