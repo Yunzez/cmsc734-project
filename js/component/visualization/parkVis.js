@@ -11,10 +11,8 @@ function fetchAndMergeParkGeojson() {
         const fullText = part0 + part1;
         try {
             const parsed = JSON.parse(fullText);
-            console.log("✅ Successfully parsed merged GeoJSON", parsed);
             return parsed;
         } catch (e) {
-            console.error("❌ Failed to parse merged park geojson:", e);
             throw e;
         }
     });
@@ -54,11 +52,9 @@ export function renderParkOnMap(stateName, globalMap) {
         .then((geojson) => {
             console.log("📦 Raw park geojson loaded", geojson);
             const allStates = [...new Set(geojson.features.map(f => f.properties.STATE))];
-            console.log("✅ Available park states:", allStates);
 
             const stateAbbr = getStateAbbrFromName(stateName);
             if (!stateAbbr) {
-                console.warn(`⚠️ Unknown state name: ${stateName}`);
                 return;
             }
 
@@ -67,15 +63,11 @@ export function renderParkOnMap(stateName, globalMap) {
                 return stateCode === stateAbbr;
             });
 
-            console.log("🎯 Filtered park features:", filtered.map(f => f.properties.PARKNAME || f.properties.UNIT_NAME));
-            console.log("🧩 Filtered geometry types:", [...new Set(filtered.map(f => f.geometry.type))]);
-
             if (!filtered.length) {
                 console.warn(`⚠️ No park data found for ${stateName} (${stateAbbr})`);
                 return;
             }
 
-            // ✅ Create custom pane if not yet created
             if (!globalMap.getPane("parksPane")) {
                 globalMap.createPane("parksPane");
                 globalMap.getPane("parksPane").style.zIndex = 650;
@@ -117,9 +109,6 @@ export function renderParkOnMap(stateName, globalMap) {
 
             parkLayer.addTo(globalMap);
             window._parkLayer = parkLayer;
-
-            console.log("✅ Park layer added with", filtered.length, "features.");
-            console.log("🗺️ Current layers on map:", Object.keys(globalMap._layers));
         })
         .catch(err => {
             console.error("❌ Failed to load park geojson:", err);

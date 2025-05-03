@@ -1,4 +1,5 @@
 import { createMap } from "./component/map/index.js";
+import { renderRadarChart } from "./component/visualization/radarVis.js";
 import {
   removeHotelOnMap,
   renderHotelOnMap,
@@ -9,8 +10,7 @@ import {
   renderSafetyHeatmap,
   removeSafetyHeatmap,
 } from "./component/visualization/safetyHeatmap.js";
-// import { renderParkOnMap, removeParkFromMap } from "./component/visualization/parkVis.js";
-// import { renderHistoryOnMap, removeHistoryFromMap } from "./component/visualization/historyVis.js";
+
 import {
   renderHistoryOnMap,
   removeHistoryFromMap,
@@ -77,6 +77,7 @@ function prepareVisDiv(visDiv) {
 
 // }
 function prepareDropdown(globalMap) {
+    renderRadarChart()
   const dropdownItems = document.querySelectorAll(
     "#filterOptionsList .checkbox-input"
   );

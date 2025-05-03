@@ -1,10 +1,7 @@
-// radarVis.js
-import * as turf from "@turf/turf";
-
 let radarChartInstance = null;
 
 export function setupRadarChartContainer() {
-  const container = document.getElementById("vis-overall");
+  const container = document.getElementById("info-section");
   container.innerHTML = `
     <div id="city-radar-chart" class="d-flex justify-content-center">
       <div style="max-width: 300px; width: 100%">
@@ -17,6 +14,10 @@ export function setupRadarChartContainer() {
 }
 
 export function renderRadarChart(data) {
+  const countyName = document.getElementById('info-county')
+  if (countyName.length == 0) return;
+  
+  setupRadarChartContainer()
   const ctx = document.getElementById("radarChart").getContext("2d");
   const radarData = {
     labels: ["Attractions", "Society", "Transportation", "Hotel", "Safety"],
@@ -65,6 +66,7 @@ export function renderRadarChart(data) {
 }
 
 export async function updateRadarChart(centerPoint, hotelData, airportData, povertyData, crimeData) {
+  console.log("update")
   const searchRadius = 30000; // 30km
   const center = turf.point(centerPoint);
 

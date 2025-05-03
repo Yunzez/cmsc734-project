@@ -124,11 +124,6 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
                 offset: [0, -8],
                 className: "history-tooltip",
             });
-
-            layer.on("click", () => {
-                const center = turf.center(feature).geometry.coordinates;
-                updateRadarChart(center);
-            });
         }
     });
 
