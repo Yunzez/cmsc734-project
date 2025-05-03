@@ -98,7 +98,7 @@ svg {
   line-height: 20px;
   text-align: center;
   transform: translate(-50%, -50%);
-  pointer-events: auto; /* 确保 hover 事件可用 */
+  pointer-events: auto; 
 }
 
 .history-icon {
