@@ -1,5 +1,16 @@
 import { getStateNameFromAbbr } from "../../utils.js";
-export function createSafetyVis(mapDiv, state, county) {
+
+let globalHeatmapLayer = null;
+let countyToLayerMap = {};
+let highlighted_layer = null;
+export function createSafetyVis(
+  mapDiv,
+  state,
+  county,
+  globalMap,
+  heatmapLayer
+) {
+  globalHeatmapLayer = heatmapLayer;
   const container = document.createElement("div");
   const title = document.createElement("div");
   title.id = "safty-title";
@@ -10,6 +21,14 @@ export function createSafetyVis(mapDiv, state, county) {
   const csvPath = "../../../data/crime/crime_data_county.csv";
   d3.csv(csvPath, d3.autoType).then((data) => {
     const isCountyLevel = county.length > 0;
+    if (!isCountyLevel) {
+      let heatmap = heatmapLayer;
+      heatmap.eachLayer((layer) => {
+        console.log("County:", layer._countyId); // now this will work
+        countyToLayerMap[layer._countyId] = layer;
+      });
+    }
+    console.log("state name", state);
     const matchedRows = data.filter((d) => {
       if (!d.county_name) return false;
       const [countyPart, stateAbbr] = d.county_name.split(",");
@@ -21,12 +40,18 @@ export function createSafetyVis(mapDiv, state, county) {
           .replace("County", "")
           .trim()
           .toLowerCase();
+        console.log(
+          county.toLowerCase().replace("County", "").trim(),
+          state.toLowerCase()
+        );
+        console.log(cleanedCounty, cleanedState);
         return (
-          cleanedCounty === county.toLowerCase() &&
+          cleanedCounty === county.replace("County", "").trim().toLowerCase() &&
           cleanedState === state.toLowerCase()
         );
       } else {
-        return cleanedState === state.toLowerCase();
+        console.log(cleanedState, stateAbbr);
+        return cleanedState.toLowerCase() === state.toLowerCase();
       }
     });
 
@@ -156,13 +181,19 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
     let currentNode = root;
 
     const g = svg.append("g").attr("class", "treemap-group");
-
+    const colorInterpolator = d3.piecewise(d3.interpolateRgb.gamma(2.2), [
+      "#deebf7", // light blue
+      "#9ecae1",
+      "#3182bd", // dark blue
+      "#fb6a4a",
+      "#cb181d", // red
+    ]);
     const color = d3.scaleOrdinal(d3.schemeCategory10).domain(crimeCategories);
     const maxCountyValue = d3.max(root.leaves(), (d) => d.value);
     const colorScale = d3
-      .scaleSequentialLog()
+      .scaleSequential()
       .domain([1, maxCountyValue]) // use 1 as the floor to avoid log(0)
-      .interpolator(d3.interpolateBlues);
+      .interpolator(colorInterpolator);
     function render(node) {
       console.log("rendering node", node);
       currentNode = node;
@@ -192,6 +223,9 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
           if (!d.children) return;
           const newRoot = d3
             .hierarchy(d.data)
+            .eachBefore((d) => {
+              d.dataValue = d.data.dataValue ?? 0; // bring dataValue to root if present
+            })
             .sum((d) => d.value || 0)
             .sort((a, b) => b.value - a.value);
 
@@ -200,6 +234,7 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
           render(newRoot);
         })
         .on("mouseover", (event, d) => {
+          highlightCounty(d.data.name);
           d3.select("#safty-tooltip")
             .style("opacity", 1)
             .style("left", `${event.pageX + 10}px`)
@@ -210,7 +245,10 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
                 : `<strong>${d.parent.data.name}</strong><br/>${d.data.name}: ${d.dataValue}`
             );
         })
-        .on("mouseout", () => d3.select("#safty-tooltip").style("opacity", 0));
+        .on("mouseout", () => {
+          d3.select("#safty-tooltip").style("opacity", 0);
+          removeHighlightCounty();
+        });
 
       nodeEnter
         .append("text")
@@ -242,4 +280,21 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
     let title = document.getElementById("safty-title");
     title.innerHTML = `<b>Zoomable Treemap of Crime in ${titleLabel}</b>`;
   }
+}
+
+function highlightCounty(countyName) {
+  countyName = countyName.toLowerCase().replace("county", "").trim();
+  const countyId = countyName.trim().toLowerCase();
+  const layer = countyToLayerMap[countyId];
+  if (!layer) return;
+  layer.setStyle({
+    weight: 5,
+    color: "#ffcc00",
+    fillOpacity: 0.9,
+  });
+  highlighted_layer = layer;
+}
+
+function removeHighlightCounty() {
+  globalHeatmapLayer.resetStyle(highlighted_layer);
 }

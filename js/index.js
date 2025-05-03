@@ -1,16 +1,31 @@
 import { createMap } from "./component/map/index.js";
-import { removeHotelOnMap, renderHotelOnMap } from "./component/visualization/hotelVis.js";
+import {
+  removeHotelOnMap,
+  renderHotelOnMap,
+} from "./component/visualization/hotelVis.js";
 // import { renderAirportOnMap } from "./component/visualization/index.js";
 import { renderAirportOnMap } from "./component/visualization/airportVis.js";
-import { renderSafetyHeatmap, removeSafetyHeatmap } from "./component/visualization/safetyHeatmap.js";
+import {
+  renderSafetyHeatmap,
+  removeSafetyHeatmap,
+} from "./component/visualization/safetyHeatmap.js";
 // import { renderParkOnMap, removeParkFromMap } from "./component/visualization/parkVis.js";
 // import { renderHistoryOnMap, removeHistoryFromMap } from "./component/visualization/historyVis.js";
-import { renderHistoryOnMap, removeHistoryFromMap } from "./component/visualization/historyVis.js";
-import { fetchParkNames, removeParkFromMap, renderParkOnMap } from "./component/visualization/parkVis.js";
+import {
+  renderHistoryOnMap,
+  removeHistoryFromMap,
+} from "./component/visualization/historyVis.js";
+import {
+  fetchParkNames,
+  removeParkFromMap,
+  renderParkOnMap,
+} from "./component/visualization/parkVis.js";
 
+import {
+  renderSocietyHeatmap,
+  removeSocietyHeatmap,
+} from "./component/visualization/societyHeatmap.js";
 
-import { renderSocietyHeatmap, removeSocietyHeatmap } from "./component/visualization/societyHeatmap.js";
-import { createSafetyVis } from "./component/visualization/safetyVis.js";
 
 const parentContainer = document.getElementById("container");
 
@@ -40,7 +55,6 @@ window.onload = function () {
 };
 
 function prepareVisDiv(visDiv) {
-
   const airportDiv = document.createElement("div");
   airportDiv.id = "vis-airport";
   visDiv.appendChild(airportDiv);
@@ -52,8 +66,6 @@ function prepareVisDiv(visDiv) {
   const attractionsDiv = document.createElement("div");
   attractionsDiv.id = "vis-attractions";
   visDiv.appendChild(attractionsDiv);
-
-
 }
 // map.onclick = function() {
 //     console.log("map clicked");
@@ -95,14 +107,12 @@ function prepareDropdown(globalMap) {
           this.classList.remove("active");
           removeHotelOnMap(globalMap);
           document.getElementById("hotel-vis").remove();
-
         } else {
           this.classList.add("active");
           renderHotelOnMap(state, county, globalMap);
         }
         console.log("Calling renderHotelOnMap for", state);
         // console.log("global map check: ", globalMap);
-
       }
 
       if (selected === "Society") {
@@ -124,26 +134,25 @@ function prepareDropdown(globalMap) {
         } else {
           this.classList.add("active");
           renderParkOnMap(state, globalMap);
-      
+
           // 提取国家公园名称用于匹配历史景点
-          fetchParkNames(state).then(parkNames => {
+          fetchParkNames(state).then((parkNames) => {
             renderHistoryOnMap(state, globalMap, parkNames);
           });
         }
       }
-      
-
-
 
       if (selected === "Safety") {
         const mapDiv = document.getElementById("vis-overall");
-        createSafetyVis(mapDiv, state, county, globalMap);
         if (this.classList.contains("active")) {
+          document.getElementById("safety-vis").remove();
+          document.getElementById("safty-title").remove();
           this.classList.remove("active");
           removeSafetyHeatmap(globalMap);
         } else {
           this.classList.add("active");
-          renderSafetyHeatmap(globalMap, state);
+          renderSafetyHeatmap(globalMap, state, county);
+
         }
       }
       if (selected === "Transportation") {
@@ -158,7 +167,6 @@ function prepareDropdown(globalMap) {
           }
         }
       }
-
     });
   });
 }
