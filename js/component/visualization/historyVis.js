@@ -57,10 +57,7 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
         globalMap.getPane("historyPane").style.zIndex = 700;
     }
 
-    setupRadarChartContainer(); 
-
     const geojson = await loadAndMergeHistoryGeojson();
-    console.log("📦 Full history GeoJSON loaded", geojson);
 
     const filtered = geojson.features.filter(f => {
         const featureState = getFeatureStateAbbr(f);

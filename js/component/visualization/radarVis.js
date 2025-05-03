@@ -15,8 +15,9 @@ export function setupRadarChartContainer() {
 
 export function renderRadarChart(data) {
   const countyName = document.getElementById('info-county')
+  if (!countyName) return 
   if (countyName.length == 0) return;
-  
+
   setupRadarChartContainer()
   const ctx = document.getElementById("radarChart").getContext("2d");
   const radarData = {

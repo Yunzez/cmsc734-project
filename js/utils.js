@@ -56,6 +56,7 @@ export const abbrToStateName = Object.fromEntries(
     Object.entries(stateNameToAbbr).map(([name, abbr]) => [abbr, name])
 );
 
+
 export function getStateNameFromAbbr(abbr) {
     return abbrToStateName[abbr] || null;
 }
