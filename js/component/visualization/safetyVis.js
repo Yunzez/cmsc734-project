@@ -284,7 +284,6 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
 
 function highlightCounty(countyName) {
   countyName = countyName.toLowerCase().replace("county", "").trim();
-  console.log(countyName, countyToLayerMap);
   const countyId = countyName.trim().toLowerCase();
   const layer = countyToLayerMap[countyId];
   if (!layer) return;
