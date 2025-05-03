@@ -1,5 +1,6 @@
 // visualization/historyVis.js
 import { getStateAbbrFromName } from "../../utils.js";
+import { setupRadarChartContainer, updateRadarChart } from "./radarVis.js";
 
 let historyLayer = null;
 
@@ -55,6 +56,8 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
         globalMap.createPane("historyPane");
         globalMap.getPane("historyPane").style.zIndex = 700;
     }
+
+    setupRadarChartContainer(); 
 
     const geojson = await loadAndMergeHistoryGeojson();
     console.log("📦 Full history GeoJSON loaded", geojson);
@@ -121,6 +124,11 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
                 offset: [0, -8],
                 className: "history-tooltip",
             });
+
+            layer.on("click", () => {
+                const center = turf.center(feature).geometry.coordinates;
+                updateRadarChart(center);
+            });
         }
     });
 
@@ -135,3 +143,6 @@ export function removeHistoryFromMap(globalMap) {
         console.log("🧹 Removed history layer");
     }
 }
+
+
+
