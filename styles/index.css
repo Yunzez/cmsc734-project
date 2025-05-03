@@ -107,3 +107,13 @@ svg {
   line-height: 1;
   pointer-events: auto;
 }
+
+.leaflet-tooltip {
+  z-index: 9999 !important;
+  pointer-events: none;
+}
+
+.leaflet-pane.leaflet-tooltip-pane {
+  z-index: 9999 !important;
+}
+
