@@ -481,20 +481,10 @@ function removeHighlight() {
 
  
 function showAttractionTooltip(event, data, level) {
-    
     const tooltipHTML = `
       <div style="color:#f39c12!important;font-weight:500;">${data.name}</div>
       <div style="color:white!important;">${data.value}</div>
     `;
-  
-    
-    const tooltipWidth = 200;
-    const maxLeft = window.innerWidth - tooltipWidth - 25;
-    // const maxLeft = document.documentElement.clientWidth - tooltipWidth - 5;
-    const left = Math.min(event.pageX + 15, maxLeft);
-    
-    
-    const top = Math.min(event.pageY + 15, window.innerHeight - 50);
   
     let tooltip = document.getElementById("attraction-tooltip");
     if (!tooltip) {
@@ -510,22 +500,43 @@ function showAttractionTooltip(event, data, level) {
         pointer-events: none;
         z-index: 99999; 
         min-width: 120px;
+        max-width: 240px;
         box-shadow: 0 3px 6px rgba(0,0,0,0.3);
         opacity: 0;
         transition: opacity 0.2s;
+        word-wrap: break-word;
       `;
       document.body.appendChild(tooltip);
     }
   
     tooltip.innerHTML = tooltipHTML;
-    tooltip.style.left = `${left}px`;
-    tooltip.style.top = `${top}px`;
-    tooltip.style.opacity = "1"; 
+    tooltip.style.opacity = "1";
   
-   
-    console.log('Tooltip Position:', { left, top, width: tooltip.offsetWidth });
+    requestAnimationFrame(() => {
+      const tooltipWidth = tooltip.offsetWidth;
+      const tooltipHeight = tooltip.offsetHeight;
+      const margin = 15;
+  
+      
+      let left = event.pageX + margin;
+  
+     
+      if (left + tooltipWidth > window.innerWidth) {
+        left = event.pageX - tooltipWidth - margin;
+        
+        if (left < 0) left = margin;
+      }
+  
+      let top = event.pageY + margin;
+      if (top + tooltipHeight > window.innerHeight) {
+        top = window.innerHeight - tooltipHeight - margin;
+      }
+  
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    });
   }
-
+  
 
 function hideAttractionTooltip() {
     const tooltip = document.getElementById("attraction-tooltip");
