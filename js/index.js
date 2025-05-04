@@ -27,7 +27,7 @@ import {
 } from "./component/visualization/societyHeatmap.js";
 import { setupRadarChartContainer } from "./component/visualization/radarVis.js";
 
-import { setupRecommendationPanel } from "./component/visualization/recommendationPanel.js";
+// import { setupRecommendationPanel } from "./component/visualization/recommendationPanel.js";
 
 
 const parentContainer = document.getElementById("container");
@@ -49,7 +49,6 @@ window.onload = function () {
     parentContainer,
     visualizationTarget
   );
-  setupRecommendationPanel(document.getElementById("recommendation-btn-container"));
 
 
   // window.addEventListener("DOMContentLoaded", () => {
@@ -194,6 +193,7 @@ function prepareDropdown(globalMap) {
   });
 }
 
+import { calculateScore } from "./component/visualization/radarVis.js";
 export function toggleRecommendWidget() {
   console.log("showRecommendWidget called");
   if (document.getElementById("recommend-widget").style.display === "block") {
@@ -202,9 +202,64 @@ export function toggleRecommendWidget() {
   } else {
     document.getElementById("recommend-widget").style.display = "block";
     document.getElementById("blur-overlay").style.display = "block";
+    renderRecommendations();
   }
   
 
 }
 
+async function getTopRecommendations() {
+    const res = await fetch("data/radar_data.json");
+    const data = await res.json();
+    const entries = Object.entries(data);
+  
+    // Randomly sample 100
+    const sample = entries
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 100);
+  
+    // Calculate scores
+    const scored = await Promise.all(
+      sample.map(async ([key, value]) => {
+        const [county, state] = key.split(",").map(s => s.trim());
+        const score = await calculateScore(state, county); // array of 5 numbers out of 5
+        const totalScore = score.reduce((a, b) => a + b, 0); // out of 25
+        const scoreOutOf100 = totalScore * 4; // scale to 100
+        return { key, score, scoreOutOf100 };
+      })
+    );
+  
+    // Sort and pick top 10
+    const top10 = scored
+      .sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100)
+      .slice(0, 10);
+  
+    return top10;
+  }
+  
+
+  export async function renderRecommendations() {
+    const container = document.getElementById("recommend-widget-content");
+    container.innerHTML = "<h5>Top Picks</h5>";
+  
+    const top = await getTopRecommendations();
+  
+    const list = document.createElement("ul");
+    list.style.listStyle = "none";
+    list.style.padding = "0";
+  
+    top.forEach(({ key, scoreOutOf100 }) => {
+      const item = document.createElement("li");
+      item.style.marginBottom = "6px";
+      item.innerHTML = `
+        <strong>${key}</strong> 
+        <span style="color: #0a9396; font-weight: bold;">${Math.round(scoreOutOf100)} / 100</span>
+      `;
+      list.appendChild(item);
+    });
+  
+    container.appendChild(list);
+  }
+  
+  
 window.toggleRecommendWidget = toggleRecommendWidget;
