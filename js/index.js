@@ -193,73 +193,99 @@ function prepareDropdown(globalMap) {
   });
 }
 
+// index.js (modified)
 import { calculateScore } from "./component/visualization/radarVis.js";
+
+let recommendType = "county"; // default
+
 export function toggleRecommendWidget() {
   console.log("showRecommendWidget called");
-  if (document.getElementById("recommend-widget").style.display === "block") {
-    document.getElementById("recommend-widget").style.display = "none";
-    document.getElementById("blur-overlay").style.display = "none";
+  const widget = document.getElementById("recommend-widget");
+  const blur = document.getElementById("blur-overlay");
+  if (widget.style.display === "block") {
+    widget.style.display = "none";
+    blur.style.display = "none";
   } else {
-    document.getElementById("recommend-widget").style.display = "block";
-    document.getElementById("blur-overlay").style.display = "block";
+    widget.style.display = "block";
+    blur.style.display = "block";
     renderRecommendations();
   }
-  
-
 }
 
-async function getTopRecommendations() {
-    const res = await fetch("data/radar_data.json");
-    const data = await res.json();
-    const entries = Object.entries(data);
-  
-    // Randomly sample 100
-    const sample = entries
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 100);
-  
-    // Calculate scores
-    const scored = await Promise.all(
-      sample.map(async ([key, value]) => {
-        const [county, state] = key.split(",").map(s => s.trim());
-        const score = await calculateScore(state, county); // array of 5 numbers out of 5
-        const totalScore = score.reduce((a, b) => a + b, 0); // out of 25
-        const scoreOutOf100 = totalScore * 4; // scale to 100
-        return { key, score, scoreOutOf100 };
-      })
-    );
-  
-    // Sort and pick top 10
-    const top10 = scored
-      .sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100)
-      .slice(0, 10);
-  
-    return top10;
-  }
-  
+async function getTopRecommendations(isStateMode = false) {
+  const res = await fetch(isStateMode ? "data/radar_data_state.json" : "data/radar_data.json");
+  const data = await res.json();
+  const entries = Object.entries(data);
 
-  export async function renderRecommendations() {
-    const container = document.getElementById("recommend-widget-content");
-    container.innerHTML = "<h5>Top Picks</h5>";
-  
-    const top = await getTopRecommendations();
-  
-    const list = document.createElement("ul");
-    list.style.listStyle = "none";
-    list.style.padding = "0";
-  
-    top.forEach(({ key, scoreOutOf100 }) => {
-      const item = document.createElement("li");
-      item.style.marginBottom = "6px";
-      item.innerHTML = `
-        <strong>${key}</strong> 
-        <span style="color: #0a9396; font-weight: bold;">${Math.round(scoreOutOf100)} / 100</span>
-      `;
-      list.appendChild(item);
+  if (isStateMode) {
+    // Normalize state-level score to 0–100
+    const scored = entries.map(([state, val]) => {
+      const attractions = val.avg_attractions_per_county ?? 0;
+      const society = 1 - (val.avg_poverty_rate_per_county ?? 1);
+      const transport = val.avg_airports_per_county ?? 0;
+      const hotel = val.avg_hotels_per_county ?? 0;
+      const safety = 1 - (val.avg_crime_rate_per_100000 ?? 1000) / 1000;
+
+      // Normalize each component to 0–5 (you can adjust max values)
+      const score = [
+        Math.min(5, (attractions / 20) * 5),
+        Math.max(0, Math.min(5, society * 5)),
+        Math.min(5, (transport / 10) * 5),
+        Math.min(5, (hotel / 20) * 5),
+        Math.max(0, Math.min(5, safety * 5)),
+      ];
+
+      const totalScore = score.reduce((a, b) => a + b, 0); // out of 25
+      return { key: state, score, scoreOutOf100: totalScore * 4 };
     });
-  
-    container.appendChild(list);
+
+    return scored.sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100).slice(0, 10);
   }
-  
-  
+
+  // County mode logic (as before)
+  const sample = entries.sort(() => 0.5 - Math.random()).slice(0, 100);
+  const scored = await Promise.all(
+    sample.map(async ([key, value]) => {
+      const [county, state] = key.split(",").map(s => s.trim());
+      const score = await calculateScore(state, county);
+      const totalScore = score.reduce((a, b) => a + b, 0);
+      return { key, score, scoreOutOf100: totalScore * 4 };
+    })
+  );
+  return scored.sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100).slice(0, 10);
+}
+
+export async function renderRecommendations() {
+  const container = document.getElementById("recommend-widget-content");
+  container.innerHTML = `
+    <h5 id="recommend-title">Top 10 ${recommendType === "state" ? "States" : "Counties"}</h5>
+    <div style="margin-bottom: 10px;">
+      <label><input type="radio" name="rec-mode" value="state" ${recommendType === "state" ? "checked" : ""}/> Top 10 States in USA</label>
+      <label style="margin-left: 20px;"><input type="radio" name="rec-mode" value="county" ${recommendType === "county" ? "checked" : ""}/> Top 10 Counties in USA</label>
+    </div>
+  `;
+
+  const radios = container.querySelectorAll("input[name='rec-mode']");
+  radios.forEach(r => r.addEventListener("change", (e) => {
+    recommendType = e.target.value;
+    renderRecommendations();
+  }));
+
+  const top = await getTopRecommendations();
+  const list = document.createElement("ul");
+  list.style.listStyle = "none";
+  list.style.padding = "0";
+
+  top.forEach(({ key, scoreOutOf100 }) => {
+    const item = document.createElement("li");
+    item.style.marginBottom = "6px";
+    item.innerHTML = `
+      <strong>${key}</strong>
+      <span style="color: #0a9396; font-weight: bold;">${Math.round(scoreOutOf100)} / 100</span>
+    `;
+    list.appendChild(item);
+  });
+  container.appendChild(list);
+}
+
 window.toggleRecommendWidget = toggleRecommendWidget;
