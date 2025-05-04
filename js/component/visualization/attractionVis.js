@@ -2,7 +2,7 @@
 // visualization/attractionVis.js
 
 import { getStateNameFromAbbr } from "../../utils.js";
-
+import { getAssetPath } from "../../utils.js";
 let globalMapRef = null;
 let siteNameToLayerMap = {};
 let highlightedLayer = null;
@@ -24,7 +24,7 @@ export function createAttractionVis(containerDiv, stateName, globalMap) {
     visDiv.id = "attraction-vis";
     containerDiv.appendChild(visDiv);
 
-    const csvPath = "../../../data/visitor/min_visitor.csv";
+    const csvPath = getAssetPath("/data/visitor/min_visitor.csv");
     d3.csv(csvPath, d3.autoType).then((data) => {
         const filtered = data.filter(
             (d) => d.State?.trim().toLowerCase() === stateName.trim().toLowerCase()

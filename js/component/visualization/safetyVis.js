@@ -1,5 +1,5 @@
 import { getStateNameFromAbbr } from "../../utils.js";
-
+import { getAssetPath } from "../../utils.js";
 let globalHeatmapLayer = null;
 let countyToLayerMap = {};
 let highlighted_layer = null;
@@ -29,7 +29,7 @@ export function createSafetyVis(
   mapDiv.appendChild(title);
   mapDiv.appendChild(container);
 
-  const csvPath = "../../../data/crime/crime_data_county.csv";
+  const csvPath = getAssetPath("/data/crime/crime_data_county.csv");
   d3.csv(csvPath, d3.autoType).then((data) => {
     const isCountyLevel = county.length > 0;
     if (!isCountyLevel) {
