@@ -3,6 +3,17 @@ import { getStateNameFromAbbr } from "../../utils.js";
 let globalHeatmapLayer = null;
 let countyToLayerMap = {};
 let highlighted_layer = null;
+
+const crimeNameMapping = {
+  ROBBERY: 'Robbery',
+  MVTHEFT: 'Motor Vehicle Theft',
+  LARCENY: 'Larceny-Theft',
+  ARSON: 'Arson',
+  AGASSLT: 'Aggravated Assault',
+  MURDER: 'Murder',
+  BURGLRY: 'Burglary'
+}
+
 export function createSafetyVis(
   mapDiv,
   state,
@@ -237,12 +248,14 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
           highlightCounty(d.data.name);
           d3.select("#safty-tooltip")
             .style("opacity", 1)
-            .style("left", `${event.pageX + 10}px`)
+            .style("left", `${
+                event.pageX + 50 > window.innerWidth ? event.pageX + 10 : event.pageX - 60
+            }px`)
             .style("top", `${event.pageY}px`)
             .html(
               d.children
-                ? `<strong>${d.data.name}</strong>`
-                : `<strong>${d.parent.data.name}</strong><br/>${d.data.name}: ${d.dataValue}`
+                ? `<strong>${crimeNameMapping[d.data.name]}</strong>`
+                : `<strong>${crimeNameMapping[d.parent.data.name]}</strong><br/>${d.data.name}: ${d.dataValue}`
             );
         })
         .on("mouseout", () => {
@@ -252,7 +265,7 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
 
       nodeEnter
         .append("text")
-        .text((d) => d.data.name)
+        .text(d => Object.keys(crimeNameMapping).includes(d.data.name) ? crimeNameMapping[d.data.name] : d.data.name)
         .style("font-size", "11px")
         .style("pointer-events", "none")
         .style("fill", "#fff")
