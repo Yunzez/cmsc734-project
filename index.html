@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Random Graph with D3.js</title>
+  <title>Budget Travel Planner</title>
   <link rel="stylesheet" href="styles/search.css" />
   <link rel="stylesheet" href="styles/dropdown.css" />
   <link rel="stylesheet" href="styles/fancyButton.css" />
@@ -26,13 +26,18 @@
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <link rel="stylesheet" href="styles/index.css" />
   <link rel="stylesheet" href="styles/map.css" />
+
+  <!-- Inter UI font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <div id="container">
     <div id="intro">
       <div>
-        <h1>Welcome to Budget Travel Planner</h1>
+        <h1>Welcome to <em>Budget Travel Planner</em></h1>
         <p>
           Your ultimate solution for affordable and safe travel planning. Our
           platform integrates diverse data sources to provide personalized
@@ -41,14 +46,12 @@
           budget-friendly destinations with ease.
         </p>
       </div>
-
-      <div class="mt-5">
+      <div>
         <h2>Research Problem</h2>
         <p>
           In the travel planning process, budget-constrained international
           travelers and students often face several challenges...
         </p>
-        <!-- Add the rest of your content here -->
       </div>
       <div class="controls mb-5 d-flex align-items-center">
         <h4 class="me-3 mb-0">View maps by:</h4>
@@ -57,10 +60,9 @@
           <button id="groupByCounty" class="fancyButton">County</button>
         </div>
       </div>
-      <!--! here is the search section  -->
       <div class="mt-5">
         <h2>Search Your Destination</h2>
-        <p>Search the state you would like to go!</p>
+        <p>Name the state, county or city you would like to go!</p>
 
         <div class="d-flex justify-content-center w-100">
           <div class="searchGroup">
