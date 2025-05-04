@@ -175,7 +175,7 @@ export function renderRadarChart(data, state, county) {
 }
 
 export async function calculateScore(state, county) {
-  console.log("calculateScore", state, county);
+  // console.log("calculateScore", state, county);
 
   function normalize(val, min, max) {
     if (val == null || isNaN(val)) return 0;

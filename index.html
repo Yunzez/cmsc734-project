@@ -78,6 +78,22 @@
           <button id="closeRecommendWidget" class="samll-button" onclick="window.toggleRecommendWidget()">
             Close
           </button>
+          <div class="shuffle-options">
+            <div>
+              <label>
+                <input type="radio" name="recommendMode" class="shuffle-option" value="state" />
+                <span>Top 10 States</span>
+              </label>
+              <label>
+                <input type="radio" name="recommendMode" class="shuffle-option" value="county" />
+                <span>Top 10 Counties</span>
+              </label>
+              <label>
+                <input type="radio" name="recommendMode" class="shuffle-option" value="shuffle" checked="true" />
+                <span>Shuffle Recommendations</span>
+              </label>
+            </div>
+          </div>
           <button class="shuffle-buttn">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
               class="bi bi-arrow-repeat" viewBox="0 0 16 16">
@@ -92,10 +108,7 @@
           </button>
 
         </div>
-        <div class="mb-2">
-          <label><input type="radio" name="recommendMode" value="state"> Top 10 States in USA</label><br />
-          <label><input type="radio" name="recommendMode" value="county"> Top 10 Counties in USA</label>
-        </div>
+        
         <div id="recommend-widget-content"></div>
       </div>
       <div>

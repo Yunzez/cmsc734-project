@@ -29,7 +29,6 @@ import { setupRadarChartContainer } from "./component/visualization/radarVis.js"
 
 // import { setupRecommendationPanel } from "./component/visualization/recommendationPanel.js";
 
-
 const parentContainer = document.getElementById("container");
 
 // we add a search component here
@@ -49,7 +48,6 @@ window.onload = function () {
     parentContainer,
     visualizationTarget
   );
-
 
   // window.addEventListener("DOMContentLoaded", () => {
   //   const controlSection = document.querySelector(".controls");
@@ -195,7 +193,6 @@ function prepareDropdown(globalMap) {
 
 // index.js (modified)
 
-
 import { calculateScore } from "./component/visualization/radarVis.js";
 let currentRecommendationMode = null; // 'state' | 'county' | null
 
@@ -213,17 +210,20 @@ export function toggleRecommendWidget() {
     blur.style.display = "block";
     renderRecommendations();
 
-    document.querySelectorAll('input[name="recommendMode"]').forEach((input) => {
-      input.addEventListener("change", () => {
-        renderRecommendations();
+    document
+      .querySelectorAll('input[name="recommendMode"]')
+      .forEach((input) => {
+        input.addEventListener("change", () => {
+          renderRecommendations();
+        });
       });
-    });
   }
 }
 
-
 async function getTopRecommendations(isStateMode = false) {
-  const res = await fetch(isStateMode ? "data/radar_data_state.json" : "data/radar_data.json");
+  const res = await fetch(
+    isStateMode ? "data/radar_data_state.json" : "data/radar_data.json"
+  );
   const data = await res.json();
   const entries = Object.entries(data);
 
@@ -249,14 +249,16 @@ async function getTopRecommendations(isStateMode = false) {
       return { key: state, score, scoreOutOf100: totalScore * 4 };
     });
 
-    return scored.sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100).slice(0, 10);
+    return scored
+      .sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100)
+      .slice(0, 10);
   }
 
   // County mode logic (as before)
   const sample = entries.sort(() => 0.5 - Math.random()).slice(0, 100);
   const scored = await Promise.all(
     sample.map(async ([key, value]) => {
-      const [county, state] = key.split(",").map(s => s.trim());
+      const [county, state] = key.split(",").map((s) => s.trim());
       const score = await calculateScore(state, county);
       const totalScore = score.reduce((a, b) => a + b, 0);
       return { key, score, scoreOutOf100: totalScore * 4 };
@@ -276,20 +278,24 @@ export async function renderRecommendations() {
   // 清空旧内容
   container.innerHTML = "";
 
-  const selected = document.querySelector('input[name="recommendMode"]:checked');
-  const isStateMode = selected?.value === "state";
-  const isCountyMode = selected?.value === "county";
-  currentRecommendationMode = isStateMode ? "state" : (isCountyMode ? "county" : null);
-
+  const selected = document.querySelector(
+    'input[name="recommendMode"]:checked'
+  );
+  const selectedMode = selected?.value;
+  currentRecommendationMode = selectedMode == "shuffle" ? null : selectedMode;
   const title = document.createElement("h5");
-  title.textContent = isStateMode
-    ? "Top 10 States in USA"
-    : isCountyMode
-    ? "Top 10 Counties in USA"
-    : "Top Picks";
+  console.log("selectedMode", selectedMode);
+  if (selectedMode === "state") {
+    title.textContent = "Top 10 States in USA";
+  } else if (selectedMode === "county") {
+    title.textContent = "Top 10 Counties in USA";
+  } else {
+    title.textContent = "Top Picks from Shuffle";
+  }
+  title.style.marginTop = "10px";
   container.appendChild(title);
 
-  const top = await getTopRecommendations(isStateMode);
+  const top = await getTopRecommendations(selectedMode == "state");
 
   // 如果在等待过程中用户点击了其他选项，就丢弃这次响应结果
   if (thisRequestId !== latestRenderRequestId) return;
@@ -301,19 +307,38 @@ export async function renderRecommendations() {
   top.forEach(({ key, scoreOutOf100 }) => {
     const item = document.createElement("li");
     item.style.marginBottom = "6px";
+    item.style.cursor = "pointer";
+    item.style.transition = "background-color 0.3s ease";
+    item.style.padding = "5px";
+    item.style.fontSize = "16px";
+    item.style.borderRadius = "8px";
     item.innerHTML = `
-      <strong>${key}</strong> 
-      <span style="color: #0a9396; font-weight: bold;">${Math.round(scoreOutOf100)} / 100</span>
+      <strong class="ps-3">${key}</strong> 
+      <span style="color: #0a9396; font-weight: bold;">${Math.round(
+        scoreOutOf100
+      )} / 100</span>
+      <span class="option-arrow" style="margin-right: 10px; float: right; opacity: 0; color: #0a9396; transition: opacity 0.3s ease;">GO ➔</span>
     `;
+
+    item.onmouseover = () => {
+      item.style.backgroundColor = "#f0f0f0";
+      const arrow = item.querySelector(".option-arrow");
+      if (arrow) arrow.style.opacity = "1";
+    };
+
+    item.onmouseout = () => {
+      item.style.backgroundColor = "transparent";
+      const arrow = item.querySelector(".option-arrow");
+      if (arrow) arrow.style.opacity = "0";
+    };
+
     list.appendChild(item);
   });
 
   container.appendChild(list);
 }
 
-
 window.toggleRecommendWidget = toggleRecommendWidget;
-
 
 document.addEventListener("DOMContentLoaded", () => {
   const shuffleBtn = document.querySelector(".shuffle-buttn");
@@ -325,33 +350,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.shuffleRecommendations = async function () {
-  
   document.querySelectorAll('input[name="recommendMode"]').forEach((el) => {
     el.checked = false;
+    if (el.value === "shuffle") {
+      el.checked = true;
+    }
   });
-
-  currentRecommendationMode = null;
-
  
-  const container = document.getElementById("recommend-widget-content");
-  container.innerHTML = "<h5>Top Picks</h5>";
 
-  const top = await getTopRecommendations(false); // default county sampling
-
-  const list = document.createElement("ul");
-  list.style.listStyle = "none";
-  list.style.padding = "0";
-
-  top.forEach(({ key, scoreOutOf100 }) => {
-    const item = document.createElement("li");
-    item.style.marginBottom = "6px";
-    item.innerHTML = `
-      <strong>${key}</strong> 
-      <span style="color: #0a9396; font-weight: bold;">${Math.round(scoreOutOf100)} / 100</span>
-    `;
-    list.appendChild(item);
-  });
-
-  container.appendChild(list);
+  const top = await renderRecommendations(); // default county sampling
 };
-
