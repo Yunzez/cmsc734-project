@@ -46,7 +46,7 @@ export function renderSafetyHeatmap(globalMap, stateName, county) {
       const colorScale = d3
         .scaleSequentialSqrt()
         .domain([d3.min(scores), d3.max(scores)])
-        .interpolator(d3.interpolateReds);
+        .interpolator(d3.interpolateGreys);
 
       if (heatmapLayer) {
         globalMap.removeLayer(heatmapLayer);
