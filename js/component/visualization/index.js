@@ -1,6 +1,6 @@
 import { createHotelVis } from "./hotelVis.js";
 import { renderAirportOnMap } from "./airportVis.js";
-
+import { renderRadarChart } from "./radarVis.js";
 
 async function fetchCitiesData(state, county) {
   const data = await d3.csv("../../../data/map/cities.csv");
@@ -18,6 +18,7 @@ export async function startRenderVisualization(visualizationTargets, map) {
   const clickedLayer = visualizationTargets[0];
   const state = visualizationTargets[1];
   const county = visualizationTargets[2];
+  renderRadarChart([4.2, 3.8, 4.1, 3.9, 4.5],state, county);
   const visDiv = document.getElementById("visualization");
 
   if (county && visualizationTargets.length > 1) {
@@ -27,10 +28,6 @@ export async function startRenderVisualization(visualizationTargets, map) {
     console.log("rendering state")
     renderVisualizationState(visDiv, clickedLayer, state, map);
   }
-
-//   document.getElementById("city-radar-chart").style.display = "block";
-
-//   renderRadarChart([4.2, 3.8, 4.1, 3.9, 4.5]); // 可以改成动态评分
 }
 
 function renderVisualizationCounty(visDiv, clickedLayer, state, county) {

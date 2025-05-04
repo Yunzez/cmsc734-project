@@ -25,7 +25,7 @@ import {
   renderSocietyHeatmap,
   removeSocietyHeatmap,
 } from "./component/visualization/societyHeatmap.js";
-
+import {setupRadarChartContainer} from "./component/visualization/radarVis.js";
 
 const parentContainer = document.getElementById("container");
 
@@ -82,7 +82,7 @@ function prepareVisDiv(visDiv) {
 
 // }
 function prepareDropdown(globalMap) {
-    renderRadarChart()
+    setupRadarChartContainer()
   const dropdownItems = document.querySelectorAll(
     "#filterOptionsList .checkbox-input"
   );
