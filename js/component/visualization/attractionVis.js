@@ -19,11 +19,11 @@ export function createAttractionVis(containerDiv, stateName, globalMap) {
     if (!wrapper) {
         wrapper = document.createElement("div");
         wrapper.id = "treemap-vis";
-        containerDiv.appendChild(wrapper);  
+        containerDiv.appendChild(wrapper);
     }
 
-    wrapper.innerHTML = ""; 
-    
+    wrapper.innerHTML = "";
+
     const title = document.createElement("div");
     title.id = "attraction-title";
     wrapper.appendChild(title);
@@ -222,11 +222,11 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
             .on("mouseover", (event, d) => {
                 const total = (d.data.RecreationVisitors || 0) + (d.data.NonRecreationVisitors || 0);
                 showAttractionTooltip(event, {
-                  name: d.data.name,
-                  value: total.toLocaleString()
-                }, 'primary'); 
+                    name: d.data.name,
+                    value: total.toLocaleString()
+                }, 'primary');
                 highlightFeatureByName(d.data.Park || d.data.name);
-              })
+            })
             .on("mouseout", () => {
                 removeHighlight();
                 hideAttractionTooltip();
@@ -273,31 +273,31 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
 
 function createSubTreeData(originalRoot, metrics) {
     return d3.hierarchy({
-      children: metrics.map(key => {
-        const rawValue = originalRoot.data[key] || 0;
-        return {
-          name: key.replace(/([A-Z])/g, ' $1').trim(),
-          value: Math.abs(rawValue),
-          rawValue: rawValue, 
-          isPercentage: key.includes("%") 
-        };
-      })
+        children: metrics.map(key => {
+            const rawValue = originalRoot.data[key] || 0;
+            return {
+                name: key.replace(/([A-Z])/g, ' $1').trim(),
+                value: Math.abs(rawValue),
+                rawValue: rawValue,
+                isPercentage: key.includes("%")
+            };
+        })
     })
-    .sum(d => d.value)
-    .sort((a, b) => b.value - a.value);
-  }
+        .sum(d => d.value)
+        .sort((a, b) => b.value - a.value);
+}
 
 
 function renderSubTreemap(data, container, title) {
-   
+
     container.innerHTML = "";
     container.style.minHeight = "300px";
     container.style.position = "relative";
 
     const width = container.offsetWidth;
-    const height = 300; 
+    const height = 300;
 
-    
+
     const svg = d3.select(container)
         .append("svg")
         .attr("viewBox", [0, 0, width, height])
@@ -306,7 +306,7 @@ function renderSubTreemap(data, container, title) {
         .style("background", "#f8f9fa")
         .style("border-radius", "8px");
 
-   
+
     svg.append("text")
         .attr("x", 15)
         .attr("y", 25)
@@ -315,31 +315,31 @@ function renderSubTreemap(data, container, title) {
         .style("font-weight", "600")
         .style("fill", "#2c3e50");
 
-    
+
     const treemap = d3.treemap()
-        .tile(d3.treemapResquarify.ratio(1.5)) 
-        .size([width, height - 40]) 
+        .tile(d3.treemapResquarify.ratio(1.5))
+        .size([width, height - 40])
         .round(true)
         .padding(1);
 
-     
+
     const values = data.leaves().map(d => d.value);
     const colorScale = d3.scaleSequential()
-        .domain([d3.max(values), 0])  
+        .domain([d3.max(values), 0])
         .interpolator(interpolator);
 
-    
+
     treemap(data);
 
-    
-    const g = svg.append("g")
-        .attr("transform", `translate(0,40)`);  
 
-     
-        g.selectAll("rect")
+    const g = svg.append("g")
+        .attr("transform", `translate(0,40)`);
+
+
+    g.selectAll("rect")
         .data(data.leaves())
         .enter()
-        .append("rect")  
+        .append("rect")
         .attr("x", d => d.x0)
         .attr("y", d => d.y0)
         .attr("width", d => d.x1 - d.x0)
@@ -347,33 +347,33 @@ function renderSubTreemap(data, container, title) {
         .attr("fill", d => colorScale(d.value))
         .style("stroke", "#fff")
         .style("stroke-width", 0.5)
-        .style("pointer-events", "all") 
-        .on("mouseover", function(event, d) {
-          const name = d.data.name;
-          const rawValue = d.data.rawValue;
-          const isPercentage = d.data.name.includes("%");
-          console.log('Hover Data:', d.data); 
-          console.log('Rect Dimensions:', {
-            width: d.x1 - d.x0,
-            height: d.y1 - d.y0
-          });
+        .style("pointer-events", "all")
+        .on("mouseover", function (event, d) {
+            const name = d.data.name;
+            const rawValue = d.data.rawValue;
+            const isPercentage = d.data.name.includes("%");
+            console.log('Hover Data:', d.data);
+            console.log('Rect Dimensions:', {
+                width: d.x1 - d.x0,
+                height: d.y1 - d.y0
+            });
 
-          let displayValue;
-          if (isPercentage) {
-            displayValue = `${(rawValue * 100).toFixed(1)}%`;  
-          } else {
-            displayValue = rawValue.toLocaleString();
-          }
-    
-          showAttractionTooltip(event, {
-            name: d.data.name,
-            value: displayValue
-          }, 'secondary');  
-          console.log('Sub Treemap Hover:', {
-            name: d.data.name,
-            rawValue: d.data.rawValue,
-            displayValue: displayValue
-          });
+            let displayValue;
+            if (isPercentage) {
+                displayValue = `${(rawValue * 100).toFixed(1)}%`;
+            } else {
+                displayValue = rawValue.toLocaleString();
+            }
+
+            showAttractionTooltip(event, {
+                name: d.data.name,
+                value: displayValue
+            }, 'secondary');
+            console.log('Sub Treemap Hover:', {
+                name: d.data.name,
+                rawValue: d.data.rawValue,
+                displayValue: displayValue
+            });
         })
         .on("mousemove", function (event) {
             const tooltip = document.getElementById("attraction-tooltip");
@@ -393,7 +393,7 @@ function renderSubTreemap(data, container, title) {
                 .style("stroke-width", 0.5);
         });
 
-    
+
     g.selectAll("text")
         .data(data.leaves())
         .enter()
@@ -402,7 +402,7 @@ function renderSubTreemap(data, container, title) {
         .attr("y", d => d.y0 + 4)
         .attr("dominant-baseline", "hanging")
         .style("font-size", d => {
-             
+
             const boxWidth = d.x1 - d.x0;
             if (boxWidth > 100) return "12px";
             if (boxWidth > 60) return "10px";
@@ -412,13 +412,13 @@ function renderSubTreemap(data, container, title) {
         .style("text-shadow", "rgba(0, 0, 0, 1) 0px 1px 5px")
         .text(d => {
             const maxWidth = d.x1 - d.x0;
-            const maxChars = Math.floor(maxWidth / 7);  
+            const maxChars = Math.floor(maxWidth / 7);
             return d.data.name.length > maxChars ?
                 d.data.name.substring(0, maxChars - 1) + "..." :
                 d.data.name;
         });
 
-    
+
     if (values.length > 0) {
         const legend = svg.append("g")
             .attr("transform", `translate(15, ${height - 20})`);
@@ -455,7 +455,7 @@ function renderSubTreemap(data, container, title) {
             .attr("height", 10)
             .style("fill", "url(#gradient)");
 
-         
+
         legend.append("text")
             .attr("x", 0)
             .attr("y", -5)
@@ -503,18 +503,18 @@ function removeHighlight() {
 }
 
 
- 
+
 function showAttractionTooltip(event, data, level) {
     const tooltipHTML = `
       <div style="color:#f39c12!important;font-weight:500;">${data.name}</div>
       <div style="color:white!important;">${data.value}</div>
     `;
-  
+
     let tooltip = document.getElementById("attraction-tooltip");
     if (!tooltip) {
-      tooltip = document.createElement("div");
-      tooltip.id = "attraction-tooltip";
-      tooltip.style.cssText = `
+        tooltip = document.createElement("div");
+        tooltip.id = "attraction-tooltip";
+        tooltip.style.cssText = `
         position: absolute;
         background: rgba(0,0,0,0.9)!important;  
         color: white!important;  
@@ -530,37 +530,37 @@ function showAttractionTooltip(event, data, level) {
         transition: opacity 0.2s;
         word-wrap: break-word;
       `;
-      document.body.appendChild(tooltip);
+        document.body.appendChild(tooltip);
     }
-  
+
     tooltip.innerHTML = tooltipHTML;
     tooltip.style.opacity = "1";
-  
+
     requestAnimationFrame(() => {
-      const tooltipWidth = tooltip.offsetWidth;
-      const tooltipHeight = tooltip.offsetHeight;
-      const margin = 15;
-  
-      
-      let left = event.pageX + margin;
-  
-     
-      if (left + tooltipWidth > window.innerWidth) {
-        left = event.pageX - tooltipWidth - margin;
-        
-        if (left < 0) left = margin;
-      }
-  
-      let top = event.pageY + margin;
-      if (top + tooltipHeight > window.innerHeight) {
-        top = window.innerHeight - tooltipHeight - margin;
-      }
-  
-      tooltip.style.left = `${left}px`;
-      tooltip.style.top = `${top}px`;
+        const tooltipWidth = tooltip.offsetWidth;
+        const tooltipHeight = tooltip.offsetHeight;
+        const margin = 15;
+
+
+        let left = event.pageX + margin;
+
+
+        if (left + tooltipWidth > window.innerWidth) {
+            left = event.pageX - tooltipWidth - margin;
+
+            if (left < 0) left = margin;
+        }
+
+        let top = event.pageY + margin;
+        if (top + tooltipHeight > window.innerHeight) {
+            top = window.innerHeight - tooltipHeight - margin;
+        }
+
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${top}px`;
     });
-  }
-  
+}
+
 
 function hideAttractionTooltip() {
     const tooltip = document.getElementById("attraction-tooltip");

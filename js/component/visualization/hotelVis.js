@@ -4,7 +4,7 @@ let selectedHotels = null;
 let localStateName = null; // this is for to reset view from bubbles
 let localCountyName = null; // this is for to reset view from bubbles
 let initialized = false;
-import { getAssetPath } from "../../utils";
+import { getAssetPath } from "../../utils.js";
 const FACILITY_CATEGORIES = {
   "Free WiFi": /wifi/i,
   Breakfast: /breakfast/i,
