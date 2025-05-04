@@ -5,14 +5,14 @@ let countyToLayerMap = {};
 let highlighted_layer = null;
 
 const crimeNameMapping = {
-  ROBBERY: 'Robbery',
-  MVTHEFT: 'Motor Vehicle Theft',
-  LARCENY: 'Larceny-Theft',
-  ARSON: 'Arson',
-  AGASSLT: 'Aggravated Assault',
-  MURDER: 'Murder',
-  BURGLRY: 'Burglary'
-}
+  ROBBERY: "Robbery",
+  MVTHEFT: "Motor Vehicle Theft",
+  LARCENY: "Larceny-Theft",
+  ARSON: "Arson",
+  AGASSLT: "Aggravated Assault",
+  MURDER: "Murder",
+  BURGLRY: "Burglary",
+};
 
 export function createSafetyVis(
   mapDiv,
@@ -79,6 +79,8 @@ export function createSafetyVis(
   });
 }
 
+let topLevelNode = null;
+let subLevelNode = null;
 function renderCrimeChart(container, crimeInput, titleLabel) {
   if (!document.getElementById("safty-tooltip")) {
     const tooltip = document.createElement("div");
@@ -190,7 +192,7 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
     treemap(root);
 
     let currentNode = root;
-
+    let topLevelNode = root;
     const g = svg.append("g").attr("class", "treemap-group");
     const colorInterpolator = d3.piecewise(d3.interpolateRgb.gamma(2.2), [
       "#deebf7", // light blue
@@ -205,7 +207,20 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
       .scaleSequential()
       .domain([1, maxCountyValue]) // use 1 as the floor to avoid log(0)
       .interpolator(colorInterpolator);
-    function render(node) {
+    function render(node, sub = false) {
+      const backBtn = document.getElementById("crime-back-btn");
+      if (sub && backBtn) {
+        console.log("set back button")
+        backButton.innerText = "← Back";
+        backButton.className = "btn btn-secondary btn-sm me-2";
+        backButton.style = "display: block";
+        backButton.onclick = () => {
+          backButton.style = "display: none";
+          render(topLevelNode, false);
+         
+        };
+      } 
+     
       console.log("rendering node", node);
       currentNode = node;
 
@@ -242,20 +257,27 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
 
           treemap(newRoot);
           g.selectAll("*").remove();
-          render(newRoot);
+          render(newRoot, true);
         })
         .on("mouseover", (event, d) => {
           highlightCounty(d.data.name);
           d3.select("#safty-tooltip")
             .style("opacity", 1)
-            .style("left", `${
-                event.pageX + 50 > window.innerWidth ? event.pageX + 10 : event.pageX - 60
-            }px`)
+            .style(
+              "left",
+              `${
+                event.pageX + 50 > window.innerWidth
+                  ? event.pageX + 10
+                  : event.pageX - 60
+              }px`
+            )
             .style("top", `${event.pageY}px`)
             .html(
               d.children
                 ? `<strong>${crimeNameMapping[d.data.name]}</strong>`
-                : `<strong>${crimeNameMapping[d.parent.data.name]}</strong><br/>${d.data.name}: ${d.dataValue}`
+                : `<strong>${
+                    crimeNameMapping[d.parent.data.name]
+                  }</strong><br/>${d.data.name}: ${d.dataValue}`
             );
         })
         .on("mouseout", () => {
@@ -265,7 +287,11 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
 
       nodeEnter
         .append("text")
-        .text(d => Object.keys(crimeNameMapping).includes(d.data.name) ? crimeNameMapping[d.data.name] : d.data.name)
+        .text((d) =>
+          Object.keys(crimeNameMapping).includes(d.data.name)
+            ? crimeNameMapping[d.data.name]
+            : d.data.name
+        )
         .style("font-size", "11px")
         .style("pointer-events", "none")
         .style("fill", "#fff")
@@ -292,7 +318,23 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
 
     render(currentNode);
     let title = document.getElementById("safety-title");
-    title.innerHTML = `<b>Zoomable Treemap of Crime in ${titleLabel}</b>`;
+    // title.innerHTML = `<b>Zoomable Treemap of Crime in ${titleLabel}</b>`;
+
+    let titleDiv = document.getElementById("safety-title");
+    const titleContainer = document.createElement("div");
+    titleContainer.style.display = "flex";
+    titleContainer.style.justifyContent = "space-between";
+    titleContainer.style.alignItems = "center";
+
+    const titleText = document.createElement("span");
+    titleText.innerHTML = `<b>Zoomable Treemap of Crime in ${titleLabel}</b>`;
+    titleContainer.appendChild(titleText);
+
+    const backButton = document.createElement("button");
+    backButton.id = "crime-back-btn"
+    titleContainer.appendChild(backButton);
+    titleDiv.innerHTML = "";
+    titleDiv.appendChild(titleContainer);
   }
 }
 
