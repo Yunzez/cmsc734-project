@@ -128,12 +128,6 @@ function prepareDropdown(globalMap) {
         } else {
           this.classList.add("active");
           renderSocietyHeatmap(globalMap, state);
-          if (document.getElementById("safety-vis")) {
-            document.getElementById("safety-vis").remove()
-            document.getElementById("safety-title").remove();
-        }
-          removeSafetyHeatmap(globalMap);
-          clearCheckboxes("crime");
         }
       }
 
@@ -157,19 +151,15 @@ function prepareDropdown(globalMap) {
       if (selected === "Safety") {
         const mapDiv = document.getElementById("vis-overall");
         if (this.classList.contains("active")) {
-
           if (document.getElementById("safety-vis")) {
             document.getElementById("safety-vis").remove()
             document.getElementById("safety-title").remove();
-        }
-          
+          }
           this.classList.remove("active");
           removeSafetyHeatmap(globalMap);
         } else {
           this.classList.add("active");
           renderSafetyHeatmap(globalMap, state, county);
-          removeSocietyHeatmap(globalMap);
-          clearCheckboxes("poverty");
         }
       }
 

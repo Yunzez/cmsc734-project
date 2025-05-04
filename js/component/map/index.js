@@ -350,7 +350,7 @@ export function clearCheckboxes(type = undefined) {
     className += `.${type}`;
   }
   [...document.querySelectorAll(className)].forEach(_ => {
-    _.classList.remove("active")
-    _.checked = false
+    _.classList.remove("active");
+    _.checked = false;
   })
 }
