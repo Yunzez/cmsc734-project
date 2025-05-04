@@ -14,15 +14,23 @@ const interpolator = t => d3.interpolateGreens(1 - 0.8 * t)
 
 export function createAttractionVis(containerDiv, stateName, globalMap) {
     globalMapRef = globalMap;
-    containerDiv.innerHTML = "";
+    // containerDiv.innerHTML = "";
+    let wrapper = document.getElementById("treemap-vis");
+    if (!wrapper) {
+        wrapper = document.createElement("div");
+        wrapper.id = "treemap-vis";
+        containerDiv.appendChild(wrapper);  
+    }
 
+    wrapper.innerHTML = ""; 
+    
     const title = document.createElement("div");
     title.id = "attraction-title";
-    containerDiv.appendChild(title);
+    wrapper.appendChild(title);
 
     const visDiv = document.createElement("div");
     visDiv.id = "attraction-vis";
-    containerDiv.appendChild(visDiv);
+    wrapper.appendChild(visDiv);
 
     const csvPath = "../../../data/visitor/min_visitor.csv";
     d3.csv(csvPath, d3.autoType).then((data) => {
