@@ -30,7 +30,10 @@
   <!-- Inter UI font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+  <script type="module" src="./js/component/visualization/recommendationPanel.js"></script>
 </head>
 
 <body>
@@ -60,6 +63,7 @@
         <div>
           <button id="groupByState" class="fancyButton">State</button>
           <button id="groupByCounty" class="fancyButton">County</button>
+
         </div>
       </div>
       <div>
@@ -75,9 +79,16 @@
               </g>
             </svg>
             <input placeholder="Search" type="search" class="input" id="mainSearchInput" />
+            <div id="recommendation-btn-container"></div>
           </div>
         </div>
         <div id="mainSearchDropdown" class="dropdown hidden"></div>
+
+        <!-- <button id="recommendation-btn" class="fancyButton">Recommendation</button>
+
+       
+        <div id="recommendation-panel" style="margin-top: 1rem;"></div> -->
+
       </div>
       <div class="d-flex justify-content-start align-items-end flex-column mt-5"
         style="position: absolute; bottom: 10px; left: 10px">
@@ -167,7 +178,7 @@
         </div>
       </div>
       <div id="info-section">
-        
+
       </div>
       <!-- <div class="city-search-bar mt-3">
           <h5>Search for a City</h5>
@@ -207,6 +218,9 @@
     </div>
   </div>
   <script type="module" src="./js/index.js"></script>
+
+  <script type="module" src="./js/component/visualization/recommendationPanel.js"></script>
+
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
