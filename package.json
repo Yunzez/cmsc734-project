@@ -1,5 +1,11 @@
 {
   "dependencies": {
-    "leaflet.markercluster": "^1.5.3"
+    "@turf/boolean-point-in-polygon": "^7.2.0",
+    "@turf/helpers": "^7.2.0",
+    "@turf/projection": "^7.2.0",
+    "@turf/turf": "^7.2.0",
+    "csv-parser": "^3.2.0",
+    "leaflet.markercluster": "^1.5.3",
+    "turf": "^3.0.14"
   }
 }
