@@ -1,4 +1,4 @@
-import { createMap } from "./component/map/index.js";
+import {clearCheckboxes, createMap} from "./component/map/index.js";
 import { renderRadarChart } from "./component/visualization/radarVis.js";
 import {
   removeHotelOnMap,
@@ -51,7 +51,7 @@ window.onload = function () {
   visBack.onclick = function () {
     parentContainer.classList.remove("showVis");
     setTimeout(() => {
-      [...document.querySelectorAll('.checkbox-input')].forEach(_ => _.checked = false)
+      clearCheckboxes()
       window.location.reload()
     }, 600);
   };
@@ -128,6 +128,10 @@ function prepareDropdown(globalMap) {
         } else {
           this.classList.add("active");
           renderSocietyHeatmap(globalMap, state);
+          document.getElementById("safety-vis")?.remove();
+          document.getElementById("safety-title")?.remove();
+          removeSafetyHeatmap(globalMap);
+          clearCheckboxes("crime");
         }
       }
 
@@ -152,15 +156,17 @@ function prepareDropdown(globalMap) {
         const mapDiv = document.getElementById("vis-overall");
         if (this.classList.contains("active")) {
           document.getElementById("safety-vis").remove();
-          document.getElementById("safty-title").remove();
+          document.getElementById("safety-title").remove();
           this.classList.remove("active");
           removeSafetyHeatmap(globalMap);
         } else {
           this.classList.add("active");
           renderSafetyHeatmap(globalMap, state, county);
-
+          removeSocietyHeatmap(globalMap);
+          clearCheckboxes("poverty");
         }
       }
+
       if (selected === "Transportation") {
         if (this.checked) {
           console.log("✅ Showing airports for", state);

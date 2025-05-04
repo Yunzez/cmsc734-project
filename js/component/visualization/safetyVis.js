@@ -13,7 +13,7 @@ export function createSafetyVis(
   globalHeatmapLayer = heatmapLayer;
   const container = document.createElement("div");
   const title = document.createElement("div");
-  title.id = "safty-title";
+  title.id = "safety-title";
   container.id = "safety-vis";
   mapDiv.appendChild(title);
   mapDiv.appendChild(container);
@@ -277,7 +277,7 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
     }
 
     render(currentNode);
-    let title = document.getElementById("safty-title");
+    let title = document.getElementById("safety-title");
     title.innerHTML = `<b>Zoomable Treemap of Crime in ${titleLabel}</b>`;
   }
 }
