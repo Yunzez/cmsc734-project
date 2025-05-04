@@ -1,5 +1,7 @@
 // visualization/historyVis.js
 import { getStateAbbrFromName } from "../../utils.js";
+import { createAttractionVis, removeAttractionVis } from "./attractionVis.js";
+
 import { setupRadarChartContainer, updateRadarChart } from "./radarVis.js";
 
 let historyLayer = null;
@@ -127,12 +129,17 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
     historyLayer.addTo(globalMap);
     window._historyLayer = historyLayer;
     console.log("✅ History layer added with", converted.length, "features.");
+
+    const mapDiv = document.getElementById("vis-overall");
+    createAttractionVis(mapDiv, stateName, globalMap);
+
 }
 
 export function removeHistoryFromMap(globalMap) {
     if (window._historyLayer && globalMap.hasLayer(window._historyLayer)) {
         globalMap.removeLayer(window._historyLayer);
         console.log("🧹 Removed history layer");
+        removeAttractionVis();
     }
 }
 

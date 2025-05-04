@@ -34,9 +34,12 @@ function convertFeatureToLatLng(feature) {
 }
 
 function fetchParkGeojsonByState(stateName) {
-  const filename = `data/park/state_parks/${stateName}_park.geojson`;
-  return fetch(filename).then(res => res.json());
-}
+    const stateAbbr = getStateAbbrFromName(stateName);
+    const fileSafeName = stateName.replaceAll(" ", "_");
+    const filename = `data/park/state_parks/${fileSafeName}_park.geojson`;
+    return fetch(filename).then(res => res.json());
+  }
+  
 
 export function renderParkOnMap(stateName, globalMap) {
   fetchParkGeojsonByState(stateName)
