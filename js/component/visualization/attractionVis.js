@@ -1,6 +1,8 @@
 // visualization/attractionVis.js
 // visualization/attractionVis.js
 
+// visualization/attractionVis.js
+
 import { getStateNameFromAbbr } from "../../utils.js";
 
 let globalMapRef = null;
@@ -57,7 +59,7 @@ export function createAttractionVis(containerDiv, stateName, globalMap) {
 
         const root = d3
             .hierarchy({ name: "Total", children: topParks })
-            .sum((d) => d.RecreationVisitors)
+            .sum((d) => (d.RecreationVisitors || 0) + (d.NonRecreationVisitors || 0))
             .sort((a, b) => b.value - a.value);
 
         previousRoot = root;
@@ -66,6 +68,8 @@ export function createAttractionVis(containerDiv, stateName, globalMap) {
         renderTreemap(root, visDiv, title, stateName, true);
     });
 }
+
+
 
 function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
     hideAttractionTooltip();
