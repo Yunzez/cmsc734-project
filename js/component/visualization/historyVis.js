@@ -2,7 +2,6 @@
 import { getStateAbbrFromName } from "../../utils.js";
 import { createAttractionVis, removeAttractionVis } from "./attractionVis.js";
 
-import { setupRadarChartContainer, updateRadarChart } from "./radarVis.js";
 
 let historyLayer = null;
 

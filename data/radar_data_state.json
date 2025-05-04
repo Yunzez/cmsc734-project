@@ -1,0 +1,562 @@
+{
+  "Missouri": {
+    "num_counties": 114,
+    "total_hotels": 1673,
+    "avg_hotels_per_county": 14.68,
+    "avg_airports_per_county": 4.41,
+    "avg_state_parks_per_county": 4,
+    "avg_crime_rate_per_100000": 256.86,
+    "avg_attractions_per_county": 6.19,
+    "avg_poverty_rate_per_county": 0.16
+  },
+  "Nebraska": {
+    "num_counties": 93,
+    "total_hotels": 464,
+    "avg_hotels_per_county": 4.99,
+    "avg_airports_per_county": 2.63,
+    "avg_state_parks_per_county": 5,
+    "avg_crime_rate_per_100000": 61.63,
+    "avg_attractions_per_county": 5.75,
+    "avg_poverty_rate_per_county": 0.13
+  },
+  "Nevada": {
+    "num_counties": 17,
+    "total_hotels": 687,
+    "avg_hotels_per_county": 40.41,
+    "avg_airports_per_county": 8.12,
+    "avg_state_parks_per_county": 2,
+    "avg_crime_rate_per_100000": 434.96,
+    "avg_attractions_per_county": 4,
+    "avg_poverty_rate_per_county": 0.13
+  },
+  "New Jersey": {
+    "num_counties": 21,
+    "total_hotels": 1364,
+    "avg_hotels_per_county": 64.95,
+    "avg_airports_per_county": 15.1,
+    "avg_state_parks_per_county": 8,
+    "avg_crime_rate_per_100000": 270.74,
+    "avg_attractions_per_county": 26.67,
+    "avg_poverty_rate_per_county": 0.11
+  },
+  "New York": {
+    "num_counties": 62,
+    "total_hotels": 2855,
+    "avg_hotels_per_county": 46.05,
+    "avg_airports_per_county": 8.89,
+    "avg_state_parks_per_county": 13,
+    "avg_crime_rate_per_100000": 212.17,
+    "avg_attractions_per_county": 19.19,
+    "avg_poverty_rate_per_county": 0.15
+  },
+  "North Carolina": {
+    "num_counties": 100,
+    "total_hotels": 2373,
+    "avg_hotels_per_county": 23.73,
+    "avg_airports_per_county": 4.81,
+    "avg_state_parks_per_county": 6,
+    "avg_crime_rate_per_100000": 269.39,
+    "avg_attractions_per_county": 9.08,
+    "avg_poverty_rate_per_county": 0.16
+  },
+  "North Dakota": {
+    "num_counties": 53,
+    "total_hotels": 230,
+    "avg_hotels_per_county": 4.34,
+    "avg_airports_per_county": 5.32,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 94.48,
+    "avg_attractions_per_county": 1.87,
+    "avg_poverty_rate_per_county": 0.12
+  },
+  "Ohio": {
+    "num_counties": 88,
+    "total_hotels": 2601,
+    "avg_hotels_per_county": 29.56,
+    "avg_airports_per_county": 7.4,
+    "avg_state_parks_per_county": 5,
+    "avg_crime_rate_per_100000": 138.14,
+    "avg_attractions_per_county": 6.05,
+    "avg_poverty_rate_per_county": 0.15
+  },
+  "Oklahoma": {
+    "num_counties": 77,
+    "total_hotels": 1026,
+    "avg_hotels_per_county": 13.32,
+    "avg_airports_per_county": 6.04,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 253.94,
+    "avg_attractions_per_county": 1.18,
+    "avg_poverty_rate_per_county": 0.16
+  },
+  "Oregon": {
+    "num_counties": 36,
+    "total_hotels": 3498,
+    "avg_hotels_per_county": 97.17,
+    "avg_airports_per_county": 11.75,
+    "avg_state_parks_per_county": 4,
+    "avg_crime_rate_per_100000": 166.67,
+    "avg_attractions_per_county": 22.72,
+    "avg_poverty_rate_per_county": 0.15
+  },
+  "Pennsylvania": {
+    "num_counties": 67,
+    "total_hotels": 2622,
+    "avg_hotels_per_county": 39.13,
+    "avg_airports_per_county": 11.31,
+    "avg_state_parks_per_county": 8,
+    "avg_crime_rate_per_100000": 222.14,
+    "avg_attractions_per_county": 12.15,
+    "avg_poverty_rate_per_county": 0.15
+  },
+  "South Carolina": {
+    "num_counties": 46,
+    "total_hotels": 1595,
+    "avg_hotels_per_county": 34.67,
+    "avg_airports_per_county": 4.28,
+    "avg_state_parks_per_county": 5,
+    "avg_crime_rate_per_100000": 581.14,
+    "avg_attractions_per_county": 12.78,
+    "avg_poverty_rate_per_county": 0.17
+  },
+  "South Dakota": {
+    "num_counties": 66,
+    "total_hotels": 339,
+    "avg_hotels_per_county": 5.14,
+    "avg_airports_per_county": 2.79,
+    "avg_state_parks_per_county": 4,
+    "avg_crime_rate_per_100000": 99.39,
+    "avg_attractions_per_county": 4.3,
+    "avg_poverty_rate_per_county": 0.15
+  },
+  "Tennessee": {
+    "num_counties": 95,
+    "total_hotels": 3510,
+    "avg_hotels_per_county": 36.95,
+    "avg_airports_per_county": 3.57,
+    "avg_state_parks_per_county": 2,
+    "avg_crime_rate_per_100000": 401.29,
+    "avg_attractions_per_county": 5.87,
+    "avg_poverty_rate_per_county": 0.17
+  },
+  "Texas": {
+    "num_counties": 254,
+    "total_hotels": 8267,
+    "avg_hotels_per_county": 32.55,
+    "avg_airports_per_county": 8,
+    "avg_state_parks_per_county": 12,
+    "avg_crime_rate_per_100000": 255,
+    "avg_attractions_per_county": 13.77,
+    "avg_poverty_rate_per_county": 0.16
+  },
+  "Utah": {
+    "num_counties": 29,
+    "total_hotels": 1488,
+    "avg_hotels_per_county": 51.31,
+    "avg_airports_per_county": 5.38,
+    "avg_state_parks_per_county": 10,
+    "avg_crime_rate_per_100000": 145.26,
+    "avg_attractions_per_county": 11.31,
+    "avg_poverty_rate_per_county": 0.11
+  },
+  "Virginia": {
+    "num_counties": 129,
+    "total_hotels": 2784,
+    "avg_hotels_per_county": 21.58,
+    "avg_airports_per_county": 3.29,
+    "avg_state_parks_per_county": 13,
+    "avg_crime_rate_per_100000": 89.63,
+    "avg_attractions_per_county": 26.55,
+    "avg_poverty_rate_per_county": 0.11
+  },
+  "Washington": {
+    "num_counties": 39,
+    "total_hotels": 2363,
+    "avg_hotels_per_county": 60.59,
+    "avg_airports_per_county": 13.72,
+    "avg_state_parks_per_county": 7,
+    "avg_crime_rate_per_100000": 205.45,
+    "avg_attractions_per_county": 11.97,
+    "avg_poverty_rate_per_county": 0.14
+  },
+  "West Virginia": {
+    "num_counties": 55,
+    "total_hotels": 364,
+    "avg_hotels_per_county": 6.62,
+    "avg_airports_per_county": 2.25,
+    "avg_state_parks_per_county": 2,
+    "avg_crime_rate_per_100000": 252.77,
+    "avg_attractions_per_county": 5.49,
+    "avg_poverty_rate_per_county": 0.17
+  },
+  "Wisconsin": {
+    "num_counties": 72,
+    "total_hotels": 1506,
+    "avg_hotels_per_county": 20.92,
+    "avg_airports_per_county": 7.5,
+    "avg_state_parks_per_county": 2,
+    "avg_crime_rate_per_100000": 142.6,
+    "avg_attractions_per_county": 2.69,
+    "avg_poverty_rate_per_county": 0.13
+  },
+  "Puerto Rico": {
+    "num_counties": 78,
+    "total_hotels": 0,
+    "avg_hotels_per_county": 0,
+    "avg_airports_per_county": 0.56,
+    "avg_state_parks_per_county": 0,
+    "avg_crime_rate_per_100000": 0,
+    "avg_attractions_per_county": 0,
+    "avg_poverty_rate_per_county": 0
+  },
+  "Alabama": {
+    "num_counties": 67,
+    "total_hotels": 1392,
+    "avg_hotels_per_county": 20.78,
+    "avg_airports_per_county": 4.69,
+    "avg_state_parks_per_county": 5,
+    "avg_crime_rate_per_100000": 385.65,
+    "avg_attractions_per_county": 6.1,
+    "avg_poverty_rate_per_county": 0.19
+  },
+  "Arkansas": {
+    "num_counties": 75,
+    "total_hotels": 796,
+    "avg_hotels_per_county": 10.61,
+    "avg_airports_per_county": 4.11,
+    "avg_state_parks_per_county": 4,
+    "avg_crime_rate_per_100000": 334.75,
+    "avg_attractions_per_county": 4.51,
+    "avg_poverty_rate_per_county": 0.19
+  },
+  "California": {
+    "num_counties": 58,
+    "total_hotels": 10709,
+    "avg_hotels_per_county": 184.64,
+    "avg_airports_per_county": 14.98,
+    "avg_state_parks_per_county": 23,
+    "avg_crime_rate_per_100000": 416.08,
+    "avg_attractions_per_county": 39.59,
+    "avg_poverty_rate_per_county": 0.14
+  },
+  "Colorado": {
+    "num_counties": 64,
+    "total_hotels": 4233,
+    "avg_hotels_per_county": 66.14,
+    "avg_airports_per_county": 7,
+    "avg_state_parks_per_county": 10,
+    "avg_crime_rate_per_100000": 181.82,
+    "avg_attractions_per_county": 12.28,
+    "avg_poverty_rate_per_county": 0.13
+  },
+  "Florida": {
+    "num_counties": 67,
+    "total_hotels": 18919,
+    "avg_hotels_per_county": 282.37,
+    "avg_airports_per_county": 13.15,
+    "avg_state_parks_per_county": 9,
+    "avg_crime_rate_per_100000": 412.94,
+    "avg_attractions_per_county": 15.63,
+    "avg_poverty_rate_per_county": 0.15
+  },
+  "Georgia": {
+    "num_counties": 159,
+    "total_hotels": 3611,
+    "avg_hotels_per_county": 22.71,
+    "avg_airports_per_county": 2.87,
+    "avg_state_parks_per_county": 9,
+    "avg_crime_rate_per_100000": 295.55,
+    "avg_attractions_per_county": 10.48,
+    "avg_poverty_rate_per_county": 0.18
+  },
+  "Idaho": {
+    "num_counties": 44,
+    "total_hotels": 547,
+    "avg_hotels_per_county": 12.43,
+    "avg_airports_per_county": 6.82,
+    "avg_state_parks_per_county": 5,
+    "avg_crime_rate_per_100000": 156.56,
+    "avg_attractions_per_county": 7.59,
+    "avg_poverty_rate_per_county": 0.13
+  },
+  "Illinois": {
+    "num_counties": 102,
+    "total_hotels": 2403,
+    "avg_hotels_per_county": 23.56,
+    "avg_airports_per_county": 6.83,
+    "avg_state_parks_per_county": 5,
+    "avg_crime_rate_per_100000": 242.79,
+    "avg_attractions_per_county": 8.47,
+    "avg_poverty_rate_per_county": 0.15
+  },
+  "Indiana": {
+    "num_counties": 92,
+    "total_hotels": 1555,
+    "avg_hotels_per_county": 16.9,
+    "avg_airports_per_county": 5.65,
+    "avg_state_parks_per_county": 3,
+    "avg_crime_rate_per_100000": 139.12,
+    "avg_attractions_per_county": 3.76,
+    "avg_poverty_rate_per_county": 0.14
+  },
+  "Iowa": {
+    "num_counties": 99,
+    "total_hotels": 961,
+    "avg_hotels_per_county": 9.71,
+    "avg_airports_per_county": 2.82,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 168.58,
+    "avg_attractions_per_county": 1.99,
+    "avg_poverty_rate_per_county": 0.14
+  },
+  "Kansas": {
+    "num_counties": 105,
+    "total_hotels": 825,
+    "avg_hotels_per_county": 7.86,
+    "avg_airports_per_county": 3.54,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 237.48,
+    "avg_attractions_per_county": 1.55,
+    "avg_poverty_rate_per_county": 0.14
+  },
+  "Kentucky": {
+    "num_counties": 120,
+    "total_hotels": 1004,
+    "avg_hotels_per_county": 8.37,
+    "avg_airports_per_county": 2.19,
+    "avg_state_parks_per_county": 7,
+    "avg_crime_rate_per_100000": 98.72,
+    "avg_attractions_per_county": 8.12,
+    "avg_poverty_rate_per_county": 0.17
+  },
+  "Louisiana": {
+    "num_counties": 64,
+    "total_hotels": 1275,
+    "avg_hotels_per_county": 19.92,
+    "avg_airports_per_county": 7.75,
+    "avg_state_parks_per_county": 5,
+    "avg_crime_rate_per_100000": 0,
+    "avg_attractions_per_county": 7.19,
+    "avg_poverty_rate_per_county": 0.07
+  },
+  "Maine": {
+    "num_counties": 16,
+    "total_hotels": 656,
+    "avg_hotels_per_county": 41,
+    "avg_airports_per_county": 13.5,
+    "avg_state_parks_per_county": 3,
+    "avg_crime_rate_per_100000": 115.96,
+    "avg_attractions_per_county": 4.88,
+    "avg_poverty_rate_per_county": 0.15
+  },
+  "Maryland": {
+    "num_counties": 23,
+    "total_hotels": 1693,
+    "avg_hotels_per_county": 73.61,
+    "avg_airports_per_county": 8.91,
+    "avg_state_parks_per_county": 6,
+    "avg_crime_rate_per_100000": 333.06,
+    "avg_attractions_per_county": 68.26,
+    "avg_poverty_rate_per_county": 0.12
+  },
+  "Michigan": {
+    "num_counties": 83,
+    "total_hotels": 2029,
+    "avg_hotels_per_county": 24.45,
+    "avg_airports_per_county": 5.65,
+    "avg_state_parks_per_county": 6,
+    "avg_crime_rate_per_100000": 244.08,
+    "avg_attractions_per_county": 7.3,
+    "avg_poverty_rate_per_county": 0.14
+  },
+  "Minnesota": {
+    "num_counties": 87,
+    "total_hotels": 1086,
+    "avg_hotels_per_county": 12.48,
+    "avg_airports_per_county": 5.41,
+    "avg_state_parks_per_county": 6,
+    "avg_crime_rate_per_100000": 134.42,
+    "avg_attractions_per_county": 6.3,
+    "avg_poverty_rate_per_county": 0.12
+  },
+  "Mississippi": {
+    "num_counties": 82,
+    "total_hotels": 1174,
+    "avg_hotels_per_county": 14.32,
+    "avg_airports_per_county": 2.85,
+    "avg_state_parks_per_county": 5,
+    "avg_crime_rate_per_100000": 146.21,
+    "avg_attractions_per_county": 6.12,
+    "avg_poverty_rate_per_county": 0.21
+  },
+  "Alaska": {
+    "num_counties": 30,
+    "total_hotels": 509,
+    "avg_hotels_per_county": 16.97,
+    "avg_airports_per_county": 24.3,
+    "avg_state_parks_per_county": 12,
+    "avg_crime_rate_per_100000": 0,
+    "avg_attractions_per_county": 15.4,
+    "avg_poverty_rate_per_county": 0
+  },
+  "Arizona": {
+    "num_counties": 15,
+    "total_hotels": 2580,
+    "avg_hotels_per_county": 172,
+    "avg_airports_per_county": 19.93,
+    "avg_state_parks_per_county": 20,
+    "avg_crime_rate_per_100000": 352.63,
+    "avg_attractions_per_county": 27.6,
+    "avg_poverty_rate_per_county": 0.17
+  },
+  "Massachusetts": {
+    "num_counties": 14,
+    "total_hotels": 1850,
+    "avg_hotels_per_county": 132.14,
+    "avg_airports_per_county": 15.79,
+    "avg_state_parks_per_county": 8,
+    "avg_crime_rate_per_100000": 392.38,
+    "avg_attractions_per_county": 29.14,
+    "avg_poverty_rate_per_county": 0.11
+  },
+  "Montana": {
+    "num_counties": 56,
+    "total_hotels": 636,
+    "avg_hotels_per_county": 11.36,
+    "avg_airports_per_county": 5.41,
+    "avg_state_parks_per_county": 4,
+    "avg_crime_rate_per_100000": 182.74,
+    "avg_attractions_per_county": 5.43,
+    "avg_poverty_rate_per_county": 0.14
+  },
+  "New Mexico": {
+    "num_counties": 33,
+    "total_hotels": 677,
+    "avg_hotels_per_county": 20.52,
+    "avg_airports_per_county": 5.18,
+    "avg_state_parks_per_county": 13,
+    "avg_crime_rate_per_100000": 414.28,
+    "avg_attractions_per_county": 14.64,
+    "avg_poverty_rate_per_county": 0.17
+  },
+  "Commonwealth of the Northern Mariana Islands": {
+    "num_counties": 4,
+    "total_hotels": 0,
+    "avg_hotels_per_county": 0,
+    "avg_airports_per_county": 2.5,
+    "avg_state_parks_per_county": 0,
+    "avg_crime_rate_per_100000": 0,
+    "avg_attractions_per_county": 0,
+    "avg_poverty_rate_per_county": 0
+  },
+  "Hawaii": {
+    "num_counties": 5,
+    "total_hotels": 4878,
+    "avg_hotels_per_county": 975.6,
+    "avg_airports_per_county": 8.6,
+    "avg_state_parks_per_county": 7,
+    "avg_crime_rate_per_100000": 203.36,
+    "avg_attractions_per_county": 25,
+    "avg_poverty_rate_per_county": 0.09
+  },
+  "Wyoming": {
+    "num_counties": 23,
+    "total_hotels": 655,
+    "avg_hotels_per_county": 28.48,
+    "avg_airports_per_county": 5.26,
+    "avg_state_parks_per_county": 3,
+    "avg_crime_rate_per_100000": 155,
+    "avg_attractions_per_county": 11.96,
+    "avg_poverty_rate_per_county": 0.12
+  },
+  "Rhode Island": {
+    "num_counties": 5,
+    "total_hotels": 256,
+    "avg_hotels_per_county": 51.2,
+    "avg_airports_per_county": 4.2,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 157.58,
+    "avg_attractions_per_county": 4.2,
+    "avg_poverty_rate_per_county": 0.13
+  },
+  "United States Virgin Islands": {
+    "num_counties": 3,
+    "total_hotels": 1,
+    "avg_hotels_per_county": 0.33,
+    "avg_airports_per_county": 2.33,
+    "avg_state_parks_per_county": 0,
+    "avg_crime_rate_per_100000": 0,
+    "avg_attractions_per_county": 0,
+    "avg_poverty_rate_per_county": 0.02
+  },
+  "Delaware": {
+    "num_counties": 3,
+    "total_hotels": 226,
+    "avg_hotels_per_county": 75.33,
+    "avg_airports_per_county": 14.33,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 524.42,
+    "avg_attractions_per_county": 16.33,
+    "avg_poverty_rate_per_county": 0.11
+  },
+  "Vermont": {
+    "num_counties": 14,
+    "total_hotels": 694,
+    "avg_hotels_per_county": 49.57,
+    "avg_airports_per_county": 6.57,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 119.25,
+    "avg_attractions_per_county": 2.14,
+    "avg_poverty_rate_per_county": 0.12
+  },
+  "Connecticut": {
+    "num_counties": 9,
+    "total_hotels": 649,
+    "avg_hotels_per_county": 72.11,
+    "avg_airports_per_county": 13.78,
+    "avg_state_parks_per_county": 2,
+    "avg_crime_rate_per_100000": 0,
+    "avg_attractions_per_county": 42.44,
+    "avg_poverty_rate_per_county": 0
+  },
+  "New Hampshire": {
+    "num_counties": 10,
+    "total_hotels": 503,
+    "avg_hotels_per_county": 50.3,
+    "avg_airports_per_county": 18.5,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 160.16,
+    "avg_attractions_per_county": 5.6,
+    "avg_poverty_rate_per_county": 0.11
+  },
+  "American Samoa": {
+    "num_counties": 5,
+    "total_hotels": 0,
+    "avg_hotels_per_county": 0,
+    "avg_airports_per_county": 0.6,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 0,
+    "avg_attractions_per_county": 1,
+    "avg_poverty_rate_per_county": 0
+  },
+  "Guam": {
+    "num_counties": 1,
+    "total_hotels": 0,
+    "avg_hotels_per_county": 0,
+    "avg_airports_per_county": 4,
+    "avg_state_parks_per_county": 1,
+    "avg_crime_rate_per_100000": 0,
+    "avg_attractions_per_county": 1,
+    "avg_poverty_rate_per_county": 0
+  },
+  "District of Columbia": {
+    "num_counties": 1,
+    "total_hotels": 225,
+    "avg_hotels_per_county": 225,
+    "avg_airports_per_county": 12,
+    "avg_state_parks_per_county": 0,
+    "avg_crime_rate_per_100000": 1216.8,
+    "avg_attractions_per_county": 134,
+    "avg_poverty_rate_per_county": 0
+  }
+}
