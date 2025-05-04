@@ -265,10 +265,15 @@ async function getTopRecommendations(isStateMode = false) {
   return scored.sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100).slice(0, 10);
 }
 
+let latestRenderRequestId = 0;
+
 export async function renderRecommendations() {
   const container = document.getElementById("recommend-widget-content");
 
-  
+  // 为当前调用分配唯一 ID
+  const thisRequestId = ++latestRenderRequestId;
+
+  // 清空旧内容
   container.innerHTML = "";
 
   const selected = document.querySelector('input[name="recommendMode"]:checked');
@@ -285,6 +290,9 @@ export async function renderRecommendations() {
   container.appendChild(title);
 
   const top = await getTopRecommendations(isStateMode);
+
+  // 如果在等待过程中用户点击了其他选项，就丢弃这次响应结果
+  if (thisRequestId !== latestRenderRequestId) return;
 
   const list = document.createElement("ul");
   list.style.listStyle = "none";
