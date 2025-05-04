@@ -66,4 +66,10 @@ export function getStateAbbrFromName(name) {
 }
 
 
-
+export function getAssetPath(relativePath) {
+    const isGithubPages = window.location.hostname.includes('github.io');
+    const repoName = 'cmsc734-project';
+    const base = isGithubPages ? `/${repoName}` : '';
+    return `${base}/${relativePath}`.replace(/\/{2,}/g, '/');
+  }
+  

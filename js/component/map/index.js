@@ -2,7 +2,7 @@ import {
   startRenderVisualization
 } from "../visualization/index.js";
 import { renderAirportOnMap } from "../visualization/airportVis.js";
-
+import { getAssetPath } from "../../utils.js";
 import { createDropDown } from "../dropdown/index.js";
 
 export function findCountyLayer(map, countyName, stateName) {
@@ -272,8 +272,8 @@ export function createMap(
 
   // Load county and state layers
   Promise.all([
-    loadGeoJSON("/data/map/county.geojson", "county"),
-    loadGeoJSON("/data/map/state.geojson", "state"),
+    loadGeoJSON(getAssetPath("/data/map/county.geojson"), "county"),
+    loadGeoJSON(getAssetPath("/data/map/state.geojson"), "state"),
   ]).then(([loadedCountyLayer, loadedStateLayer]) => {
     countyLayer = loadedCountyLayer;
     stateLayer = loadedStateLayer;

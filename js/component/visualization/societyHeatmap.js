@@ -1,11 +1,11 @@
 // visualization/societyHeatmap.js
 import { getStateNameFromAbbr } from "../../utils.js";
-
+import { getAssetPath } from "../../utils.js";
 let societyLayer = null;
 
 export function renderSocietyHeatmap(globalMap, stateName) {
-  const povertyCSV = "/data/county/min_poverty_county.csv";
-  const countyGeo = "/data/map/county.geojson";
+  const povertyCSV = getAssetPath("/data/county/min_poverty_county.csv");
+  const countyGeo = getAssetPath("/data/map/county.geojson");
   const currentStateName = stateName.toLowerCase();
 
   Promise.all([
