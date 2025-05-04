@@ -54,6 +54,7 @@ body {
 #vis-overall {
   /* padding-top: 15px; */
   /* padding-bottom: 15px; */
+  border-radius: 10px;
   width: 100%;
   max-height: 89vh;
   height: auto;
@@ -69,6 +70,12 @@ body {
 
 svg {
   pointer-events: none;
+}
+
+#info-section {
+    height: 25vh;
+    box-shadow: 0 0 4px rgba(0,0,0,0.05);
+    border-radius: 8px;
 }
 
 #city-radar-chart {

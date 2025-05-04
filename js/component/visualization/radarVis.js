@@ -13,7 +13,6 @@ export function setupRadarChartContainer() {
   cityRadarChart.style.minWidth = "300px";
 
   const innerDiv = document.createElement("div");
-  innerDiv.style.minWidth = "300px";
   innerDiv.style.width = "100%";
   innerDiv.style.padding = "5px";
 
@@ -22,14 +21,38 @@ export function setupRadarChartContainer() {
   header.style.display = "flex";
   header.style.alignItems = "center";
   header.style.justifyContent = "space-between";
-  header.style.marginBottom = "8px";
 
-  const title = document.createElement("span");
-  title.innerText = "Radar Score";
-  title.style.fontWeight = "bold";
+  const infoDiv = document.createElement("div");
+  infoDiv.style =
+    "display: flex; align-items: center; justify-content: end; width: 100%;";
 
+
+    const infoTitle = document.createElement("span");
+  infoTitle.innerText = `Region overall score`;
+  infoDiv.appendChild(infoTitle);
   const infoIcon = document.createElement("span");
-  infoIcon.innerText = "ℹ️";
+  infoDiv.appendChild(infoIcon);
+  // <!-- From Uiverse.io by vinodjangid07 -->
+  infoIcon.innerHTML = `
+  <button class="faq-button">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+      <path
+        d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"
+      ></path>
+    </svg>
+    <div class="tooltip" data-position="left-bottom">
+      <strong>Scoring Criteria:</strong>
+      <ul style="margin: 8px 0; padding-left: 16px; list-style-type: disc;">
+        <li><strong>Attractions:</strong> # of historic sites + state parks (max 20)</li>
+        <li><strong>Society:</strong> Inverse of poverty rate</li>
+        <li><strong>Transportation:</strong> Airports within 60 miles (max 300)</li>
+        <li><strong>Hotel:</strong> Total hotels in the county (max 50)</li>
+        <li><strong>Safety:</strong> Inverse of crime rate per 100,000</li>
+      </ul>
+    </div>
+  </button>
+  `;
+
   infoIcon.style.cursor = "pointer";
   infoIcon.style.fontSize = "14px";
   infoIcon.style.marginLeft = "8px";
@@ -40,13 +63,17 @@ export function setupRadarChartContainer() {
 - Hotel: Total hotels in the county (max 50)
 - Safety: Inverse of crime rate per 100,000`;
 
-  header.appendChild(title);
-  header.appendChild(infoIcon);
+  header.appendChild(infoDiv);
 
   const canvas = document.createElement("canvas");
   canvas.id = "radarChart";
-  canvas.width = "15vw";
-  canvas.height = "15vw";
+
+  canvas.style.width = "100%";
+  canvas.style.maxWidth = "880px";
+  canvas.style.height = "auto";
+  canvas.style.aspectRatio = "1"; // ensures it's a square
+  canvas.style.display = "block";
+  canvas.style.margin = "0 auto";
 
   // Assemble
   innerDiv.appendChild(header);
@@ -94,8 +121,8 @@ export function renderRadarChart(data, state, county) {
       data: radarData,
       options: {
         responsive: true,
-        maintainAspectRatio: false,
-        layout: { padding: { top: 10, bottom: 20, left: 10, right: 10 } },
+        maintainAspectRatio: true,
+        layout: { padding: { top: 5, bottom: 5, left: 5, right: 5 } },
         plugins: {
           legend: {
             display: false, // hide legend for minimal UI
@@ -107,13 +134,7 @@ export function renderRadarChart(data, state, county) {
                 return `${context.label}: ${context.formattedValue}/5`;
               },
             },
-          },
-          title: {
-            display: true,
-            text: `${county ? county + ", " : ""} ${state} - overall score`,
-            font: { size: 14, weight: "bold" },
-            padding: { top: 10, bottom: 10 },
-          },
+          }
         },
         elements: {
           line: {
@@ -144,8 +165,10 @@ export function renderRadarChart(data, state, county) {
             angleLines: {
               color: "#ccc",
             },
+            radius: '100%', // ← this makes the chart take more space
           },
-        },
+        }
+        
       },
     });
   }
