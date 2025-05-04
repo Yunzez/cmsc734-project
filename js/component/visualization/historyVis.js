@@ -117,7 +117,7 @@ export async function renderHistoryOnMap(stateName, globalMap, parkNames = []) {
             const name = props.RES_NAME || props.UNIT_NAME || props.Unit_Nm || "Unnamed Historic Site";
             const comment = props.Comments;
             const commentHTML = comment && comment.startsWith("http") ? `<br/><a href="${comment}" target="_blank">Visit Website</a>` : "";
-            const tooltip = `<strong>${name}</strong><br/>State: ${getFeatureStateAbbr(feature) || stateAbbr}${commentHTML}`;
+            const tooltip = `<strong>${name}</strong><br/>Type: Historic Site<br/>State: ${getFeatureStateAbbr(feature) || stateAbbr}${commentHTML}`;
             layer.bindTooltip(tooltip, {
                 direction: "top",
                 offset: [0, -8],
