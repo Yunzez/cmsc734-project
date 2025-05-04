@@ -115,6 +115,7 @@ function prepareDropdown(globalMap) {
         if (this.classList.contains("active")) {
           this.classList.remove("active");
           removeHotelOnMap(globalMap);
+          globalMap.setZoom(6);
           document.getElementById("hotel-vis").remove();
         } else {
           this.classList.add("active");
@@ -128,6 +129,7 @@ function prepareDropdown(globalMap) {
         if (this.classList.contains("active")) {
           this.classList.remove("active");
           removeSocietyHeatmap(globalMap);
+          globalMap.setZoom(6);
         } else {
           this.classList.add("active");
           renderSocietyHeatmap(globalMap, state);
@@ -139,6 +141,7 @@ function prepareDropdown(globalMap) {
           this.classList.remove("active");
           removeParkFromMap(globalMap);
           removeHistoryFromMap(globalMap);
+          globalMap.setZoom(6);
           document.getElementById("vis-attractions").innerHTML = "";
         } else {
           this.classList.add("active");
@@ -157,6 +160,7 @@ function prepareDropdown(globalMap) {
           if (document.getElementById("safety-vis")) {
             document.getElementById("safety-vis").remove();
             document.getElementById("safety-title").remove();
+            globalMap.setZoom(6);
           }
           this.classList.remove("active");
           removeSafetyHeatmap(globalMap);
@@ -175,6 +179,7 @@ function prepareDropdown(globalMap) {
           if (window._airportLayer) {
             globalMap.removeLayer(window._airportLayer);
             window._airportLayer = null;
+            globalMap.setZoom(6);
           }
         }
       }

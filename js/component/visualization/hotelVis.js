@@ -306,11 +306,6 @@ function resetView(svg, starGroups, globalMap) {
 }
 
 function showHotels(svg, starGroups, focusedRating, globalMap) {
-  // console.log("openned node", opennedNode)
-  // if (opennedNode != null) {
-  //   return;
-  // }
-
   console.log("Show hotel, Clicked on", focusedRating, starGroups);
 
   selectedRating = focusedRating;
@@ -410,11 +405,43 @@ function showHotels(svg, starGroups, focusedRating, globalMap) {
             .attr("stroke", "#ffcc00")
             .attr("stroke-width", 1.5);
 
-          d3.select("#hotel-tooltip")
-            .style("opacity", 1)
-            .style("left", `${e.pageX + 10}px`)
-            .style("top", `${e.pageY}px`)
-            .html(`<strong>${d.HotelName}</strong><br/>⭐ ${d.StarRating}`);
+          d3
+            .select("#hotel-tooltip")
+            .style("opacity", 0.9)
+            .style("width", "200px")
+            .style("height", "auto")
+            .style("overflow-y", "auto")
+            .style("left", `${e.pageX - 215}px`) // Position tooltip to the left of the cursor
+            .style("top", `${e.pageY - 100}px`).html(`
+              <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333;">
+              <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">${
+                d.HotelName
+              }</div>
+              ${
+                d.StarRating
+                  ? `<div style="font-size: 500">⭐ ${d.StarRating} stars</div>`
+                  : ""
+              }
+              ${
+                d.Address
+                  ? `<div><strong>Address:</strong> ${d.Address}</div>`
+                  : ""
+              }
+              ${d.City ? `<div><strong>City:</strong> ${d.City}</div>` : ""}
+              ${d.State ? `<div><strong>State:</strong> ${d.State}</div>` : ""}
+              ${
+                d.ZipCode
+                  ? `<div><strong>Zip Code:</strong> ${d.ZipCode}</div>`
+                  : ""
+              }
+              ${
+                d.PhoneNumber
+                  ? `<div><strong>Phone:</strong> ${d.PhoneNumber}</div>`
+                  : ""
+              }
+              <b class="mt-3">Click to see more</b>
+              </div>
+            `);
         })
         .on("mouseout", function (e, d) {
           d3.select(this)
@@ -424,6 +451,30 @@ function showHotels(svg, starGroups, focusedRating, globalMap) {
             .attr("stroke", "#fff")
             .attr("stroke-width", 0.8);
           d3.select("#hotel-tooltip").style("opacity", 0);
+        })
+        .on("click", (e, d) => {
+          console.log("locate hotel on map");
+          hotelLayerGroup.eachLayer((layer) => {
+            const latlng = layer.getLatLng();
+            const isSame =
+              Math.abs(latlng.lat - d.lat) < 1e-6 &&
+              Math.abs(latlng.lng - d.lon) < 1e-6;
+
+            if (isSame) {
+              console.log("Layer found:", layer);
+
+              globalMap.setView(latlng, 15, { animate: true });
+
+              // This makes sure the marker is visible before opening popup
+              hotelLayerGroup.zoomToShowLayer(layer, () => {
+                layer.openPopup();
+                console.log("Popup opened after cluster expanded");
+              });
+            }
+            if (isSame) {
+              return false; // Stop iteration when the matching layer is found
+            }
+          });
         });
 
       const sim = d3
