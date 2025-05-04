@@ -4,8 +4,8 @@ import { createSafetyVis } from "./safetyVis.js";
 let heatmapLayer = null;
 
 export function renderSafetyHeatmap(globalMap, stateName, county) {
-  const crimeCSV = "../../../data/crime/crime_data_county.csv";
-  const countyGeo = "../../../data/map/county.geojson";
+  const crimeCSV = "/data/crime/crime_data_county.csv";
+  const countyGeo = "/data/map/county.geojson";
 
   Promise.all([d3.csv(crimeCSV), d3.json(countyGeo)]).then(
     ([crimeData, geojson]) => {

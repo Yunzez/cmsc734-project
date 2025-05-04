@@ -3,7 +3,7 @@ import { renderAirportOnMap } from "./airportVis.js";
 import { renderRadarChart } from "./radarVis.js";
 
 async function fetchCitiesData(state, county) {
-  const data = await d3.csv("../../../data/map/cities.csv");
+  const data = await d3.csv("/data/map/cities.csv");
   if (county) {
     return data.filter(
       (city) => city.state_name === state && city.county_name === county

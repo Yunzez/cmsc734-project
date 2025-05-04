@@ -272,8 +272,8 @@ export function createMap(
 
   // Load county and state layers
   Promise.all([
-    loadGeoJSON("../../../data/map/county.geojson", "county"),
-    loadGeoJSON("../../../data/map/state.geojson", "state"),
+    loadGeoJSON("/data/map/county.geojson", "county"),
+    loadGeoJSON("/data/map/state.geojson", "state"),
   ]).then(([loadedCountyLayer, loadedStateLayer]) => {
     countyLayer = loadedCountyLayer;
     stateLayer = loadedStateLayer;

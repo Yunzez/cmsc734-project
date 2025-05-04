@@ -4,7 +4,8 @@ export async function createDropDown(inputID, dropdownID, handleSearchSelection)
   const dropdown = document.getElementById(dropdownID);
   // Pre-process cities into a flat array
    // Load cities.csv dynamically
-   const cities = await d3.csv("../../../data/map/cities.csv"); 
+//    const cities = await d3.csv("../../../data/map/cities.csv"); 
+   const cities = await d3.csv("/data/map/cities.csv");
 
   // Pre-process CSV rows into a flat array
   const cityData = cities.map((row) => {
