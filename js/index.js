@@ -194,7 +194,10 @@ function prepareDropdown(globalMap) {
 }
 
 // index.js (modified)
+
+
 import { calculateScore } from "./component/visualization/radarVis.js";
+let currentRecommendationMode = null; // 'state' | 'county' | null
 
 let recommendType = "county"; // default
 
@@ -209,8 +212,15 @@ export function toggleRecommendWidget() {
     widget.style.display = "block";
     blur.style.display = "block";
     renderRecommendations();
+
+    document.querySelectorAll('input[name="recommendMode"]').forEach((input) => {
+      input.addEventListener("change", () => {
+        renderRecommendations();
+      });
+    });
   }
 }
+
 
 async function getTopRecommendations(isStateMode = false) {
   const res = await fetch(isStateMode ? "data/radar_data_state.json" : "data/radar_data.json");
@@ -257,21 +267,25 @@ async function getTopRecommendations(isStateMode = false) {
 
 export async function renderRecommendations() {
   const container = document.getElementById("recommend-widget-content");
-  container.innerHTML = `
-    <h5 id="recommend-title">Top 10 ${recommendType === "state" ? "States" : "Counties"}</h5>
-    <div style="margin-bottom: 10px;">
-      <label><input type="radio" name="rec-mode" value="state" ${recommendType === "state" ? "checked" : ""}/> Top 10 States in USA</label>
-      <label style="margin-left: 20px;"><input type="radio" name="rec-mode" value="county" ${recommendType === "county" ? "checked" : ""}/> Top 10 Counties in USA</label>
-    </div>
-  `;
 
-  const radios = container.querySelectorAll("input[name='rec-mode']");
-  radios.forEach(r => r.addEventListener("change", (e) => {
-    recommendType = e.target.value;
-    renderRecommendations();
-  }));
+  
+  container.innerHTML = "";
 
-  const top = await getTopRecommendations();
+  const selected = document.querySelector('input[name="recommendMode"]:checked');
+  const isStateMode = selected?.value === "state";
+  const isCountyMode = selected?.value === "county";
+  currentRecommendationMode = isStateMode ? "state" : (isCountyMode ? "county" : null);
+
+  const title = document.createElement("h5");
+  title.textContent = isStateMode
+    ? "Top 10 States in USA"
+    : isCountyMode
+    ? "Top 10 Counties in USA"
+    : "Top Picks";
+  container.appendChild(title);
+
+  const top = await getTopRecommendations(isStateMode);
+
   const list = document.createElement("ul");
   list.style.listStyle = "none";
   list.style.padding = "0";
@@ -280,12 +294,56 @@ export async function renderRecommendations() {
     const item = document.createElement("li");
     item.style.marginBottom = "6px";
     item.innerHTML = `
-      <strong>${key}</strong>
+      <strong>${key}</strong> 
       <span style="color: #0a9396; font-weight: bold;">${Math.round(scoreOutOf100)} / 100</span>
     `;
     list.appendChild(item);
   });
+
   container.appendChild(list);
 }
 
+
 window.toggleRecommendWidget = toggleRecommendWidget;
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const shuffleBtn = document.querySelector(".shuffle-buttn");
+  if (shuffleBtn) {
+    shuffleBtn.addEventListener("click", () => {
+      window.shuffleRecommendations();
+    });
+  }
+});
+
+window.shuffleRecommendations = async function () {
+  
+  document.querySelectorAll('input[name="recommendMode"]').forEach((el) => {
+    el.checked = false;
+  });
+
+  currentRecommendationMode = null;
+
+ 
+  const container = document.getElementById("recommend-widget-content");
+  container.innerHTML = "<h5>Top Picks</h5>";
+
+  const top = await getTopRecommendations(false); // default county sampling
+
+  const list = document.createElement("ul");
+  list.style.listStyle = "none";
+  list.style.padding = "0";
+
+  top.forEach(({ key, scoreOutOf100 }) => {
+    const item = document.createElement("li");
+    item.style.marginBottom = "6px";
+    item.innerHTML = `
+      <strong>${key}</strong> 
+      <span style="color: #0a9396; font-weight: bold;">${Math.round(scoreOutOf100)} / 100</span>
+    `;
+    list.appendChild(item);
+  });
+
+  container.appendChild(list);
+};
+
