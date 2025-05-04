@@ -91,6 +91,7 @@ export function createMap(
   let countyLayer = null;
   let stateLayer = null;
   let activeLayer = null; // Track the currently displayed layer
+  clearCheckboxes()
 
   function parentContainerToggle(target) {
     if (!target) return;
@@ -341,4 +342,15 @@ export function createMap(
   L.control.layers(baseLayers).addTo(map);
 
   return map;
+}
+
+export function clearCheckboxes(type = undefined) {
+  let className = '.checkbox-input';
+  if (type) {
+    className += `.${type}`;
+  }
+  [...document.querySelectorAll(className)].forEach(_ => {
+    _.classList.remove("active")
+    _.checked = false
+  })
 }
