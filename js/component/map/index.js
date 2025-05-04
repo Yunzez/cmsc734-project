@@ -57,10 +57,10 @@ export function createMap(
   const map = L.map(containerId, {
     maxZoom: 16,
     minZoom: 4,
-    maxBounds: [
-      [24.396308, -125.0], // Southwest coordinates
-      [49.384358, -66.93457], // Northeast coordinates
-    ],
+    // maxBounds: [
+    //   [24.396308, -125.0], // Southwest coordinates
+    //   [49.384358, -66.93457], // Northeast coordinates
+    // ],
     maxBoundsViscosity: 1.0,
   }).setView(options.center || [40.868, -110.955], options.zoom || 11);
 
