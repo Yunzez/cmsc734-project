@@ -155,7 +155,8 @@ function prepareDropdown(globalMap) {
       if (selected === "Safety") {
         const mapDiv = document.getElementById("vis-overall");
         if (this.classList.contains("active")) {
-          document.getElementById("safety-vis").remove();
+
+          if (document.getElementById("safety-vis")) document.getElementById("safety-vis").remove();
           document.getElementById("safety-title").remove();
           this.classList.remove("active");
           removeSafetyHeatmap(globalMap);
