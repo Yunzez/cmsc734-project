@@ -4,7 +4,7 @@ let selectedHotels = null;
 let localStateName = null; // this is for to reset view from bubbles
 let localCountyName = null; // this is for to reset view from bubbles
 let initialized = false;
-
+import { getAssetPath } from "../../utils";
 const FACILITY_CATEGORIES = {
   "Free WiFi": /wifi/i,
   Breakfast: /breakfast/i,
@@ -77,15 +77,15 @@ export function createHotelVis(
   //   const container = parentContainer;
   console.log("Creating hotel visualization for", state);
   const data_state = String(state).replace(/\s+/g, "_");
-  const csvPath = `../../../data/hotel/state_hotels/${data_state}_hotel.csv`;
+  // const csvPath = `../../../data/hotel/state_hotels/${data_state}_hotel.csv`;
 
   const loadData = filteredData
     ? Promise.resolve(filteredData)
     : d3.csv(
-        `../../../data/hotel/state_hotels/${String(state).replace(
+        getAssetPath(`../../../data/hotel/state_hotels/${String(state).replace(
           /\s+/g,
           "_"
-        )}_hotel.csv`,
+        )}_hotel.csv`),
         d3.autoType
       );
 
