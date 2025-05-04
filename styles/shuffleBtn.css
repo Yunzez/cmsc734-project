@@ -76,7 +76,7 @@
     color: #0043ed;
   }
   
-  label span {
+  .shuffle-options label span {
     display: block;
     cursor: pointer;
     background-color: #fff;
@@ -90,11 +90,11 @@
     transition: background-color .5s ease;
   }
   
-  label:first-child span {
+  .shuffle-options label:first-child span {
     border-radius: .375em 0 0 .375em;
   }
   
-  label:last-child span {
+  .shuffle-options label:last-child span {
     border-radius: 0 .375em .375em 0;
   }
   
