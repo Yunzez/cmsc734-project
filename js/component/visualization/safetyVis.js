@@ -82,8 +82,8 @@ export function createSafetyVis(
 let topLevelNode = null;
 let subLevelNode = null;
 function renderCrimeChart(container, crimeInput, titleLabel) {
+  const tooltip = document.createElement("div");
   if (!document.getElementById("safty-tooltip")) {
-    const tooltip = document.createElement("div");
     tooltip.id = "safty-tooltip";
     tooltip.style.position = "absolute";
     tooltip.style.opacity = 0;
@@ -195,11 +195,7 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
     let topLevelNode = root;
     const g = svg.append("g").attr("class", "treemap-group");
     const colorInterpolator = d3.piecewise(d3.interpolateRgb.gamma(2.2), [
-      "#deebf7", // light blue
-      "#9ecae1",
-      "#3182bd", // dark blue
-      "#fb6a4a",
-      "#cb181d", // red
+      "#cccccc", "#808080", "#333333"
     ]);
     const color = d3.scaleOrdinal(d3.schemeCategory10).domain(crimeCategories);
     const maxCountyValue = d3.max(root.leaves(), (d) => d.value);
@@ -262,16 +258,9 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
         .on("mouseover", (event, d) => {
           highlightCounty(d.data.name);
           d3.select("#safty-tooltip")
-            .style("opacity", 1)
-            .style(
-              "left",
-              `${
-                event.pageX + 50 > window.innerWidth
-                  ? event.pageX + 10
-                  : event.pageX - 60
-              }px`
-            )
-            .style("top", `${event.pageY}px`)
+            .style("opacity", d.children ? 0 : 1)
+            .style("left", `${event.pageX - tooltip.offsetWidth}px`)
+            .style("top", `${event.pageY - tooltip.offsetHeight}px`)
             .html(
               d.children
                 ? `<strong>${crimeNameMapping[d.data.name]}</strong>`

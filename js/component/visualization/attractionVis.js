@@ -10,6 +10,8 @@ let previousRoot = null;
 let previousLabel = "";
 let currentTooltipLevel = null;
 
+const interpolator = t => d3.interpolateGreens(1 - 0.8 * t)
+
 export function createAttractionVis(containerDiv, stateName, globalMap) {
     globalMapRef = globalMap;
     containerDiv.innerHTML = "";
@@ -109,7 +111,7 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
             .style("margin-top", "40px");
 
         //
-        const recreationPercent = (recreationPercentValue > 0 ? "+" : "") + (
+        const recreationPercent = (recreationPercentValue >= 0 ? "+" : "") + (
             recreationPercentValue * 100
         ).toFixed(1).toString() + "%";
         renderSubTreemap(
@@ -149,7 +151,7 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
 
     const colorScale = d3.scaleSequential()
         .domain([maxValue, minValue])
-        .interpolator(t => d3.interpolateRdBu(1 - t));
+        .interpolator(interpolator);
 
     // 
     let resizeTimer;
@@ -316,7 +318,7 @@ function renderSubTreemap(data, container, title) {
     const values = data.leaves().map(d => d.value);
     const colorScale = d3.scaleSequential()
         .domain([d3.max(values), 0])  
-        .interpolator(d3.interpolateRdBu);
+        .interpolator(interpolator);
 
     
     treemap(data);
