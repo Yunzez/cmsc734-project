@@ -26,7 +26,8 @@ import {
   removeSocietyHeatmap,
 } from "./component/visualization/societyHeatmap.js";
 import { setupRadarChartContainer } from "./component/visualization/radarVis.js";
-
+import { startRenderVisualization } from "./component/visualization/index.js";
+import { findCountyLayer } from "./component/map/index.js";
 // import { setupRecommendationPanel } from "./component/visualization/recommendationPanel.js";
 
 const parentContainer = document.getElementById("container");
@@ -48,16 +49,6 @@ window.onload = function () {
     parentContainer,
     visualizationTarget
   );
-
-  // window.addEventListener("DOMContentLoaded", () => {
-  //   const controlSection = document.querySelector(".controls");
-  //   const recButton = document.createElement("button");
-  //   recButton.id = "recommendation-button";
-  //   recButton.className = "btn btn-outline-primary ms-3";
-  //   recButton.textContent = "Recommendation";
-  //   recButton.onclick = () => showTopRecommendations();
-  //   controlSection.appendChild(recButton);
-  // });
 
   // timeout needs to match `#container.showVis {transition}` in `index.css`
   visBack.onclick = function () {
@@ -332,6 +323,25 @@ export async function renderRecommendations() {
       if (arrow) arrow.style.opacity = "0";
     };
 
+    item.onclick = () => {
+      const [county, state] = key.split(",").map((s) => s.trim());
+
+      const countyBtn = document.getElementById("groupByCounty");
+      countyBtn.click();
+
+      (async () => {
+        const layer = await findCountyLayer(globalMap, county, state);
+        if (layer) {
+          console.log("Layer found:", layer);
+          layer.fire("click"); // Trigger the click event on the layer
+        } else {
+          console.log("Layer not found");
+        }
+      })();
+
+      toggleRecommendWidget();
+    };
+
     list.appendChild(item);
   });
 
@@ -356,7 +366,6 @@ window.shuffleRecommendations = async function () {
       el.checked = true;
     }
   });
- 
 
   const top = await renderRecommendations(); // default county sampling
 };

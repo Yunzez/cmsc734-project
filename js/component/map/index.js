@@ -4,6 +4,27 @@ import {
 import { renderAirportOnMap } from "../visualization/airportVis.js";
 
 import { createDropDown } from "../dropdown/index.js";
+
+export function findCountyLayer(map, countyName, stateName) {
+  let targetLayer = null;
+  console.log("findCountyLayer", countyName, stateName);
+  map.eachLayer((layer) => {
+    // Check if it's a GeoJSON layer with features
+    if (layer.feature && layer.feature.properties) {
+      const props = layer.feature.properties;
+      // console.log("layer feature", props);
+      const county = props.coty_name?.[0]?.trim();
+      const state = props.ste_name?.[0]?.trim();
+
+      if (county === countyName && state === stateName) {
+        targetLayer = layer;
+      }
+    }
+  });
+
+  return targetLayer;
+}
+
 export function createMap(
   containerId,
   options = {},
@@ -256,7 +277,7 @@ export function createMap(
   ]).then(([loadedCountyLayer, loadedStateLayer]) => {
     countyLayer = loadedCountyLayer;
     stateLayer = loadedStateLayer;
-
+    
     if (countyLayer) {
       attachLayerEvents(countyLayer, "county");
     }

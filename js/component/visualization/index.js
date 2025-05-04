@@ -12,6 +12,9 @@ async function fetchCitiesData(state, county) {
     return data.filter((city) => city.state_name === state);
   }
 }
+export async function startRenderVisualizationByName(state, county, map) {
+
+}
 
 export async function startRenderVisualization(visualizationTargets, map) {
   console.log("startRenderVisualization", visualizationTargets);
