@@ -266,3 +266,90 @@ async function calculateScore(state, county) {
     +safetyScore.toFixed(2),
   ];
 }
+
+
+
+export async function createRadarChartFromCountyName(state, county) {
+  if (!state) {
+    console.warn("State is missing");
+    return;
+  }
+
+  if (!county) {
+    // 👉 Use state-level data if county not provided
+    const res = await fetch("data/radar_data_state.json");
+    const radarRaw = await res.json();
+    const data = radarRaw[state.trim()];
+    if (!data) {
+      console.warn("No radar score found for state", state);
+      return;
+    }
+
+    function normalize(val, min, max) {
+      if (val == null || isNaN(val)) return 0;
+      return Math.max(0, Math.min(5, ((val - min) / (max - min)) * 5));
+    }
+
+    const attractionScore = normalize(data.avg_attractions_per_county, 0, 20);
+    const societyScore = data.avg_poverty_rate_per_county != null ? (1 - data.avg_poverty_rate_per_county) * 5 : 0;
+    const transportationScore = normalize(data.avg_airports_per_county, 0, 300);
+    const hotelScore = normalize(data.avg_hotels_per_county, 0, 50);
+    const safetyScore = data.avg_crime_rate_per_100000 != null
+      ? (1 - data.avg_crime_rate_per_100000 / 1000) * 5
+      : 0;
+
+    const scoreArray = [
+      +attractionScore.toFixed(2),
+      +societyScore.toFixed(2),
+      +transportationScore.toFixed(2),
+      +hotelScore.toFixed(2),
+      +safetyScore.toFixed(2),
+    ];
+
+    renderRadarChart(scoreArray, state, null);
+    return;
+  }
+
+  // county-level fallback
+  const res = await fetch("data/radar_data.json");
+  const radarRaw = await res.json();
+  const key = `${county.trim()}, ${state.trim()}`;
+  const data = radarRaw[key];
+
+  if (!data) {
+    console.warn("No radar score found for", key);
+    return;
+  }
+
+  const {
+    num_historic_sites,
+    num_state_parks,
+    poverty_rate,
+    num_airports_within_60_miles,
+    num_hotels,
+    crime_rate_per_100000,
+  } = data;
+
+  function normalize(val, min, max) {
+    if (val == null || isNaN(val)) return 0;
+    return Math.max(0, Math.min(5, ((val - min) / (max - min)) * 5));
+  }
+
+  const attractionScore = normalize((num_historic_sites || 0) + (num_state_parks || 0), 0, 20);
+  const societyScore = poverty_rate != null ? (1 - poverty_rate) * 5 : 0;
+  const transportationScore = normalize(num_airports_within_60_miles, 0, 300);
+  const hotelScore = normalize(num_hotels, 0, 50);
+  const safetyScore = crime_rate_per_100000 != null
+    ? (1 - crime_rate_per_100000 / 1000) * 5
+    : 0;
+
+  const scoreArray = [
+    +attractionScore.toFixed(2),
+    +societyScore.toFixed(2),
+    +transportationScore.toFixed(2),
+    +hotelScore.toFixed(2),
+    +safetyScore.toFixed(2),
+  ];
+
+  renderRadarChart(scoreArray, state, county);
+}

@@ -27,6 +27,9 @@ import {
 } from "./component/visualization/societyHeatmap.js";
 import { setupRadarChartContainer } from "./component/visualization/radarVis.js";
 
+import { setupRecommendationPanel } from "./component/visualization/recommendationPanel.js";
+
+
 const parentContainer = document.getElementById("container");
 
 // we add a search component here
@@ -46,6 +49,18 @@ window.onload = function () {
     parentContainer,
     visualizationTarget
   );
+  setupRecommendationPanel(document.getElementById("recommendation-btn-container"));
+
+
+  // window.addEventListener("DOMContentLoaded", () => {
+  //   const controlSection = document.querySelector(".controls");
+  //   const recButton = document.createElement("button");
+  //   recButton.id = "recommendation-button";
+  //   recButton.className = "btn btn-outline-primary ms-3";
+  //   recButton.textContent = "Recommendation";
+  //   recButton.onclick = () => showTopRecommendations();
+  //   controlSection.appendChild(recButton);
+  // });
 
   // timeout needs to match `#container.showVis {transition}` in `index.css`
   visBack.onclick = function () {
