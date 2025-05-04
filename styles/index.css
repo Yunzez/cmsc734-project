@@ -76,9 +76,9 @@ svg {
 }
 
 .airport-icon {
-  font-size: 18px;
+  font-size: 20px;
   color: #0074d9;
-  text-shadow: 0 0 2px #fff;
+  text-shadow: 0 0 4px #000;
   pointer-events: auto;
 }
 
