@@ -50,7 +50,10 @@ window.onload = function () {
   // timeout needs to match `#container.showVis {transition}` in `index.css`
   visBack.onclick = function () {
     parentContainer.classList.remove("showVis");
-    setTimeout(() => window.location.reload(), 600);
+    setTimeout(() => {
+      [...document.querySelectorAll('.checkbox-input')].forEach(_ => _.checked = false)
+      window.location.reload()
+    }, 600);
   };
 
   prepareDropdown(globalMap);
