@@ -66,34 +66,31 @@
           <button id="groupByState" class="fancyButton">State</button>
           <button id="groupByCounty" class="fancyButton">County</button>
         </div>
-        <button class="samll-button ms-3" onclick="window.toggleRecommendWidget()">
-          Recommendations
-        </button>
       </div>
       <div id="blur-overlay"></div>
       <div id="recommend-widget">
         <!-- your recommendations go here -->
         <div class="d-flex justify-content-between align-items-center">
-          <button id="closeRecommendWidget" class="samll-button" onclick="window.toggleRecommendWidget()">
+          <button id="closeRecommendWidget" class="small-button" onclick="window.toggleRecommendWidget()">
             Close
           </button>
           <div class="shuffle-options">
             <div>
               <label>
                 <input type="radio" name="recommendMode" class="shuffle-option" value="state" />
-                <span>Top 10 States</span>
+                <span>Top 10 US States</span>
               </label>
               <label>
                 <input type="radio" name="recommendMode" class="shuffle-option" value="county" />
-                <span>Top 10 Counties</span>
+                <span>Top 10 US Counties</span>
               </label>
               <label>
                 <input type="radio" name="recommendMode" class="shuffle-option" value="shuffle" checked="true" />
-                <span>Shuffle Recommendations</span>
+                <span>Feeling Adventurous?</span>
               </label>
             </div>
           </div>
-          <button class="shuffle-buttn">
+          <button class="shuffle-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
               class="bi bi-arrow-repeat" viewBox="0 0 16 16">
               <path
@@ -111,8 +108,8 @@
         <div id="recommend-widget-content"></div>
       </div>
       <div>
-        <h2>Search Your Destination</h2>
-        <p>Name the state, county or city you would like to go!</p>
+        <h2>Find Your Destination</h2>
+        <p>Name the state, county or city you would like to go! Or hit "Recommendations" for suggested places!</p>
         <div class="d-flex justify-content-center w-100">
           <div class="searchGroup">
             <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
@@ -122,7 +119,10 @@
                 </path>
               </g>
             </svg>
-            <input placeholder="Search" type="search" class="input" id="mainSearchInput" />
+            <input placeholder="Search for a place..." type="search" class="input" id="mainSearchInput" />
+            <button class="small-button ms-3" onclick="window.toggleRecommendWidget()">
+              Recommendations
+            </button>
           </div>
         </div>
         <div id="mainSearchDropdown" class="dropdown hidden"></div>
