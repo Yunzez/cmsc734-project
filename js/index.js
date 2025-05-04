@@ -1,4 +1,4 @@
-import {clearCheckboxes, createMap} from "./component/map/index.js";
+import { clearCheckboxes, createMap } from "./component/map/index.js";
 import { renderRadarChart } from "./component/visualization/radarVis.js";
 import {
   removeHotelOnMap,
@@ -25,7 +25,7 @@ import {
   renderSocietyHeatmap,
   removeSocietyHeatmap,
 } from "./component/visualization/societyHeatmap.js";
-import {setupRadarChartContainer} from "./component/visualization/radarVis.js";
+import { setupRadarChartContainer } from "./component/visualization/radarVis.js";
 
 const parentContainer = document.getElementById("container");
 
@@ -51,8 +51,8 @@ window.onload = function () {
   visBack.onclick = function () {
     parentContainer.classList.remove("showVis");
     setTimeout(() => {
-      clearCheckboxes()
-      window.location.reload()
+      clearCheckboxes();
+      window.location.reload();
     }, 600);
   };
 
@@ -82,7 +82,7 @@ function prepareVisDiv(visDiv) {
 
 // }
 function prepareDropdown(globalMap) {
-    setupRadarChartContainer()
+  setupRadarChartContainer();
   const dropdownItems = document.querySelectorAll(
     "#filterOptionsList .checkbox-input"
   );
@@ -152,7 +152,7 @@ function prepareDropdown(globalMap) {
         const mapDiv = document.getElementById("vis-overall");
         if (this.classList.contains("active")) {
           if (document.getElementById("safety-vis")) {
-            document.getElementById("safety-vis").remove()
+            document.getElementById("safety-vis").remove();
             document.getElementById("safety-title").remove();
           }
           this.classList.remove("active");
@@ -178,3 +178,18 @@ function prepareDropdown(globalMap) {
     });
   });
 }
+
+export function toggleRecommendWidget() {
+  console.log("showRecommendWidget called");
+  if (document.getElementById("recommend-widget").style.display === "block") {
+    document.getElementById("recommend-widget").style.display = "none";
+    document.getElementById("blur-overlay").style.display = "none";
+  } else {
+    document.getElementById("recommend-widget").style.display = "block";
+    document.getElementById("blur-overlay").style.display = "block";
+  }
+  
+
+}
+
+window.toggleRecommendWidget = toggleRecommendWidget;

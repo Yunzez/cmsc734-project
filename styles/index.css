@@ -63,6 +63,32 @@ body {
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
+#recommend-widget {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    z-index: 100001;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Backdrop blur layer */
+  #blur-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(3px);
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+  }
+  
+
 #hotel-vis {
   padding-top: 15px;
   padding-bottom: 15px;
