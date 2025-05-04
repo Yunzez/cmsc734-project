@@ -368,7 +368,11 @@ function renderSubTreemap(data, container, title) {
         .on("mousemove", function (event) {
             const tooltip = document.getElementById("attraction-tooltip");
             if (tooltip) {
-                tooltip.style.left = `${event.pageX + 15}px`;
+                if (event.pageX + tooltip.offsetWidth + 50 > window.innerWidth) {
+                    tooltip.style.left = `${event.pageX - tooltip.offsetWidth - 15}px`;
+                } else {
+                    tooltip.style.left = `${event.pageX + 15}px`;
+                }
                 tooltip.style.top = `${event.pageY + 15}px`;
             }
         })
