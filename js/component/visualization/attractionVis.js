@@ -1,8 +1,6 @@
 // visualization/attractionVis.js
 // visualization/attractionVis.js
 
-// visualization/attractionVis.js
-
 import { getStateNameFromAbbr } from "../../utils.js";
 
 let globalMapRef = null;
@@ -98,8 +96,7 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
 
         // 
         const recreationPercentValue = root.data["RecreationVisitors%"] || 0;
-        const recreationPercent = (recreationPercentValue * 100).toFixed(1) + "%";
-        titleDiv.innerHTML = `<b>Zoomable Treemap of Visitors in ${label}, Recreation Visitors increased by ${recreationPercent} compared to last year</b>`;
+        titleDiv.innerHTML = `<b>Zoomable Treemap of Visitors in ${label}</b>`;
 
         // 
         const container = d3.select(visDiv)
@@ -111,11 +108,14 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
             .style("height", "calc(100% - 40px)")
             .style("margin-top", "40px");
 
-        // 
+        //
+        const recreationPercent = (recreationPercentValue > 0 ? "+" : "") + (
+            recreationPercentValue * 100
+        ).toFixed(1).toString() + "%";
         renderSubTreemap(
             createSubTreeData(root, ["RecreationVisitors", "NonRecreationVisitors"]),
             container.append("div").node(),
-            "Visitors"
+            `Visitors (${recreationPercent} since last year)`
         );
         renderSubTreemap(
             createSubTreeData(root, ["RecreationVisitorHours", "NonRecreationVisitorHours"]),
@@ -233,6 +233,7 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
                     boxWidth > 80 ? "10px" :
                         boxWidth > 40 ? "8px" : "6px";
             })
+            .style("text-shadow", "rgba(0, 0, 0, 1) 0px 1px 5px")
             .text(d => {
                 const boxWidth = d.x1 - d.x0;
                 const maxChars = Math.floor(boxWidth / 7);
@@ -365,7 +366,6 @@ function renderSubTreemap(data, container, title) {
           });
         })
         .on("mousemove", function (event) {
-             
             const tooltip = document.getElementById("attraction-tooltip");
             if (tooltip) {
                 tooltip.style.left = `${event.pageX + 15}px`;
@@ -395,9 +395,8 @@ function renderSubTreemap(data, container, title) {
             return "8px";
         })
         .style("fill", "white")
-        .style("text-shadow", "0 1px 2px rgba(0,0,0,0.5)")
+        .style("text-shadow", "rgba(0, 0, 0, 1) 0px 1px 5px")
         .text(d => {
-             
             const maxWidth = d.x1 - d.x0;
             const maxChars = Math.floor(maxWidth / 7);  
             return d.data.name.length > maxChars ?
@@ -410,18 +409,31 @@ function renderSubTreemap(data, container, title) {
         const legend = svg.append("g")
             .attr("transform", `translate(15, ${height - 20})`);
 
-        
+        legend.append("rect")
+            .attr("x", -15)
+            .attr("y", -20)
+            .attr("width", 180)
+            .attr("height", 40)
+            .style("fill", "white")
+            .style("opacity", 0.8);
+
         const gradient = legend.append("defs")
             .append("linearGradient")
             .attr("id", "gradient")
             .attr("x1", "0%").attr("y1", "0%")
             .attr("x2", "100%").attr("y2", "0%");
 
+        const colorScaleDomain = colorScale.domain()
+        const gradientRange = [
+            colorScale(colorScaleDomain[0]),
+            colorScale(d3.sum(colorScaleDomain) / 2),
+            colorScale(colorScaleDomain[1])
+        ]
         gradient.selectAll("stop")
-            .data(colorScale.range())
+            .data(gradientRange)
             .enter()
             .append("stop")
-            .attr("offset", (d, i) => i / (colorScale.range().length - 1))
+            .attr("offset", (d, i) => i / (gradientRange.length - 1))
             .attr("stop-color", d => d);
 
         legend.append("rect")
@@ -433,22 +445,20 @@ function renderSubTreemap(data, container, title) {
         legend.append("text")
             .attr("x", 0)
             .attr("y", -5)
-            .text("High")
+            .text("High %")
             .style("font-size", "10px")
             .style("fill", "#2c3e50");
 
         legend.append("text")
-            .attr("x", 130)
+            .attr("x", 118)
             .attr("y", -5)
-            .text("Low")
+            .text("Low %")
             .style("font-size", "10px")
             .style("fill", "#2c3e50");
     }
 }
 
 
-
-////////
 function highlightFeatureByName(name) {
     const key = name?.toLowerCase();
     const layer = siteNameToLayerMap[key];

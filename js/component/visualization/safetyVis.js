@@ -255,7 +255,8 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
         .text((d) => d.data.name)
         .style("font-size", "11px")
         .style("pointer-events", "none")
-        .style("fill", "#fff");
+        .style("fill", "#fff")
+        .style("text-shadow", "rgba(0, 0, 0, 1) 0px 1px 5px");
 
       const all = nodeEnter.merge(nodes);
 
