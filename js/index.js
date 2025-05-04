@@ -128,8 +128,10 @@ function prepareDropdown(globalMap) {
         } else {
           this.classList.add("active");
           renderSocietyHeatmap(globalMap, state);
-          document.getElementById("safety-vis")?.remove();
-          document.getElementById("safety-title")?.remove();
+          if (document.getElementById("safety-vis")) {
+            document.getElementById("safety-vis").remove()
+            document.getElementById("safety-title").remove();
+        }
           removeSafetyHeatmap(globalMap);
           clearCheckboxes("crime");
         }
