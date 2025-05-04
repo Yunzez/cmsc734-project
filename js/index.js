@@ -28,7 +28,6 @@ import {
 import { setupRadarChartContainer } from "./component/visualization/radarVis.js";
 import { startRenderVisualization } from "./component/visualization/index.js";
 import { findCountyLayer } from "./component/map/index.js";
-// import { setupRecommendationPanel } from "./component/visualization/recommendationPanel.js";
 
 const parentContainer = document.getElementById("container");
 
