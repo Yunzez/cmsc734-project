@@ -7,8 +7,7 @@ body {
   user-select: none;
 }
 
-html,
-body {
+html, body {
   overflow: hidden;
   margin: 0;
   padding: 0;
@@ -69,13 +68,13 @@ body {
     top: 50%;
     left: 35%;
     transform: translate(-50%, -50%);
-    width: 80vw;
+    width: 60vw;
+    height: 60vh;
     padding: 20px;
     background: white;
     border-radius: 10px;
     z-index: 100001;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    height: 80vh;
   }
   
   /* Backdrop blur layer */

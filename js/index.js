@@ -285,7 +285,7 @@ export async function renderRecommendations() {
   } else if (selectedMode === "county") {
     title.textContent = "Top 10 Counties in USA";
   } else {
-    title.textContent = "Top Picks from Shuffle";
+    title.textContent = "Random Top Picks from Counties in USA (Reroll with \"Shuffle\"!)";
   }
   title.style.marginTop = "10px";
   container.appendChild(title);
@@ -312,7 +312,7 @@ export async function renderRecommendations() {
       <span style="color: #0a9396; font-weight: bold;">${Math.round(
         scoreOutOf100
       )} / 100</span>
-      <span class="option-arrow" style="margin-right: 10px; float: right; opacity: 0; color: #0a9396; transition: opacity 0.3s ease;">GO ➔</span>
+      <span class="option-arrow" style="margin-right: 10px; float: right; opacity: 0; color: #0a9396; transition: opacity 0.3s ease;">View in map →</span>
     `;
 
     item.onmouseover = () => {
@@ -355,7 +355,7 @@ export async function renderRecommendations() {
 window.toggleRecommendWidget = toggleRecommendWidget;
 
 document.addEventListener("DOMContentLoaded", () => {
-  const shuffleBtn = document.querySelector(".shuffle-buttn");
+  const shuffleBtn = document.querySelector(".shuffle-button");
   if (shuffleBtn) {
     shuffleBtn.addEventListener("click", () => {
       window.shuffleRecommendations();
