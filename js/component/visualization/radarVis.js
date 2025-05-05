@@ -23,45 +23,65 @@ export function setupRadarChartContainer() {
   header.style.justifyContent = "space-between";
 
   const infoDiv = document.createElement("div");
-  infoDiv.style =
-    "display: flex; align-items: center; justify-content: end; width: 100%;";
+  infoDiv.style = "display: flex; align-items: center; justify-content: start; width: 100%;";
 
 
-    const infoTitle = document.createElement("span");
-  infoTitle.innerText = `Region overall score`;
+  const infoTitle = document.createElement("span");
+  setInterval(() => {
+    function setScore(scores) {
+      let score = Math.round(scores.reduce((a, b) => a + b, 0) * 4);
+      infoTitle.innerHTML = '<span><b>Region overall score: </b></span>' +
+          `<span class="score">${score} / 100</span>`;
+    }
+    let location = document.getElementById("visHeaderTitle")
+    if (!location) return;
+    location = location.textContent.match(
+        /Information for (.+)/
+    )
+    if (!location) return;
+    location = location[1]
+    if (location.includes(',')) {
+      let [county, state] = location.split('County, ');
+      calculateScore(state, county).then(setScore)
+    } else {
+      calculateScore(location).then(setScore)
+    }
+  }, 100)
   infoDiv.appendChild(infoTitle);
   const infoIcon = document.createElement("span");
   infoDiv.appendChild(infoIcon);
   // <!-- From Uiverse.io by vinodjangid07 -->
   infoIcon.innerHTML = `
-  <button class="faq-button">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-      <path
-        d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"
-      ></path>
-    </svg>
-    <div class="tooltip" data-position="left-bottom">
-      <strong>Scoring Criteria:</strong>
-      <ul style="margin: 8px 0; padding-left: 16px; list-style-type: disc;">
-        <li><strong>Attractions:</strong> # of historic sites + state parks (max 20)</li>
-        <li><strong>Society:</strong> Inverse of poverty rate</li>
-        <li><strong>Transportation:</strong> Airports within 60 miles (max 300)</li>
-        <li><strong>Hotel:</strong> Total hotels in the county (max 50)</li>
-        <li><strong>Safety:</strong> Inverse of crime rate per 100,000</li>
-      </ul>
-    </div>
-  </button>
+<span style="text-decoration: underline; text-decoration-style: dotted;
+ cursor: help; color: gray">(How is this calculated?)</span>
+<!--  <button class="faq-button">-->
+<!--    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">-->
+<!--      <path-->
+<!--        d="M80 160c0-35.3 28.7-64 64-64h32c35.3 0 64 28.7 64 64v3.6c0 21.8-11.1 42.1-29.4 53.8l-42.2 27.1c-25.2 16.2-40.4 44.1-40.4 74V320c0 17.7 14.3 32 32 32s32-14.3 32-32v-1.4c0-8.2 4.2-15.8 11-20.2l42.2-27.1c36.6-23.6 58.8-64.1 58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"-->
+<!--      ></path>-->
+<!--    </svg>-->
+<!--    <div class="tooltip" data-position="left-bottom">-->
+<!--      <strong>Scoring Criteria:</strong>-->
+<!--      <ul style="margin: 8px 0; padding-left: 16px; list-style-type: disc;">-->
+<!--        <li><strong>Attractions:</strong> # of historic sites + state parks (max 20)</li>-->
+<!--        <li><strong>Society:</strong> Inverse of poverty rate</li>-->
+<!--        <li><strong>Transportation:</strong> Airports within 60 miles (max 300)</li>-->
+<!--        <li><strong>Hotel:</strong> Total hotels in the county (max 50)</li>-->
+<!--        <li><strong>Safety:</strong> Inverse of crime rate per 100,000</li>-->
+<!--      </ul>-->
+<!--    </div>-->
+<!--  </button>-->
   `;
 
-  infoIcon.style.cursor = "pointer";
-  infoIcon.style.fontSize = "14px";
+  // infoIcon.style.cursor = "pointer";
+  infoIcon.style.fontSize = "16px";
   infoIcon.style.marginLeft = "8px";
-  infoIcon.title = `Scoring criteria:
-- Attractions: # of historic sites + state parks (max 20)
+  infoIcon.title = `Scoring is based on the following criteria:
+- Attractions: Total number of historic sites and state parks (max 20)
 - Society: Inverse of poverty rate
 - Transportation: Airports within 60 miles (max 300)
 - Hotel: Total hotels in the county (max 50)
-- Safety: Inverse of crime rate per 100,000`;
+- Safety: Inverse of crime rate per 100,000 residents`;
 
   header.appendChild(infoDiv);
 
@@ -96,7 +116,7 @@ export function renderRadarChart(data, state, county) {
   });
   const ctx = document.getElementById("radarChart").getContext("2d");
   const radarData = {
-    labels: ["Attractions", "Society", "Transportation", "Hotel", "Safety"],
+    labels: ["Safety", "Society", "Transportation", "Hotel", "Attractions"],
     datasets: [
       {
         label: "Region Score",
@@ -121,7 +141,7 @@ export function renderRadarChart(data, state, county) {
       data: radarData,
       options: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         layout: { padding: { top: 5, bottom: 5, left: 5, right: 5 } },
         plugins: {
           legend: {
@@ -131,7 +151,7 @@ export function renderRadarChart(data, state, county) {
             enabled: true,
             callbacks: {
               label: function (context) {
-                return `${context.label}: ${context.formattedValue}/5`;
+                return `${context.label}: ${parseFloat(context.formattedValue).toFixed(1)}/5`;
               },
             },
           }
@@ -141,8 +161,8 @@ export function renderRadarChart(data, state, county) {
             borderWidth: 2,
           },
           point: {
-            radius: 3,
-            hoverRadius: 6,
+            radius: 5,
+            hoverRadius: 8,
           },
         },
         scales: {
@@ -156,7 +176,7 @@ export function renderRadarChart(data, state, county) {
               font: { size: 10 },
             },
             pointLabels: {
-              font: { size: 11 },
+              font: { size: 14 },
               color: "#333",
             },
             grid: {
@@ -168,7 +188,6 @@ export function renderRadarChart(data, state, county) {
             radius: '100%', // ← this makes the chart take more space
           },
         }
-        
       },
     });
   }
@@ -212,18 +231,18 @@ export async function calculateScore(state, county) {
 
     console.log(
       "scores",
-      +attractionScore.toFixed(2),
+      +safetyScore.toFixed(2),
       +societyScore.toFixed(2),
       +transportationScore.toFixed(2),
       +hotelScore.toFixed(2),
-      +safetyScore.toFixed(2)
+      +attractionScore.toFixed(2)
     );
     return [
-      +attractionScore.toFixed(2),
+      +safetyScore.toFixed(2),
       +societyScore.toFixed(2),
       +transportationScore.toFixed(2),
       +hotelScore.toFixed(2),
-      +safetyScore.toFixed(2),
+      +attractionScore.toFixed(2)
     ];
   }
 
@@ -259,11 +278,11 @@ export async function calculateScore(state, county) {
       : 0;
 
   return [
-    +attractionScore.toFixed(2),
+    +safetyScore.toFixed(2),
     +societyScore.toFixed(2),
     +transportationScore.toFixed(2),
     +hotelScore.toFixed(2),
-    +safetyScore.toFixed(2),
+    +attractionScore.toFixed(2)
   ];
 }
 
@@ -299,11 +318,11 @@ export async function createRadarChartFromCountyName(state, county) {
       : 0;
 
     const scoreArray = [
-      +attractionScore.toFixed(2),
+      +safetyScore.toFixed(2),
       +societyScore.toFixed(2),
       +transportationScore.toFixed(2),
       +hotelScore.toFixed(2),
-      +safetyScore.toFixed(2),
+      +attractionScore.toFixed(2)
     ];
 
     renderRadarChart(scoreArray, state, null);
@@ -344,11 +363,11 @@ export async function createRadarChartFromCountyName(state, county) {
     : 0;
 
   const scoreArray = [
-    +attractionScore.toFixed(2),
+    +safetyScore.toFixed(2),
     +societyScore.toFixed(2),
     +transportationScore.toFixed(2),
     +hotelScore.toFixed(2),
-    +safetyScore.toFixed(2),
+    +attractionScore.toFixed(2)
   ];
 
   renderRadarChart(scoreArray, state, county);

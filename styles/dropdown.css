@@ -33,3 +33,8 @@
   .searchDropdownItem:active {
     background-color: #e0e0e0;
   }
+
+  .score {
+      color: #0a9396;
+      font-weight: bold;
+  }

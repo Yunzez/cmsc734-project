@@ -115,8 +115,7 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
             .style("display", "flex")
             .style("flex-direction", "column")
             .style("gap", "20px")
-            .style("height", "calc(100% - 40px)")
-            .style("margin-top", "40px");
+            .style("height", "calc(100% - 40px)");
 
         //
         const recreationPercent = (recreationPercentValue >= 0 ? "+" : "") + (
