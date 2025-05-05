@@ -60,7 +60,7 @@
   position: absolute;
   display: flex;
   height: 30px;
-  width: calc(100%/6);
+  width: calc(98.5%/6);
   background-color: #e6eef9;
   z-index: 1;
   border-radius: 15px;

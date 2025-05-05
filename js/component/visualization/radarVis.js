@@ -52,13 +52,15 @@ export function setupRadarChartContainer() {
   infoDiv.appendChild(infoTitle);
   const infoIcon = document.createElement("span");
   infoDiv.appendChild(infoIcon);
+  infoIcon.innerHTML = `<span style="text-decoration: underline; text-decoration-style: dotted;
+    cursor: help; color: gray">(How is this calculated?)</span>`
 
   // infoIcon.style.cursor = "pointer";
   infoIcon.style.fontSize = "16px";
   infoIcon.style.marginLeft = "8px";
-  infoIcon.title = `Scoring is based on the following criteria:
+  infoIcon.title = `Scoring is averaged over the following criteria:
 - Attractions: Total number of historic sites and state parks (max 20)
-- Society: Inverse of poverty rate
+- Economy: Inverse of poverty rate
 - Transportation: Airports within 60 miles (max 300)
 - Hotel: Total hotels in the county (max 50)
 - Safety: Inverse of crime rate per 100,000 residents`;
@@ -79,7 +81,9 @@ export function setupRadarChartContainer() {
   innerDiv.appendChild(header);
   innerDiv.appendChild(canvas);
   cityRadarChart.appendChild(innerDiv);
-  container.appendChild(cityRadarChart);
+  if (!document.getElementById(cityRadarChart.id)) {
+    container.appendChild(cityRadarChart);
+  }
 }
 
 function setScore(scores, county, state) {
@@ -107,7 +111,7 @@ export function renderRadarChart(data, state, county) {
 
   const ctx = document.getElementById("radarChart").getContext("2d");
   const radarData = {
-    labels: ["Safety", "Society", "Transportation", "Hotel", "Attractions"],
+    labels: ["Safety", "Economy", "Transportation", "Hotel", "Attractions"],
     datasets: [
       {
         label: "Region Score",

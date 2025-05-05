@@ -439,7 +439,7 @@ function showHotels(svg, starGroups, focusedRating, globalMap) {
                   ? `<div><strong>Phone:</strong> ${d.PhoneNumber}</div>`
                   : ""
               }
-              <b class="mt-3">Click to see more</b>
+              <b class="mt-3">Click to show location on map</b>
               </div>
             `);
         })
