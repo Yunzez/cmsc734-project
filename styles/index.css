@@ -15,6 +15,14 @@ html, body {
   width: 100vw;
 }
 
+a {
+  color: dimgray;
+}
+
+a:hover {
+  color: darkgray;
+}
+
 #container {
   display: flex;
   width: 150vw; /* Adjusted to accommodate the off-screen visualization */
