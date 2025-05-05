@@ -106,7 +106,7 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
 
         // 
         const recreationPercentValue = root.data["RecreationVisitors%"] || 0;
-        titleDiv.innerHTML = `<b>Zoomable Treemap of Visitors in ${label}</b>`;
+        titleDiv.innerHTML = `<b class="vis-title">Zoomable Treemap of Attraction Visitors in ${label}</b>`;
 
         // 
         const container = d3.select(visDiv)
@@ -264,7 +264,7 @@ function renderTreemap(root, visDiv, titleDiv, label, isStateLevel = true) {
 
         nodes.exit().remove();
 
-        titleDiv.innerHTML = `<b>Zoomable Treemap of Visitors in ${label}</b>`;
+        titleDiv.innerHTML = `<b class="vis-title">Zoomable Treemap of Attraction Visitors in ${label}</b>`;
     }
 
     render(currentNode);

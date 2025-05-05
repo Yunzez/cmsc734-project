@@ -94,11 +94,17 @@ a:hover {
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 10000;
   }
-  
+
+.vis-title {
+  margin-left: 5px;
+}
 
 #hotel-vis {
-  padding-top: 15px;
   padding-bottom: 15px;
+}
+
+#hotel-feature-filters {
+  padding-top: 5px;
 }
 
 svg {

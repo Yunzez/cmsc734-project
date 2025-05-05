@@ -72,6 +72,9 @@ export function createHotelVis(
   glider.className = "glider";
 
   tabs.appendChild(glider);
+  const titleText = document.createElement("span");
+  titleText.innerHTML = `<b class="vis-title">Bubble Chart of Hotels in ${state} ${county}</b>`;
+  container.appendChild(titleText);
   container.appendChild(filterContainer);
 
   //   const container = parentContainer;
@@ -419,7 +422,7 @@ function showHotels(svg, starGroups, focusedRating, globalMap) {
               }</div>
               ${
                 d.StarRating
-                  ? `<div style="font-size: 500">⭐ ${d.StarRating} stars</div>`
+                  ? `<div style="font-size: 13px">⭐ ${d.StarRating} stars</div>`
                   : ""
               }
               ${

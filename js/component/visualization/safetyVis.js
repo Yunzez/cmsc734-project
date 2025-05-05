@@ -111,19 +111,26 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
 
   const width = container.offsetWidth;
   const height = 800;
+  const heightOffset = isStateLevel ? 0 : 10;
   const margin = { top: 40, right: 30, bottom: 50, left: 60 };
+
+  if (!isStateLevel) {
+    const titleText = document.createElement("span");
+    titleText.innerHTML = `<b class="vis-title">Aggregated Bar Chart of Crimes in ${titleLabel}</b>`;
+    container.appendChild(titleText);
+  }
 
   const svg = d3
     .select(container)
     .append("svg")
-    .attr("viewBox", [0, 0, width, height])
+    .attr("viewBox", [0, heightOffset, width, height + heightOffset])
     .attr("width", width)
     .attr("height", height);
 
   if (!isStateLevel) {
     // 📊 Simple bar chart for county-level
     const data = crimeCategories.map((cat) => ({
-      type: cat,
+      type: crimeNameMapping[cat],
       count: crimeInput[cat] || 0,
     }));
 
@@ -307,7 +314,7 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
 
     render(currentNode);
     let title = document.getElementById("safety-title");
-    // title.innerHTML = `<b>Zoomable Treemap of Crime in ${titleLabel}</b>`;
+    // title.innerHTML = `<b>Zoomable Treemap of Crimes in ${titleLabel}</b>`;
 
     let titleDiv = document.getElementById("safety-title");
     const titleContainer = document.createElement("div");
@@ -316,7 +323,7 @@ function renderCrimeChart(container, crimeInput, titleLabel) {
     titleContainer.style.alignItems = "center";
 
     const titleText = document.createElement("span");
-    titleText.innerHTML = `<b>Zoomable Treemap of Crime in ${titleLabel}</b>`;
+    titleText.innerHTML = `<b class="vis-title">Zoomable Treemap of Crimes in ${titleLabel}</b>`;
     titleContainer.appendChild(titleText);
 
     const backButton = document.createElement("button");
