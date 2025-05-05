@@ -4,10 +4,12 @@ import { getAssetPath } from "../../utils.js";
 import { createDropDown } from "../dropdown/index.js";
 
 export function findCountyLayer(map, countyName, stateName) {
+ 
   let targetLayer = null;
   console.log("findCountyLayer", countyName, stateName);
+  const hasCounty = countyName != undefined;
+  console.log("hasCounty", hasCounty, countyName, stateName);
   map.eachLayer((layer) => {
-    const hasCounty = countyName != undefined;
     // Check if it's a GeoJSON layer with features
 
     if (layer.feature && layer.feature.properties && hasCounty) {
@@ -16,9 +18,9 @@ export function findCountyLayer(map, countyName, stateName) {
       const county = props.coty_name?.[0]?.trim();
       const state = props.ste_name?.[0]?.trim();
 
-      if (county === countyName && state === stateName) {
+      if (county === countyName.trim() && state === stateName.trim()) {
         targetLayer = layer;
-      } 
+      }
     } else if (layer.feature && layer.feature.properties && !hasCounty) {
       const props = layer.feature.properties;
       console.log("layer feature", props);
