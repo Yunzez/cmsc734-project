@@ -285,7 +285,8 @@ export async function renderRecommendations() {
   } else if (selectedMode === "county") {
     title.textContent = "Top 10 Counties in USA";
   } else {
-    title.textContent = "Random Top Picks from Counties in USA (Reroll with \"Shuffle\"!)";
+    title.textContent =
+      'Random Top Picks from Counties in USA (Reroll with "Shuffle"!)';
   }
   title.style.marginTop = "10px";
   container.appendChild(title);
@@ -328,10 +329,20 @@ export async function renderRecommendations() {
     };
 
     item.onclick = () => {
-      const [county, state] = key.split(",").map((s) => s.trim());
+      const values = key.split(",");
 
-      const countyBtn = document.getElementById("groupByCounty");
-      countyBtn.click();
+      let [county, state] = values
+      const hasCounty = values.length > 1; // if the state is empty it means that the first part is a state
+      console.log(hasCounty, county);
+      if (hasCounty) {
+        const countyBtn = document.getElementById("groupByCounty");
+        countyBtn.click();
+      } else {
+        const stateBtn = document.getElementById("groupByState");
+        state = county
+        county = null
+        stateBtn.click();
+      }
 
       (async () => {
         const layer = await findCountyLayer(globalMap, county, state);

@@ -1,6 +1,4 @@
-import {
-  startRenderVisualization
-} from "../visualization/index.js";
+import { startRenderVisualization } from "../visualization/index.js";
 import { renderAirportOnMap } from "../visualization/airportVis.js";
 import { getAssetPath } from "../../utils.js";
 import { createDropDown } from "../dropdown/index.js";
@@ -9,14 +7,23 @@ export function findCountyLayer(map, countyName, stateName) {
   let targetLayer = null;
   console.log("findCountyLayer", countyName, stateName);
   map.eachLayer((layer) => {
+    const hasCounty = countyName != undefined;
     // Check if it's a GeoJSON layer with features
-    if (layer.feature && layer.feature.properties) {
+
+    if (layer.feature && layer.feature.properties && hasCounty) {
       const props = layer.feature.properties;
       // console.log("layer feature", props);
       const county = props.coty_name?.[0]?.trim();
       const state = props.ste_name?.[0]?.trim();
 
       if (county === countyName && state === stateName) {
+        targetLayer = layer;
+      } 
+    } else if (layer.feature && layer.feature.properties && !hasCounty) {
+      const props = layer.feature.properties;
+      console.log("layer feature", props);
+      const state = props.NAME?.trim();
+      if (state === stateName) {
         targetLayer = layer;
       }
     }
@@ -112,7 +119,7 @@ export function createMap(
   let countyLayer = null;
   let stateLayer = null;
   let activeLayer = null; // Track the currently displayed layer
-  clearCheckboxes()
+  clearCheckboxes();
 
   function parentContainerToggle(target) {
     if (!target) return;
@@ -188,7 +195,9 @@ export function createMap(
             fillOpacity: 0.2,
           },
           onEachFeature: function (feature, layer) {
-            let label = (layer.feature.properties.coty_name_long || []).join(", ");
+            let label = (layer.feature.properties.coty_name_long || []).join(
+              ", "
+            );
             layer.bindTooltip(label, {
               sticky: true,
               direction: "top",
@@ -277,7 +286,7 @@ export function createMap(
   ]).then(([loadedCountyLayer, loadedStateLayer]) => {
     countyLayer = loadedCountyLayer;
     stateLayer = loadedStateLayer;
-    
+
     if (countyLayer) {
       attachLayerEvents(countyLayer, "county");
     }
@@ -366,12 +375,12 @@ export function createMap(
 }
 
 export function clearCheckboxes(type = undefined) {
-  let className = '.checkbox-input';
+  let className = ".checkbox-input";
   if (type) {
     className += `.${type}`;
   }
-  [...document.querySelectorAll(className)].forEach(_ => {
+  [...document.querySelectorAll(className)].forEach((_) => {
     _.classList.remove("active");
     _.checked = false;
-  })
+  });
 }

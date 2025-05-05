@@ -1,135 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Where to Stay? Visualizer</title>
-  <link rel="stylesheet" href="styles/search.css" />
-  <link rel="stylesheet" href="styles/dropdown.css" />
-  <link rel="stylesheet" href="styles/fancyButton.css" />
-  <link rel="stylesheet" href="styles/checkbox.css" />
-  <link rel="stylesheet" href="styles/hotelVisSlider.css" />
-  <link rel="stylesheet" href="styles/faqBtn.css" />
-  <link rel="stylesheet" href="styles/smallBtn.css" />
-  <link rel="stylesheet" href="styles/shuffleBtn.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.6/proj4.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Where to Stay? Visualizer</title>
+    <link rel="stylesheet" href="styles/search.css" />
+    <link rel="stylesheet" href="styles/dropdown.css" />
+    <link rel="stylesheet" href="styles/fancyButton.css" />
+    <link rel="stylesheet" href="styles/checkbox.css" />
+    <link rel="stylesheet" href="styles/hotelVisSlider.css" />
+    <link rel="stylesheet" href="styles/faqBtn.css" />
+    <link rel="stylesheet" href="styles/smallBtn.css" />
+    <link rel="stylesheet" href="styles/shuffleBtn.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.6/proj4.js"></script>
   <script src="https://unpkg.com/proj4leaflet@1.0.2/src/proj4leaflet.js"></script> -->
-  <!-- Production minified CSS for clustering -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <!-- Production minified CSS for clustering -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
 
-  <!-- Production minified JS for clustering -->
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-  <link rel="stylesheet" href="styles/index.css" />
-  <link rel="stylesheet" href="styles/map.css" />
+    <!-- Production minified JS for clustering -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/map.css" />
 
-  <!-- Inter UI font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-    rel="stylesheet" />
-</head>
+    <!-- Inter UI font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
-  <div id="container">
-    <div id="intro">
-      <div>
-        <h1>Are you wondering <em>Where to Stay?</em></h1>
-        <p>
-          Your ultimate solution for affordable and safe travel planning. Our
-          platform integrates diverse data sources to provide personalized
-          recommendations for budget-conscious travelers. Explore
-          cost-effective accommodations, transportation options, and
-          budget-friendly destinations with ease.
-        </p>
-      </div>
-      <div>
-        <h2>Research Problem</h2>
-        <p>
-          In the travel planning process, budget-constrained international
-          travelers and students often face challenges when making informed
-          tradeoffs between multiple factors, including safety, convenience,
-          and worthiness of visitation.
-        </p>
-      </div>
-      <div class="controls mb-4 d-flex align-items-center">
-        <h4 class="me-3 mb-0">Show in map:</h4>
+  <body>
+    <div id="container">
+      <div id="intro">
         <div>
-          <button id="groupByState" class="fancyButton">State</button>
-          <button id="groupByCounty" class="fancyButton">County</button>
+          <h1>Are you wondering <em>Where to Stay?</em></h1>
+          <p>
+            Your ultimate solution for affordable and safe travel planning. Our
+            platform integrates diverse data sources to provide personalized
+            recommendations for budget-conscious travelers. Explore
+            cost-effective accommodations, transportation options, and
+            budget-friendly destinations with ease.
+          </p>
         </div>
-      </div>
-      <div id="blur-overlay"></div>
-      <div id="recommend-widget">
-        <!-- your recommendations go here -->
-        <div class="d-flex justify-content-between align-items-center">
-          <button id="closeRecommendWidget" class="small-button" onclick="window.toggleRecommendWidget()">
-            Close
-          </button>
-          <div class="shuffle-options">
-            <div>
-<!--              <label>-->
-<!--                <input type="radio" name="recommendMode" class="shuffle-option" value="state" />-->
-<!--                <span>Top 10 US States</span>-->
-<!--              </label>-->
-              <label>
-                <input type="radio" name="recommendMode" class="shuffle-option" value="county" />
-                <span>Top 10 US Counties</span>
-              </label>
-              <label>
-                <input type="radio" name="recommendMode" class="shuffle-option" value="shuffle" checked="true" />
-                <span>Feeling Adventurous?</span>
-              </label>
-            </div>
+        <div>
+          <h2>Research Problem</h2>
+          <p>
+            In the travel planning process, budget-constrained international
+            travelers and students often face challenges when making informed
+            tradeoffs between multiple factors, including safety, convenience,
+            and worthiness of visitation.
+          </p>
+        </div>
+        <div class="controls mb-4 d-flex align-items-center">
+          <h4 class="me-3 mb-0">Show in map:</h4>
+          <div>
+            <button id="groupByState" class="fancyButton">State</button>
+            <button id="groupByCounty" class="fancyButton">County</button>
           </div>
-          <button class="shuffle-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-              class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-              <path
-                d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z">
-              </path>
-              <path fill-rule="evenodd"
-                d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z">
-              </path>
-            </svg>
-            Shuffle
-          </button>
-
         </div>
-        
-        <div id="recommend-widget-content"></div>
-      </div>
-      <div>
-        <h2>Find Your Destination</h2>
-        <p>Name the state, county or city you would like to go! Or hit "Recommendations" for suggested places!</p>
-        <div class="d-flex justify-content-center w-100">
-          <div class="searchGroup">
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
-              <g>
+        <div id="blur-overlay"></div>
+        <div id="recommend-widget">
+          <!-- your recommendations go here -->
+          <div class="d-flex justify-content-between align-items-center">
+            <button
+              id="closeRecommendWidget"
+              class="small-button"
+              onclick="window.toggleRecommendWidget()"
+            >
+              Close
+            </button>
+            <div class="shuffle-options">
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    name="recommendMode"
+                    class="shuffle-option"
+                    value="state"
+                  />
+                  <span>Top 10 US States</span>
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="recommendMode"
+                    class="shuffle-option"
+                    value="county"
+                  />
+                  <span>Top 10 US Counties</span>
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="recommendMode"
+                    class="shuffle-option"
+                    value="shuffle"
+                    checked="true"
+                  />
+                  <span>Feeling Adventurous?</span>
+                </label>
+              </div>
+            </div>
+            <button class="shuffle-button">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-arrow-repeat"
+                viewBox="0 0 16 16"
+              >
                 <path
-                  d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
-                </path>
-              </g>
-            </svg>
-            <input placeholder="Search for a place..." type="search" class="input" id="mainSearchInput" />
-            <button class="small-button ms-3" onclick="window.toggleRecommendWidget()">
-              Recommendations
+                  d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
+                ></path>
+              </svg>
+              Shuffle
             </button>
           </div>
+
+          <div id="recommend-widget-content"></div>
         </div>
-        <div id="mainSearchDropdown" class="dropdown hidden"></div>
-      </div>
-      <div class="d-flex justify-content-start align-items-end flex-column mt-5"
-        style="position: absolute; bottom: 10px; left: 10px">
-        <a href="https://github.com/Yunzez/cmsc734-project" aria-label="GitHub" data-social="github" style="
+        <div>
+          <h2>Find Your Destination</h2>
+          <p>
+            Name the state, county or city you would like to go! Or hit
+            "Recommendations" for suggested places!
+          </p>
+          <div class="d-flex justify-content-center w-100">
+            <div class="searchGroup">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
+                <g>
+                  <path
+                    d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"
+                  ></path>
+                </g>
+              </svg>
+              <input
+                placeholder="Search for a place..."
+                type="search"
+                class="input"
+                id="mainSearchInput"
+              />
+              <button
+                class="small-button ms-3"
+                onclick="window.toggleRecommendWidget()"
+              >
+                Recommendations
+              </button>
+            </div>
+          </div>
+          <div id="mainSearchDropdown" class="dropdown hidden"></div>
+        </div>
+        <div
+          class="d-flex justify-content-start align-items-end flex-column mt-5"
+          style="position: absolute; bottom: 10px; left: 10px"
+        >
+          <a
+            href="https://github.com/Yunzez/cmsc734-project"
+            aria-label="GitHub"
+            data-social="github"
+            style="
               position: relative;
               overflow: hidden;
               display: flex;
@@ -141,81 +201,113 @@
               color: #4d4d4d;
               background-color: #fff;
               transition: all 0.3s ease-in-out;
-            ">
-          <svg width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16" xml:space="preserve"
-            style="position: relative; z-index: 1; width: 30px; height: 30px">
-            <path
-              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"
-              fill="currentColor"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <!--! map section  -->
-
-    <div id="map"></div>
-    <div id="visualization">
-      <div id="vis-header" class="d-flex justify-content-between gap-3">
-        <button id="visBack" class="btn btn-primary">Back</button>
-        <div id="visHeaderTitle" class="flex-grow-1 d-flex justify-content-center"
-          style="font-size: 1.5rem; font-weight: bold"></div>
-      </div>
-      <div id="filterOptionsList" class="custom-filter-toggle mt-2">
-        <div class="position-relative d-flex justify-content-around">
-          <!-- Hotel -->
-          <div class="custom-checkbox">
-            <label class="checkbox-wrapper">
-              <input class="checkbox-input hotel" type="checkbox" data-value="Hotel" />
-              <span class="checkbox-tile">
-                <span class="checkbox-label">Hotel</span>
-              </span>
-            </label>
-          </div>
-
-          <!-- Transportation -->
-          <div class="custom-checkbox">
-            <label class="checkbox-wrapper">
-              <input class="checkbox-input airport" type="checkbox" data-value="Transportation" />
-              <span class="checkbox-tile">
-                <span class="checkbox-label">Transportation</span>
-              </span>
-            </label>
-          </div>
-
-          <!-- Attractions -->
-          <div class="custom-checkbox">
-            <label class="checkbox-wrapper">
-              <input class="checkbox-input park" type="checkbox" data-value="Attractions" />
-              <span class="checkbox-tile">
-                <span class="checkbox-label">Attractions</span>
-              </span>
-            </label>
-          </div>
-
-          <!-- Society -->
-          <div class="custom-checkbox">
-            <label class="checkbox-wrapper">
-              <input class="checkbox-input poverty" type="checkbox" data-value="Society" />
-              <span class="checkbox-tile">
-                <span class="checkbox-label">Society</span>
-              </span>
-            </label>
-          </div>
-
-          <!-- Safety -->
-          <div class="custom-checkbox">
-            <label class="checkbox-wrapper">
-              <input class="checkbox-input crime" type="checkbox" data-value="Safety" />
-              <span class="checkbox-tile">
-                <span class="checkbox-label">Safety</span>
-              </span>
-            </label>
-          </div>
+            "
+          >
+            <svg
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-github"
+              viewBox="0 0 16 16"
+              xml:space="preserve"
+              style="position: relative; z-index: 1; width: 30px; height: 30px"
+            >
+              <path
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"
+                fill="currentColor"
+              ></path>
+            </svg>
+          </a>
         </div>
       </div>
 
-      <!-- <div class="city-search-bar mt-3">
+      <!--! map section  -->
+
+      <div id="map"></div>
+      <div id="visualization">
+        <div id="vis-header" class="d-flex justify-content-between gap-3">
+          <button id="visBack" class="btn btn-primary">Back</button>
+          <div
+            id="visHeaderTitle"
+            class="flex-grow-1 d-flex justify-content-center"
+            style="font-size: 1.5rem; font-weight: bold"
+          ></div>
+        </div>
+        <div id="filterOptionsList" class="custom-filter-toggle mt-2">
+          <div class="position-relative d-flex justify-content-around">
+            <!-- Hotel -->
+            <div class="custom-checkbox">
+              <label class="checkbox-wrapper">
+                <input
+                  class="checkbox-input hotel"
+                  type="checkbox"
+                  data-value="Hotel"
+                />
+                <span class="checkbox-tile">
+                  <span class="checkbox-label">Hotel</span>
+                </span>
+              </label>
+            </div>
+
+            <!-- Transportation -->
+            <div class="custom-checkbox">
+              <label class="checkbox-wrapper">
+                <input
+                  class="checkbox-input airport"
+                  type="checkbox"
+                  data-value="Transportation"
+                />
+                <span class="checkbox-tile">
+                  <span class="checkbox-label">Transportation</span>
+                </span>
+              </label>
+            </div>
+
+            <!-- Attractions -->
+            <div class="custom-checkbox">
+              <label class="checkbox-wrapper">
+                <input
+                  class="checkbox-input park"
+                  type="checkbox"
+                  data-value="Attractions"
+                />
+                <span class="checkbox-tile">
+                  <span class="checkbox-label">Attractions</span>
+                </span>
+              </label>
+            </div>
+
+            <!-- Society -->
+            <div class="custom-checkbox">
+              <label class="checkbox-wrapper">
+                <input
+                  class="checkbox-input poverty"
+                  type="checkbox"
+                  data-value="Society"
+                />
+                <span class="checkbox-tile">
+                  <span class="checkbox-label">Society</span>
+                </span>
+              </label>
+            </div>
+
+            <!-- Safety -->
+            <div class="custom-checkbox">
+              <label class="checkbox-wrapper">
+                <input
+                  class="checkbox-input crime"
+                  type="checkbox"
+                  data-value="Safety"
+                />
+                <span class="checkbox-tile">
+                  <span class="checkbox-label">Safety</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="city-search-bar mt-3">
           <h5>Search for a City</h5>
           <div class="d-flex justify-content-center w-100">
             <div class="searchGroup">
@@ -234,9 +326,9 @@
             </div>
           </div>
         </div> -->
-      <div id="vis-overall">
-        <div id="info-section"></div>
-        <!-- <div id="city-radar-chart">
+        <div id="vis-overall">
+          <div id="info-section"></div>
+          <!-- <div id="city-radar-chart">
             <div class="d-flex justify-content-center">
               <div style="max-width: 300px; width: 100%">
                 <h6
@@ -250,16 +342,17 @@
               </div>
             </div>
           </div> -->
+        </div>
       </div>
     </div>
-  </div>
-  <script type="module" src="./js/index.js"></script>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
-</body>
-
+    <script type="module" src="./js/index.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+  </body>
 </html>
