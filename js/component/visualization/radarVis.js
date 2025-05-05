@@ -86,7 +86,7 @@ export function setupRadarChartContainer() {
   }
 }
 
-function setScore(scores, county, state) {
+function setScore(scores) {
   const infoTitle = document.getElementById("char-info-title");
   let score = Math.round(scores.reduce((a, b) => a + b, 0) * 4);
   infoTitle.innerHTML =

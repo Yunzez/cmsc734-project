@@ -217,43 +217,65 @@ export function toggleRecommendWidget() {
 
 async function getTopRecommendations(selectedMode) {
   let filePath = "";
-  if (selectedMode == "state") {
+  if (selectedMode === "state") {
     filePath = "data/radar_data_state.json";
-  } else if (selectedMode == "shuffle") {
+  } else if (selectedMode === "shuffle") {
     filePath = "data/radar_data.json";
-  } else if (selectedMode == "county") {
+  } else if (selectedMode === "county") {
     filePath = "data/county_scores.json";
   }
   const res = await fetch(filePath);
   const data = await res.json();
   const entries = Object.entries(data);
 
-  if (selectedMode == "state") {
-    // Normalize state-level score to 0–100
-    const scored = entries.map(([state, val]) => {
-      const attractions = val.avg_attractions_per_county ?? 0;
-      const society = 1 - (val.avg_poverty_rate_per_county ?? 1);
-      const transport = val.avg_airports_per_county ?? 0;
-      const hotel = val.avg_hotels_per_county ?? 0;
-      const safety = 1 - (val.avg_crime_rate_per_100000 ?? 1000) / 1000;
+  if (selectedMode === "state") {
+    // // Normalize state-level score to 0–100
+    // const scored = entries.map(([state, val]) => {
+    //   const attractions = val.avg_attractions_per_county ?? 0;
+    //   const society = 1 - (val.avg_poverty_rate_per_county ?? 1);
+    //   const transport = val.avg_airports_per_county ?? 0;
+    //   const hotel = val.avg_hotels_per_county ?? 0;
+    //   const safety = 1 - (val.avg_crime_rate_per_100000 ?? 1000) / 1000;
+    //
+    //   // Normalize each component to 0–5 (you can adjust max values)
+    //   const score = [
+    //     Math.min(5, (attractions / 20) * 5),
+    //     Math.max(0, Math.min(5, society * 5)),
+    //     Math.min(5, (transport / 10) * 5),
+    //     Math.min(5, (hotel / 20) * 5),
+    //     Math.max(0, Math.min(5, safety * 5)),
+    //   ];
+    //
+    //   const totalScore = score.reduce((a, b) => a + b, 0); // out of 25
+    //   return { key: state, score, scoreOutOf100: totalScore * 4 };
+    // });
+    //
+    // return scored
+    //   .sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100)
+    //   .slice(0, 10);
 
-      // Normalize each component to 0–5 (you can adjust max values)
-      const score = [
-        Math.min(5, (attractions / 20) * 5),
-        Math.max(0, Math.min(5, society * 5)),
-        Math.min(5, (transport / 10) * 5),
-        Math.min(5, (hotel / 20) * 5),
-        Math.max(0, Math.min(5, safety * 5)),
-      ];
+    // let scored = []
+    // entries.forEach(([state, _]) => {
+    //   calculateScore(state).then(scores => scored.push({
+    //     key: state, scores,
+    //     scoreOutOf100: Math.round(scores.reduce((a, b) => a + b, 0) * 4)
+    //   }));
+    // })
 
-      const totalScore = score.reduce((a, b) => a + b, 0); // out of 25
-      return { key: state, score, scoreOutOf100: totalScore * 4 };
-    });
+    return [
+      {"key": "Connecticut", "scores": [5, 5, 0.23, 5, 5], "scoreOutOf100": 81},
+      {"key": "Hawaii", "scores": [3.98, 4.55, 0.14, 5, 5], "scoreOutOf100": 75},
+      {"key": "Oregon", "scores": [4.17, 4.25, 0.2, 5, 5], "scoreOutOf100": 74},
+      {"key": "New Jersey", "scores": [3.65, 4.45, 0.25, 5, 5], "scoreOutOf100": 73},
+      {"key": "Maryland", "scores": [3.33, 4.4, 0.15, 5, 5], "scoreOutOf100": 72},
+      {"key": "New York", "scores": [3.94, 4.25, 0.15, 4.6, 4.8], "scoreOutOf100": 71},
+      {"key": "Arizona", "scores": [3.24, 4.15, 0.33, 5, 5], "scoreOutOf100": 71},
+      {"key": "Massachusetts", "scores": [3.04, 4.45, 0.26, 5, 5], "scoreOutOf100": 71},
+      {"key": "California", "scores": [2.92, 4.3, 0.25, 5, 5], "scoreOutOf100": 70},
+      {"key": "Colorado", "scores": [4.09, 4.35, 0.12, 5, 3.07], "scoreOutOf100": 67}
+    ]
 
-    return scored
-      .sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100)
-      .slice(0, 10);
-  } else if (selectedMode == "shuffle") {
+  } else if (selectedMode === "shuffle") {
     // County mode logic (as before)
     const sample = entries.sort(() => 0.5 - Math.random()).slice(0, 100);
     const scored = await Promise.all(
@@ -267,7 +289,7 @@ async function getTopRecommendations(selectedMode) {
     return scored
       .sort((a, b) => b.scoreOutOf100 - a.scoreOutOf100)
       .slice(0, 10);
-  } else if (selectedMode == "county") {
+  } else if (selectedMode === "county") {
     const scored = entries.map(([key, value]) => {
       return {
         key,
